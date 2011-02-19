@@ -1,0 +1,138 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Net.Sockets;
+using System.Net;
+using System.IO;
+using System.Diagnostics;
+
+namespace Tftp.Net.Channel
+{
+    class UdpChannel : ITftpChannel
+    {
+        public event TftpCommandHandler OnCommandReceived;
+        public bool IsOpen { get; private set; }
+
+        private IPEndPoint endpoint;
+        private UdpClient client;
+        private readonly TftpCommandParser parser = new TftpCommandParser();
+
+        public UdpChannel(UdpClient client)
+        {
+            if (client == null)
+                throw new ArgumentNullException("client");
+
+            this.client = client;
+            this.IsOpen = false;
+            this.endpoint = null;
+        }
+
+        public void Open()
+        {
+            if (client == null)
+                throw new ObjectDisposedException("UdpChannel");
+
+            if (IsOpen)
+                throw new InvalidOperationException("Cannot open a connection that is already open.");
+
+            IsOpen = true;
+            client.BeginReceive(UdpReceivedCallback, null);
+        }
+
+        void UdpReceivedCallback(IAsyncResult result)
+        {
+            IPEndPoint endpoint = new IPEndPoint(0, 0);
+            ITftpCommand command = null;
+
+            try
+            {
+                byte[] data = null;
+
+                lock (this)
+                {
+                    if (!IsOpen)
+                        return;
+
+                    data = client.EndReceive(result, ref endpoint);
+                }
+                command = parser.Parse(data);
+            }
+            catch (SocketException e)
+            {
+                //TODO: Handle receive error
+                Trace.WriteLine("Socket Exception: " + e);
+            }
+            catch (TftpParserException e2)
+            {
+                //At the moment, we silently drop parser errors
+                Trace.WriteLine("Parser Exception: " + e2);
+            }
+
+            if (command != null)
+            {
+                RaiseOnCommand(command, endpoint);
+            }
+
+            lock (this)
+            {
+                if (IsOpen)
+                    client.BeginReceive(UdpReceivedCallback, null);
+            }
+        }
+
+        private void RaiseOnCommand(ITftpCommand command, IPEndPoint endpoint)
+        {
+            if (OnCommandReceived != null)
+                OnCommandReceived(command, endpoint);
+        }
+
+        public void Send(ITftpCommand command)
+        {
+            if (client == null)
+                throw new ObjectDisposedException("UdpChannel");
+
+            if (command == null)
+                throw new ArgumentNullException("command");
+
+            if (!IsOpen)
+                throw new InvalidOperationException("Cannot send on closed connections.");
+
+            if (endpoint == null)
+                throw new InvalidOperationException("SetRemoteEndPoint() needs to be called before you can send TFTP commands.");
+
+            using (MemoryStream stream = new MemoryStream())
+            using (TftpStreamWriter writer = new TftpStreamWriter(stream))
+            {
+                command.Write(writer);
+
+                byte[] data = stream.GetBuffer();
+                client.Send(data, (int)stream.Length, endpoint);
+            }
+        }
+
+        public void Dispose()
+        {
+            lock (this)
+            {
+                if (this.client == null)
+                    return;
+
+                client.Close();
+                this.client = null;
+                this.IsOpen = false;
+            }
+        }
+
+        public void SetRemoteEndPoint(EndPoint endpoint)
+        {
+            if (!(endpoint is IPEndPoint))
+                throw new NotSupportedException("UdpChannel can only connect to IPEndPoints.");
+
+            if (client == null)
+                throw new ObjectDisposedException("UdpChannel");
+
+            this.endpoint = (IPEndPoint)endpoint;
+        }
+    }
+}
