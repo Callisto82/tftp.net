@@ -10,13 +10,8 @@ namespace Tftp.Net.Transfer.States
 {
     class SendReadRequest : BaseState
     {
-        private readonly Stream stream;
-
-        public SendReadRequest(TftpTransfer context, Stream stream)
-            : base(context) 
-        {
-            this.stream = stream;
-        }
+        public SendReadRequest(TftpTransfer context)
+            : base(context) { }
 
         public override void OnStateEnter()
         {
@@ -34,7 +29,7 @@ namespace Tftp.Net.Transfer.States
                 Context.GetConnection().SetRemoteEndPoint(endpoint);
 
                 //Switch to the receiving state...
-                ITftpState nextState = new Receiving(Context, stream);
+                ITftpState nextState = new Receiving(Context);
                 Context.SetState(nextState);
 
                 //...and let it handle the data packet

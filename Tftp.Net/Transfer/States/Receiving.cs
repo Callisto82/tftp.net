@@ -8,15 +8,13 @@ namespace Tftp.Net.Transfer.States
 {
     class Receiving : StateThatExpectsMessagesFromDefaultEndPoint
     {
-        private readonly Stream output;
         private ushort nextBlockNumber;
         private int bytesReceived = 0;
 
-        public Receiving(TftpTransfer context, Stream output)
+        public Receiving(TftpTransfer context)
             : base(context)
         {
             this.nextBlockNumber = 1;
-            this.output = output;
         }
 
         public override void OnData(Data command)
@@ -24,7 +22,7 @@ namespace Tftp.Net.Transfer.States
             if (command.BlockNumber == nextBlockNumber)
             {
                 //We received a new block of data
-                output.Write(command.Bytes, 0, command.Bytes.Length);
+                Context.InputOutputStream.Write(command.Bytes, 0, command.Bytes.Length);
                 SendAcknowledgement(command.BlockNumber);
 
                 //Was that the last block of data?

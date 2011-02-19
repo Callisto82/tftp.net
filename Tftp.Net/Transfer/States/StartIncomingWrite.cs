@@ -11,13 +11,13 @@ namespace Tftp.Net.Transfer.States
         public StartIncomingWrite(TftpTransfer context)
             : base(context) { }
 
-        public override void OnStart(Stream data)
+        public override void OnStart()
         {
             //Acknowledge the write request
             Context.GetConnection().Send(new Acknowledgement(0));
 
             //And start receiving
-            Context.SetState(new Receiving(Context, data));
+            Context.SetState(new Receiving(Context));
         }
 
         public override void OnCancel()

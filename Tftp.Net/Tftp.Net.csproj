@@ -45,10 +45,10 @@
     <Compile Include="Commands\TftpStreamReader.cs" />
     <Compile Include="Commands\TftpStreamWriter.cs" />
     <Compile Include="TftpClient.cs" />
-    <Compile Include="Transfer\InitialStateFactory.cs" />
     <Compile Include="Transfer\LocalReadTransfer.cs" />
     <Compile Include="Transfer\LocalWriteTransfer.cs" />
     <Compile Include="Transfer\RemoteReadTransfer.cs" />
+    <Compile Include="Transfer\RemoteWriteTransfer.cs" />
     <Compile Include="Transfer\States\BaseState.cs" />
     <Compile Include="Transfer\States\ITftpState.cs" />
     <Compile Include="ITftpTransfer.cs" />
@@ -66,7 +66,9 @@
     <Compile Include="Commands\TftpCommands.cs" />
     <Compile Include="Channel\UdpChannel.cs" />
     <Compile Include="Commands\TftpCommandParser.cs" />
+    <Compile Include="Transfer\States\StartingOutgoingWrite.cs" />
     <Compile Include="Transfer\States\StartOutgoingRead.cs" />
+    <Compile Include="Transfer\States\StartOutgoingWrite.cs" />
     <Compile Include="Transfer\States\StateThatExpectsMessagesFromDefaultEndPoint.cs" />
     <Compile Include="Transfer\TftpTransfer.cs" />
     <Compile Include="TftpServer.cs" />

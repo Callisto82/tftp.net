@@ -14,7 +14,7 @@ namespace Tftp.Net.Transfer.States
         void OnStateEnter();
 
         //Called if the user calls TftpTransfer.Start() or TftpTransfer.Cancel()
-        void OnStart(Stream data);
+        void OnStart();
         void OnCancel();
 
         //Called when a command is received
