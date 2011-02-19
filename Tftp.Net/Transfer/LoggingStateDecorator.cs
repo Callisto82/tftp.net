@@ -30,10 +30,10 @@ namespace Tftp.Net.Transfer
             decoratee.OnStateEnter();
         }
 
-        public void OnStart(Stream data)
+        public void OnStart()
         {
             Trace.WriteLine(GetStateName() + " OnStart");
-            decoratee.OnStart(data);
+            decoratee.OnStart();
         }
 
         public void OnCancel()

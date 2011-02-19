@@ -21,9 +21,8 @@ namespace Tftp.Net.Transfer.States
             //no-op
         }
 
-        public virtual void OnStart(Stream data)
+        public virtual void OnStart()
         {
-            throw new NotImplementedException();
         }
 
         public virtual void OnCancel()

@@ -11,9 +11,9 @@ namespace Tftp.Net.Transfer.States
         public StartOutgoingRead(TftpTransfer context)
             : base(context) { }
 
-        public override void OnStart(Stream data)
+        public override void OnStart()
         {
-            Context.SetState(new SendReadRequest(Context, data));
+            Context.SetState(new SendReadRequest(Context));
         }
 
         public override void OnCancel()

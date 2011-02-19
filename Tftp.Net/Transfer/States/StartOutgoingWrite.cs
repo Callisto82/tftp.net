@@ -6,19 +6,19 @@ using System.IO;
 
 namespace Tftp.Net.Transfer.States
 {
-    class StartIncomingRead : BaseState
+    class StartOutgoingWrite : BaseState
     {
-        public StartIncomingRead(TftpTransfer context)
-            : base(context) {}
+        public StartOutgoingWrite(TftpTransfer context)
+            : base(context) { }
 
         public override void OnStart()
         {
-            Context.SetState(new Sending(Context));
+            Context.SetState(new StartingOutgoingWrite(Context));
         }
 
         public override void OnCancel()
         {
-            Context.SetState(new CancelledByUser(Context));
+            Context.SetState(new Closed(Context));
         }
     }
 }

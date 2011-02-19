@@ -16,6 +16,8 @@ namespace Tftp.Net.Transfer
         protected ITftpState state;
         protected readonly ITftpChannel connection;
 
+        public Stream InputOutputStream { get; protected set; }
+
         public TftpTransfer(ITftpChannel connection, String filename)
             : this(connection, filename, null) { }
 
@@ -95,9 +97,14 @@ namespace Tftp.Net.Transfer
             if (data == null)
                 throw new ArgumentNullException("data");
 
+            if (InputOutputStream != null)
+                throw new InvalidOperationException("This transfer has already been started.");
+
+            this.InputOutputStream = data;
+
             lock (this)
             {
-                state.OnStart(data);
+                state.OnStart();
             }
         }
 

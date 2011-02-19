@@ -8,16 +8,13 @@ namespace Tftp.Net.Transfer.States
 {
     class Sending : StateThatExpectsMessagesFromDefaultEndPoint
     {
-        private readonly Stream input;
         private byte[] lastSentPacket = new byte[512];
         private ushort lastBlockNumber;
         private int bytesSent = 0;
 
-        public Sending(TftpTransfer context, Stream input)
+        public Sending(TftpTransfer context)
             : base(context)
-        {
-            this.input = input;
-        }
+        { }
 
         public override void OnStateEnter()
         {
@@ -50,7 +47,7 @@ namespace Tftp.Net.Transfer.States
         #region Helper Methods
         private void SendNextPacket(ushort blockNumber)
         {
-            int packetLength = input.Read(lastSentPacket, 0, lastSentPacket.Length);
+            int packetLength = Context.InputOutputStream.Read(lastSentPacket, 0, lastSentPacket.Length);
             lastBlockNumber = blockNumber;
 
             if (packetLength != lastSentPacket.Length)
