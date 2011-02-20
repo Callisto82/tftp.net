@@ -16,6 +16,7 @@ namespace Tftp.Net.Transfer.States
         //Called if the user calls TftpTransfer.Start() or TftpTransfer.Cancel()
         void OnStart();
         void OnCancel();
+        void OnTimer();
 
         //Called when a command is received
         void OnCommand(ITftpCommand command, EndPoint endpoint);

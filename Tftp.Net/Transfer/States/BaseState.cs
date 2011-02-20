@@ -32,5 +32,10 @@ namespace Tftp.Net.Transfer.States
         public virtual void OnCommand(ITftpCommand command, EndPoint endpoint)
         {
         }
+
+        public void OnTimer()
+        {
+            //Ignore timer events
+        }
     }
 }

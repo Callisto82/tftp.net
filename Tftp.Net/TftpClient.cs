@@ -27,9 +27,8 @@ namespace Tftp.Net
 
         public ITftpTransfer Send(String filename)
         {
-            throw new NotImplementedException("Remote write requests are not yet supported.");
-            //ITftpChannel channel = TftpChannelFactory.CreateConnection(serverAddress);
-            //return new RemoteReadTransfer(channel, filename);
+            ITftpChannel channel = TftpChannelFactory.CreateConnection(serverAddress);
+            return new RemoteWriteTransfer(channel, filename);
         }
     }
 }

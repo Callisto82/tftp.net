@@ -70,6 +70,7 @@
     <Compile Include="Transfer\States\StartOutgoingRead.cs" />
     <Compile Include="Transfer\States\StartOutgoingWrite.cs" />
     <Compile Include="Transfer\States\StateThatExpectsMessagesFromDefaultEndPoint.cs" />
+    <Compile Include="Transfer\TftpTransferWithTimeout.cs" />
     <Compile Include="Transfer\TftpTransfer.cs" />
     <Compile Include="TftpServer.cs" />
   </ItemGroup>

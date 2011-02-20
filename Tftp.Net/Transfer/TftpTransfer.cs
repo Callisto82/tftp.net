@@ -8,6 +8,7 @@ using System.Net;
 using Tftp.Net.Transfer;
 using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
+using System.Threading;
 
 namespace Tftp.Net.Transfer
 {
@@ -116,7 +117,7 @@ namespace Tftp.Net.Transfer
             }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             lock (this)
             {
