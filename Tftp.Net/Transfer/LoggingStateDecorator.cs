@@ -44,8 +44,15 @@ namespace Tftp.Net.Transfer
 
         public void OnCommand(ITftpCommand command, EndPoint endpoint)
         {
-            Trace.WriteLine(GetStateName() + " OnCommand: " + command);
+            Trace.WriteLine(GetStateName() + " OnCommand: " + command + " from " + endpoint);
             decoratee.OnCommand(command, endpoint);
+        }
+
+
+        public void OnTimer()
+        {
+            Trace.WriteLine(GetStateName() + " OnTimer");
+            decoratee.OnTimer();
         }
     }
 }
