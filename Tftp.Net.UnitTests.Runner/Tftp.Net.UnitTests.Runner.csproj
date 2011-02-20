@@ -48,6 +48,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tftp.Net.UnitTests\Tftp.Net.UnitTests.csproj">
+      <Project>{DA4D3CE2-0495-431B-AEEF-E469DC127D5F}</Project>
+      <Name>Tftp.Net.UnitTests</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

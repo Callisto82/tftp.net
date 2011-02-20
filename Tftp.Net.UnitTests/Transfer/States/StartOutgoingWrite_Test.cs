@@ -6,10 +6,10 @@ using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
 
-namespace Tftp.Net.UnitTests
+namespace Tftp.Net.UnitTests.Transfer.States
 {
     [TestFixture]
-    class StartIncomingReadState_Test
+    class StartOutgoingWrite_Test 
     {
         private TransferStub transfer;
 
@@ -17,14 +17,13 @@ namespace Tftp.Net.UnitTests
         public void Setup()
         {
             transfer = new TransferStub();
-            transfer.SetState(new StartIncomingRead(transfer));
+            transfer.SetState(new StartOutgoingWrite(transfer));
         }
 
         [Test]
         public void CanCancel()
         {
             transfer.Cancel();
-            Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
             Assert.IsInstanceOf<Closed>(transfer.State);
         }
 
@@ -32,14 +31,14 @@ namespace Tftp.Net.UnitTests
         public void IgnoresCommands()
         {
             transfer.OnCommand(new Error(5, "Hallo Welt"));
-            Assert.IsInstanceOf<StartIncomingRead>(transfer.State);
+            Assert.IsInstanceOf<StartOutgoingWrite>(transfer.State);
         }
 
         [Test]
         public void CanStart()
         {
-            transfer.Start(new MemoryStream(new byte[50000]));
-            Assert.IsInstanceOf<Sending>(transfer.State);
+            transfer.Start(new MemoryStream());
+            Assert.IsInstanceOf<StartingOutgoingWrite>(transfer.State);
         }
     }
 }

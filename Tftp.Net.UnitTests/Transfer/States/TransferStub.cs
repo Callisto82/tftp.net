@@ -6,6 +6,7 @@ using Tftp.Net.Transfer;
 using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
 using System.Net;
+using System.IO;
 
 namespace Tftp.Net.UnitTests
 {
@@ -13,6 +14,12 @@ namespace Tftp.Net.UnitTests
     {
         private ChannelStub Channel { get { return (ChannelStub)connection; } }
         public List<ITftpCommand> SentCommands { get { return Channel.SentCommands; } }
+
+        public TransferStub(MemoryStream stream)
+            : base(new ChannelStub(), "dummy.txt") 
+        {
+            base.InputOutputStream = stream;
+        }
 
         public TransferStub()
             : base(new ChannelStub(), "dummy.txt") { }

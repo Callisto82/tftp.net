@@ -11,18 +11,20 @@ namespace Tftp.Net.UnitTests
     [TestFixture]
     class SendReadRequestState_Test
     {
-        [Test]
-        public void CanEnter()
+        private MemoryStream ms;
+        private TransferStub transfer;
+
+        [SetUp]
+        public void Setup()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new SendReadRequest(transfer, new MemoryStream()));
+            ms = new MemoryStream();
+            transfer = new TransferStub(ms);
+            transfer.SetState(new SendReadRequest(transfer));
         }
 
         [Test]
         public void CanCancel()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new SendReadRequest(transfer, new MemoryStream()));
             transfer.Cancel();
             Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
             Assert.IsInstanceOf<Closed>(transfer.State);
@@ -32,9 +34,7 @@ namespace Tftp.Net.UnitTests
         public void HandlesError()
         {
             bool onErrorWasCalled = false;
-            TransferStub transfer = new TransferStub();
             transfer.OnError += delegate(ITftpTransfer t, ushort code, string error) { onErrorWasCalled = true; };
-            transfer.SetState(new SendReadRequest(transfer, new MemoryStream()));
 
             Assert.IsFalse(onErrorWasCalled);
             transfer.OnCommand(new Error(123, "Test Error"));
@@ -45,11 +45,7 @@ namespace Tftp.Net.UnitTests
 
         [Test]
         public void HandlesData()
-        {
-            TransferStub transfer = new TransferStub();
-            MemoryStream ms = new MemoryStream();
-            transfer.SetState(new SendReadRequest(transfer, ms));
-
+        {            
             transfer.OnCommand(new Data(1, new byte[10]));
             Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
             Assert.IsInstanceOf<Closed>(transfer.State);

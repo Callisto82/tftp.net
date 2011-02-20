@@ -11,19 +11,20 @@ namespace Tftp.Net.UnitTests.Transfer.States
     [TestFixture]
     class ReceivingState_Test
     {
-        [Test]
-        public void CanEnter()
+        private MemoryStream ms;
+        private TransferStub transfer;
+
+        [SetUp]
+        public void Setup()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new Receiving(transfer, new MemoryStream()));
+            ms = new MemoryStream();
+            transfer = new TransferStub(ms);
+            transfer.SetState(new Receiving(transfer));
         }
 
         [Test]
         public void ReceivesPacket()
         {
-            TransferStub transfer = new TransferStub();
-            MemoryStream ms = new MemoryStream();
-            transfer.SetState(new Receiving(transfer, ms));
             transfer.OnCommand(new Data(1, new byte[100]));
             Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
             Assert.AreEqual(100, ms.Length);
@@ -32,8 +33,6 @@ namespace Tftp.Net.UnitTests.Transfer.States
         [Test]
         public void SendsAcknowledgement()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new Receiving(transfer, new MemoryStream()));
             transfer.OnCommand(new Data(1, new byte[100]));
             Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
         }
@@ -41,9 +40,6 @@ namespace Tftp.Net.UnitTests.Transfer.States
         [Test]
         public void IgnoresWrongPackets()
         {
-            TransferStub transfer = new TransferStub();
-            MemoryStream ms = new MemoryStream();
-            transfer.SetState(new Receiving(transfer, ms));
             transfer.OnCommand(new Data(2, new byte[100]));
             Assert.IsFalse(transfer.CommandWasSent(typeof(Acknowledgement)));
             Assert.AreEqual(0, ms.Length);
@@ -53,8 +49,6 @@ namespace Tftp.Net.UnitTests.Transfer.States
         public void RaisesFinished()
         {
             bool onFinishedWasCalled = false;
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new Receiving(transfer, new MemoryStream()));
             transfer.OnFinished += delegate(ITftpTransfer t) { Assert.AreEqual(transfer, t); onFinishedWasCalled = true; };
 
             Assert.IsFalse(onFinishedWasCalled);
@@ -68,8 +62,6 @@ namespace Tftp.Net.UnitTests.Transfer.States
         public void RaisesProgress()
         {
             bool onProgressWasCalled = false;
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new Receiving(transfer, new MemoryStream()));
             transfer.OnProgress += delegate(ITftpTransfer t, int bytesTransferred) { Assert.AreEqual(transfer, t); Assert.IsTrue(bytesTransferred > 0); onProgressWasCalled = true; };
 
             Assert.IsFalse(onProgressWasCalled);
@@ -81,8 +73,6 @@ namespace Tftp.Net.UnitTests.Transfer.States
         [Test]
         public void CanCancel()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new Receiving(transfer, new MemoryStream()));
             transfer.Cancel();
             Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
             Assert.IsInstanceOf<Closed>(transfer.State);
@@ -92,8 +82,6 @@ namespace Tftp.Net.UnitTests.Transfer.States
         public void HandlesError()
         {
             bool onErrorWasCalled = false;
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new Receiving(transfer, new MemoryStream(new byte[5000])));
             transfer.OnError += delegate(ITftpTransfer t, ushort code, string error) { onErrorWasCalled = true; };
 
             Assert.IsFalse(onErrorWasCalled);
