@@ -11,18 +11,18 @@ namespace Tftp.Net.UnitTests
     [TestFixture]
     class StartOutgoingRead_Test
     {
-        [Test]
-        public void CanEnter()
+        private TransferStub transfer;
+
+        [SetUp]
+        public void Setup()
         {
-            TransferStub transfer = new TransferStub();
+            transfer = new TransferStub();
             transfer.SetState(new StartOutgoingRead(transfer));
         }
 
         [Test]
         public void CanCancel()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new StartOutgoingRead(transfer));
             transfer.Cancel();
             Assert.IsInstanceOf<Closed>(transfer.State);
         }
@@ -30,8 +30,6 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void IgnoresCommands()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new StartOutgoingRead(transfer));
             transfer.OnCommand(new Error(5, "Hallo Welt"));
             Assert.IsInstanceOf<StartOutgoingRead>(transfer.State);
         }
@@ -39,10 +37,7 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void CanStart()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new StartOutgoingRead(transfer));
             transfer.Start(new MemoryStream());
-
             Assert.IsTrue(transfer.CommandWasSent(typeof(ReadRequest)));
             Assert.IsInstanceOf<SendReadRequest>(transfer.State);
         }

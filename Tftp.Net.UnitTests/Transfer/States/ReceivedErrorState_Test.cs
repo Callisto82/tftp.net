@@ -10,10 +10,12 @@ namespace Tftp.Net.UnitTests
     [TestFixture]
     class ReceivedErrorState_Test
     {
-        [Test]
-        public void CanEnter()
+        private TransferStub transfer;
+
+        [SetUp]
+        public void Setup()
         {
-            TransferStub transfer = new TransferStub();
+            transfer = new TransferStub();
             transfer.SetState(new ReceivedError(transfer, 123, "Error"));
         }
 
@@ -38,8 +40,6 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void TransitionsToClosed()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new ReceivedError(transfer, 123, "My Error"));
             Assert.IsInstanceOf<Closed>(transfer.State);
         }
     }

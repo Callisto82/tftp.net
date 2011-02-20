@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net.UnitTests", "Tftp.
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net.UnitTests.Runner", "Tftp.Net.UnitTests.Runner\Tftp.Net.UnitTests.Runner.csproj", "{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3F0DE15-AC97-428D-830C-4F9721EE3627} = {A3F0DE15-AC97-428D-830C-4F9721EE3627}
+		{DA4D3CE2-0495-431B-AEEF-E469DC127D5F} = {DA4D3CE2-0495-431B-AEEF-E469DC127D5F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net.SampleServer", "Tftp.Net.SampleServer\Tftp.Net.SampleServer.csproj", "{43947662-85F3-4577-81D8-096323FE8345}"
 EndProject

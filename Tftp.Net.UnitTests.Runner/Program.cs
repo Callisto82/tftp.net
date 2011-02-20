@@ -29,9 +29,9 @@ namespace Tftp.Net.UnitTests.Runner
             nunitDomain.ExecuteAssembly(Path.Combine(NUNIT_FOLDER, NUNIT_EXE),
                 new string[] { Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    @"..\..\..\Tftp.Net.UnitTests\bin\Debug\Tftp.Net.UnitTests.dll") });
+                    @"Tftp.Net.UnitTests.dll") });
 #else
-#error Unit tests are currently only run for the Debug release (it's hard-coded in the path above).
+#error Unit tests are currently only run for the Debug release.
 #endif
         }
 

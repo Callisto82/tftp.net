@@ -10,26 +10,24 @@ namespace Tftp.Net.UnitTests
     [TestFixture]
     class CancelledByUserState_Test
     {
-        [Test]
-        public void CanEnter()
+        private TransferStub transfer;
+
+        [SetUp]
+        public void Setup()
         {
-            TransferStub transfer = new TransferStub();
+            transfer = new TransferStub();
             transfer.SetState(new CancelledByUser(transfer));
         }
 
         [Test]
         public void SendsErrorToClient()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new CancelledByUser(transfer));
             Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
         }
 
         [Test]
         public void TransitionsToClosedState()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new CancelledByUser(transfer));
             Assert.IsInstanceOf<Closed>(transfer.State);
         }
     }

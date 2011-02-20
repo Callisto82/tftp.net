@@ -11,18 +11,18 @@ namespace Tftp.Net.UnitTests.Transfer.States
     [TestFixture]
     class StartIncomingWriteState_Test
     {
-        [Test]
-        public void CanEnter()
+        private TransferStub transfer;
+
+        [SetUp]
+        public void Setup()
         {
-            TransferStub transfer = new TransferStub();
+            transfer = new TransferStub();
             transfer.SetState(new StartIncomingWrite(transfer));
         }
 
         [Test]
         public void CanCancel()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new StartIncomingWrite(transfer));
             transfer.Cancel();
             Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
             Assert.IsInstanceOf<Closed>(transfer.State);
@@ -31,8 +31,6 @@ namespace Tftp.Net.UnitTests.Transfer.States
         [Test]
         public void IgnoresCommands()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new StartIncomingWrite(transfer));
             transfer.OnCommand(new Error(5, "Hallo Welt"));
             Assert.IsInstanceOf<StartIncomingWrite>(transfer.State);
         }
@@ -40,8 +38,6 @@ namespace Tftp.Net.UnitTests.Transfer.States
         [Test]
         public void CanStart()
         {
-            TransferStub transfer = new TransferStub();
-            transfer.SetState(new StartIncomingWrite(transfer));
             transfer.Start(new MemoryStream(new byte[50000]));
 
             Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
