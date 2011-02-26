@@ -51,6 +51,26 @@ namespace Tftp.Net.UnitTests
         }
 
         [Test]
+        public void HandlesOptionAcknowledgement()
+        {
+            transfer.Options.Add("blub", "bla");
+            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
+            transfer.OnCommand(new OptionAcknowledgement(transfer.Options));
+            Assert.IsTrue(transfer.Options.First().IsAcknowledged);
+            Assert.IsInstanceOf<Sending>(transfer.State);
+        }
+
+        [Test]
+        public void HandlesMissingOptionAcknowledgement()
+        {
+            transfer.Options.Add("blub", "bla");
+            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
+            transfer.OnCommand(new Acknowledgement(0));
+            Assert.AreEqual(0, transfer.Options.Count());
+            Assert.IsInstanceOf<Sending>(transfer.State);
+        }
+
+        [Test]
         public void HandlesError()
         {
             bool onErrorWasCalled = false;

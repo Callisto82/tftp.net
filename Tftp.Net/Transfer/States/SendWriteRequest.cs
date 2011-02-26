@@ -37,10 +37,19 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnCommand(ITftpCommand command, System.Net.EndPoint endpoint)
         {
-            if (command is Acknowledgement && (command as Acknowledgement).BlockNumber == 0)
+            if (command is OptionAcknowledgement)
+            {
+                OptionAcknowledgement ackCommand = (OptionAcknowledgement)command;
+                Context.SetOptionsAcknowledged(ackCommand.Options);
+            }
+
+            if (command is OptionAcknowledgement || (command is Acknowledgement && (command as Acknowledgement).BlockNumber == 0))
             {
                 //Switch to the endpoint that we received from the server
                 Context.GetConnection().RemoteEndpoint = endpoint;
+
+                //Handle transfer options
+                Context.RemoveOptionsThatWereNotAcknowledged();
 
                 //Start sending packets
                 Context.SetState(new Sending(Context));
