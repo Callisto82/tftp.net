@@ -10,21 +10,36 @@ using Tftp.Net.Transfer;
 namespace Tftp.Net
 {
     public delegate void TftpServerEventHandler(ITftpTransfer transfer, EndPoint client);
+
+    /// <summary>
+    /// A simple TFTP server class
+    /// </summary>
     public class TftpServer : IDisposable
     {
+        /// <summary>
+        /// Fired when the server receives a new read request.
+        /// </summary>
         public event TftpServerEventHandler OnReadRequest;
+
+        /// <summary>
+        /// Fired when the server receives a new write request.
+        /// </summary>
         public event TftpServerEventHandler OnWriteRequest;
 
+        /// <summary>
+        /// Server port that we're listening on.
+        /// </summary>
         private readonly ITftpChannel serverSocket;
-        private readonly IPEndPoint localAddress;
 
         public TftpServer(IPEndPoint localAddress)
         {
-            this.localAddress = localAddress;
             serverSocket = TftpChannelFactory.CreateServer(localAddress);
             serverSocket.OnCommandReceived += new TftpCommandHandler(serverSocket_OnCommandReceived);
         }
 
+        /// <summary>
+        /// Start accepting incoming connections.
+        /// </summary>
         public void Start()
         {
             serverSocket.Open();
@@ -41,7 +56,7 @@ namespace Tftp.Net
 
             //Create a wrapper for the transfer request
             ReadOrWriteRequest request = (ReadOrWriteRequest)command;
-            ITftpTransfer transfer = request is ReadRequest ? (ITftpTransfer)new LocalReadTransfer(channel, request.Filename) : new LocalWriteTransfer(channel, request.Filename);
+            ITftpTransfer transfer = request is ReadRequest ? (ITftpTransfer)new LocalReadTransfer(channel, request.Filename, request.Options) : new LocalWriteTransfer(channel, request.Filename, request.Options);
 
             if (command is ReadRequest)
                 RaiseOnReadRequest(transfer, endpoint);
@@ -51,10 +66,12 @@ namespace Tftp.Net
                 throw new Exception("Unexpected tftp transfer request: " + command);
         }
 
+        #region IDisposable
         public void Dispose()
         {
             serverSocket.Dispose();
         }
+        #endregion
 
         private void RaiseOnWriteRequest(ITftpTransfer transfer, EndPoint client)
         {

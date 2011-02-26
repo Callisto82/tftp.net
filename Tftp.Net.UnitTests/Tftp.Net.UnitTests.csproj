@@ -52,6 +52,7 @@
     <Compile Include="Commands\TftpStreamReader_Test.cs" />
     <Compile Include="Commands\TftpStreamWriter_Test.cs" />
     <Compile Include="Channel\UdpChannel_Test.cs" />
+    <Compile Include="Transfer\SimpleTimer_Test.cs" />
     <Compile Include="Transfer\States\CancelledByUserState_Test.cs" />
     <Compile Include="Transfer\States\ClosedState_Test.cs" />
     <Compile Include="Transfer\States\ReceivedErrorState_Test.cs" />
@@ -61,7 +62,7 @@
     <Compile Include="Transfer\States\SentLastPacketState_Test.cs" />
     <Compile Include="Transfer\States\StartIncomingReadState_Test.cs" />
     <Compile Include="Transfer\States\StartIncomingWriteState_Test.cs" />
-    <Compile Include="Transfer\States\StartingOutgoingWrite_Test.cs" />
+    <Compile Include="Transfer\States\SendWriteRequest_Test.cs" />
     <Compile Include="Transfer\States\StartOutgoingRead_Test.cs" />
     <Compile Include="Transfer\States\StartOutgoingWrite_Test.cs" />
     <Compile Include="Transfer\States\TransferStub.cs" />

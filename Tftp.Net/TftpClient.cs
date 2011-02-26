@@ -10,24 +10,39 @@ using Tftp.Net.Transfer;
 
 namespace Tftp.Net
 {
+    /// <summary>
+    /// A TFTP client that can connect to a TFTP server.
+    /// </summary>
     public class TftpClient
     {
-        private readonly IPEndPoint serverAddress;
+        private readonly IPEndPoint remoteAddress;
 
-        public TftpClient(IPEndPoint serverAddress)
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        /// <param name="remoteAddress">Address of the server that you would like to connect to.</param>
+        public TftpClient(IPEndPoint remoteAddress)
         {
-            this.serverAddress = serverAddress;
+            this.remoteAddress = remoteAddress;
         }
 
+        /// <summary>
+        /// GET (receive) a file from the server.
+        /// You have to call start on the returned ITftpTransfer to start the transfer.
+        /// </summary>
         public ITftpTransfer Receive(String filename)
         {
-            ITftpChannel channel = TftpChannelFactory.CreateConnection(serverAddress);
+            ITftpChannel channel = TftpChannelFactory.CreateConnection(remoteAddress);
             return new RemoteReadTransfer(channel, filename);
         }
 
+        /// <summary>
+        /// PUT (write) a file from the server.
+        /// You have to call start on the returned ITftpTransfer to start the transfer.
+        /// </summary>
         public ITftpTransfer Send(String filename)
         {
-            ITftpChannel channel = TftpChannelFactory.CreateConnection(serverAddress);
+            ITftpChannel channel = TftpChannelFactory.CreateConnection(remoteAddress);
             return new RemoteWriteTransfer(channel, filename);
         }
     }

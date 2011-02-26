@@ -13,7 +13,7 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnStart()
         {
-            Context.SetState(new StartingOutgoingWrite(Context));
+            Context.SetState(new SendWriteRequest(Context));
         }
 
         public override void OnCancel()

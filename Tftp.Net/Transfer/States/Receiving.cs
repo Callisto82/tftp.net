@@ -8,6 +8,7 @@ namespace Tftp.Net.Transfer.States
 {
     class Receiving : StateThatExpectsMessagesFromDefaultEndPoint
     {
+        private readonly int blockSize;
         private ushort nextBlockNumber;
         private int bytesReceived = 0;
 
@@ -15,6 +16,7 @@ namespace Tftp.Net.Transfer.States
             : base(context)
         {
             this.nextBlockNumber = 1;
+            this.blockSize = context.BlockSize;
         }
 
         public override void OnData(Data command)
@@ -26,7 +28,7 @@ namespace Tftp.Net.Transfer.States
                 SendAcknowledgement(command.BlockNumber);
 
                 //Was that the last block of data?
-                if (command.Bytes.Length < 512)
+                if (command.Bytes.Length < blockSize)
                 {
                     Context.RaiseOnFinished();
                     Context.SetState(new Closed(Context));

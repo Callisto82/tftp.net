@@ -14,24 +14,21 @@ namespace Tftp.Net.Transfer
 {
     class TftpTransfer : ITftpTransfer
     {
+        private const int DEFAULT_BLOCKSIZE = 512;
         protected ITftpState state;
         protected readonly ITftpChannel connection;
 
         public Stream InputOutputStream { get; protected set; }
 
         public TftpTransfer(ITftpChannel connection, String filename)
-            : this(connection, filename, null) { }
-
-        public TftpTransfer(ITftpChannel connection, String filename, ITftpState initialState)
         {
             if (connection == null)
                 throw new ArgumentNullException("connection");
 
             this.Filename = filename;
             this.state = null;
-
-            if (initialState != null)
-                SetState(initialState);
+            this.OptionsBackend = new TransferOptions();
+            this.Options = OptionsBackend;
 
             this.connection = connection;
             this.connection.OnCommandReceived += new TftpCommandHandler(connection_OnCommandReceived);
@@ -91,6 +88,9 @@ namespace Tftp.Net.Transfer
         public event TftpErrorHandler OnError;
 
         public object UserContext { get; set; }
+        public TimeSpan Timeout { get; set; }
+        public TransferOptions OptionsBackend { get; private set; }
+        public ITftpTransferOptions Options { get; protected set; }
         public string Filename { get; private set; }
 
         public void Start(Stream data)
@@ -117,11 +117,30 @@ namespace Tftp.Net.Transfer
             }
         }
 
+        private int GetBlockSize()
+        {
+            return DEFAULT_BLOCKSIZE;
+        }
+
+        public int BlockSize
+        {
+            get { return GetBlockSize(); }
+        }
+
+        public virtual TftpTransferMode TransferMode { get;  set; }
+
         public virtual void Dispose()
         {
             lock (this)
             {
                 Cancel();
+
+                if (InputOutputStream != null)
+                {
+                    InputOutputStream.Close();
+                    InputOutputStream = null;
+                }
+
                 connection.Dispose();
             }
         }

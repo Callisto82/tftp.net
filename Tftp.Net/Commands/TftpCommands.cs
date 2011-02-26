@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Tftp.Net.Transfer;
 
 namespace Tftp.Net
 {
@@ -12,13 +13,6 @@ namespace Tftp.Net
         void Write(TftpStreamWriter writer);
     }
 
-    enum TftpModeType
-    {
-        netascii,
-        octet,
-        mail
-    }
-
     interface ITftpCommandVisitor
     {
         void OnReadRequest(ReadRequest command);
@@ -26,6 +20,7 @@ namespace Tftp.Net
         void OnData(Data command);
         void OnAcknowledgement(Acknowledgement command);
         void OnError(Error command);
+        void OnOptionAcknowledgement(OptionAcknowledgement command);
     }
 
     abstract class ReadOrWriteRequest
@@ -33,13 +28,15 @@ namespace Tftp.Net
         private readonly ushort opCode;
 
         public String Filename { get; private set; }
-        public TftpModeType Mode { get; private set; }
+        public TftpTransferMode Mode { get; private set; }
+        public IEnumerable<TftpTransferOption> Options { get; private set; }
 
-        protected ReadOrWriteRequest(ushort opCode, String filename, TftpModeType mode)
+        protected ReadOrWriteRequest(ushort opCode, String filename, TftpTransferMode mode, IEnumerable<TftpTransferOption> options)
         {
             this.opCode = opCode;
             this.Filename = filename;
             this.Mode = mode;
+            this.Options = options;
         }
 
         public void Write(TftpStreamWriter writer)
@@ -49,6 +46,17 @@ namespace Tftp.Net
             writer.WriteByte(0);
             writer.WriteBytes(Encoding.ASCII.GetBytes(Mode.ToString()));
             writer.WriteByte(0);
+
+            if (Options != null)
+            {
+                foreach (TftpTransferOption option in Options)
+                {
+                    writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
+                    writer.WriteByte(0);
+                    writer.WriteBytes(Encoding.ASCII.GetBytes(option.Value));
+                    writer.WriteByte(0);
+                }
+            }
         }
     }
 
@@ -56,8 +64,8 @@ namespace Tftp.Net
     {
         public const ushort OpCode = 1;
 
-        public ReadRequest(String filename, TftpModeType mode)
-            : base(OpCode, filename, mode) { }
+        public ReadRequest(String filename, TftpTransferMode mode, IEnumerable<TftpTransferOption> options)
+            : base(OpCode, filename, mode, options) { }
 
         public void Visit(ITftpCommandVisitor visitor)
         {
@@ -69,8 +77,8 @@ namespace Tftp.Net
     {
         public const ushort OpCode = 2;
 
-        public WriteRequest(String filename, TftpModeType mode)
-            : base(OpCode, filename, mode) { }
+        public WriteRequest(String filename, TftpTransferMode mode, IEnumerable<TftpTransferOption> options)
+            : base(OpCode, filename, mode, options) { }
 
         public void Visit(ITftpCommandVisitor visitor)
         {
@@ -151,6 +159,35 @@ namespace Tftp.Net
             writer.WriteUInt16(ErrorCode);
             writer.WriteBytes(Encoding.ASCII.GetBytes(Message));
             writer.WriteByte(0);
+        }
+    }
+
+    class OptionAcknowledgement : ITftpCommand
+    {
+        public const ushort OpCode = 6;
+        public IEnumerable<TftpTransferOption> Options { get; private set; }
+
+        public OptionAcknowledgement(IEnumerable<TftpTransferOption> options)
+        {
+            this.Options = options;
+        }
+
+        public void Visit(ITftpCommandVisitor visitor)
+        {
+            visitor.OnOptionAcknowledgement(this);
+        }
+
+        public void Write(TftpStreamWriter writer)
+        {
+            writer.WriteUInt16(OpCode);
+
+            foreach (TftpTransferOption option in Options)
+            {
+                writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
+                writer.WriteByte(0);
+                writer.WriteBytes(Encoding.ASCII.GetBytes(option.Value));
+                writer.WriteByte(0);
+            }
         }
     }
 }

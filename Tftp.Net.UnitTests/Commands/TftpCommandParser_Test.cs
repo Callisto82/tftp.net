@@ -46,7 +46,7 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void ParseReadRequest()
         {
-            ReadRequest original = new ReadRequest("Hallo Welt.txt", TftpModeType.netascii);
+            ReadRequest original = new ReadRequest("Hallo Welt.txt", TftpTransferMode.netascii, null);
             TftpCommandParser parser = new TftpCommandParser();
 
             ReadRequest parsed = (ReadRequest)parser.Parse(CommandToBytes(original));
@@ -57,7 +57,7 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void ParseWriteRequest()
         {
-            WriteRequest original = new WriteRequest("Hallo Welt.txt", TftpModeType.netascii);
+            WriteRequest original = new WriteRequest("Hallo Welt.txt", TftpTransferMode.netascii, null);
             TftpCommandParser parser = new TftpCommandParser();
 
             WriteRequest parsed = (WriteRequest)parser.Parse(CommandToBytes(original));

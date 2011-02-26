@@ -27,17 +27,17 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void CreateReadRequest()
         {
-            ReadRequest command = new ReadRequest(@"C:\bla\blub.txt", TftpModeType.octet);
+            ReadRequest command = new ReadRequest(@"C:\bla\blub.txt", TftpTransferMode.octet, null);
             Assert.AreEqual(command.Filename, @"C:\bla\blub.txt");
-            Assert.AreEqual(command.Mode, TftpModeType.octet);
+            Assert.AreEqual(command.Mode, TftpTransferMode.octet);
         }
 
         [Test]
         public void CreateWriteRequest()
         {
-            WriteRequest command = new WriteRequest(@"C:\bla\blub.txt", TftpModeType.octet);
+            WriteRequest command = new WriteRequest(@"C:\bla\blub.txt", TftpTransferMode.octet, null);
             Assert.AreEqual(command.Filename, @"C:\bla\blub.txt");
-            Assert.AreEqual(command.Mode, TftpModeType.octet);
+            Assert.AreEqual(command.Mode, TftpTransferMode.octet);
         }
 
         [Test]

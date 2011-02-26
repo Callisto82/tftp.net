@@ -8,17 +8,32 @@ namespace Tftp.Net.Transfer.States
 {
     class Sending : StateThatExpectsMessagesFromDefaultEndPoint
     {
-        private byte[] lastSentPacket = new byte[512];
+        private readonly SimpleTimer timer;
+        private byte[] lastSentPacket;
         private ushort lastBlockNumber;
         private int bytesSent = 0;
 
         public Sending(TftpTransfer context)
             : base(context)
-        { }
+        {
+            timer = new SimpleTimer(context.Timeout);
+            lastSentPacket = new byte[context.BlockSize];
+        }
+
+        public override void OnTimer()
+        {
+            if (timer.IsTimeout())
+            {
+                //We didn't get an acknowledgement in time. Re-send the last data packet
+                SendPacket(lastBlockNumber, lastSentPacket);
+                timer.Restart();
+            }
+        }
 
         public override void OnStateEnter()
         {
  	         SendNextPacket(1);
+             timer.Restart();
         }
 
         public override void OnAcknowledgement(Acknowledgement command)
@@ -31,7 +46,8 @@ namespace Tftp.Net.Transfer.States
             bytesSent += lastSentPacket.Length;
             Context.RaiseOnProgress(bytesSent);
 
-            SendNextPacket(++lastBlockNumber);
+            SendNextPacket((ushort)(lastBlockNumber + 1));
+            timer.Restart();
         }
 
         public override void OnError(Error command)
@@ -60,9 +76,9 @@ namespace Tftp.Net.Transfer.States
             SendPacket(blockNumber, lastSentPacket);
         }
 
-        private void SendPacket(ushort blockNumber, byte[] lastSentPacket)
+        private void SendPacket(ushort blockNumber, byte[] data)
         {
-            ITftpCommand dataCommand = new Data(blockNumber, lastSentPacket);
+            ITftpCommand dataCommand = new Data(blockNumber, data);
             Context.GetConnection().Send(dataCommand);
         }
         #endregion

@@ -38,7 +38,7 @@ namespace Tftp.Net.UnitTests.Transfer.States
         public void CanStart()
         {
             transfer.Start(new MemoryStream());
-            Assert.IsInstanceOf<StartingOutgoingWrite>(transfer.State);
+            Assert.IsInstanceOf<SendWriteRequest>(transfer.State);
         }
     }
 }

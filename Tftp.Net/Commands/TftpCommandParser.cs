@@ -47,10 +47,19 @@ namespace Tftp.Net
                     case Error.OpCode:
                         return ParseError(reader);
 
+                    case OptionAcknowledgement.OpCode:
+                        return ParseOptionAcknowledgement(reader);
+
                     default:
                         throw new TftpParserException("Invalid opcode");
                 }
             }
+        }
+
+        private OptionAcknowledgement ParseOptionAcknowledgement(TftpStreamReader reader)
+        {
+            IEnumerable<TftpTransferOption> options = ParseTransferOptions(reader);
+            return new OptionAcknowledgement(options);
         }
 
         private Error ParseError(TftpStreamReader reader)
@@ -76,22 +85,50 @@ namespace Tftp.Net
         private WriteRequest ParseWriteRequest(TftpStreamReader reader)
         {
             String filename = ParseNullTerminatedString(reader);
-            TftpModeType mode = ParseModeType(ParseNullTerminatedString(reader));
-            return new WriteRequest(filename, mode);
+            TftpTransferMode mode = ParseModeType(ParseNullTerminatedString(reader));
+            IEnumerable<TftpTransferOption> options = ParseTransferOptions(reader);
+            return new WriteRequest(filename, mode, options);
         }
 
         private ReadRequest ParseReadRequest(TftpStreamReader reader)
         {
             String filename = ParseNullTerminatedString(reader);
-            TftpModeType mode = ParseModeType(ParseNullTerminatedString(reader));
-            return new ReadRequest(filename, mode);
+            TftpTransferMode mode = ParseModeType(ParseNullTerminatedString(reader));
+            IEnumerable<TftpTransferOption> options = ParseTransferOptions(reader);
+            return new ReadRequest(filename, mode, options);
+        }
+
+        private IEnumerable<TftpTransferOption> ParseTransferOptions(TftpStreamReader reader)
+        {
+            List<TftpTransferOption> options = new List<TftpTransferOption>();
+
+            while (true)
+            {
+                String name;
+
+                try
+                {
+                    name = ParseNullTerminatedString(reader);
+                }
+                catch (IOException)
+                {
+                    name = "";
+                }
+
+                if (name.Length == 0)
+                    break;
+
+                string value = ParseNullTerminatedString(reader);
+                options.Add(new TftpTransferOption(name, value));
+            }
+            return options;
         }
 
         private String ParseNullTerminatedString(TftpStreamReader reader)
         {
             byte b;
             StringBuilder str = new StringBuilder();
-            while ((b = reader.ReadByte()) != 0)
+            while ((b = reader.ReadByte()) > 0)
             {
                 str.Append((char)b);
             }
@@ -99,18 +136,18 @@ namespace Tftp.Net
             return str.ToString();
         }
 
-        private TftpModeType ParseModeType(String mode)
+        private TftpTransferMode ParseModeType(String mode)
         {
             mode = mode.ToLowerInvariant();
 
             if (mode == "netascii")
-                return TftpModeType.netascii;
+                return TftpTransferMode.netascii;
 
             if (mode == "mail")
-                return TftpModeType.mail;
+                return TftpTransferMode.mail;
 
             if (mode == "octet")
-                return TftpModeType.octet;
+                return TftpTransferMode.octet;
 
             throw new TftpParserException("Unknown mode type: " + mode);
         }

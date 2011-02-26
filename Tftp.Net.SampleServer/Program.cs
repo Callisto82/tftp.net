@@ -32,13 +32,21 @@ namespace Tftp.Net.SampleServer
         static void server_OnWriteRequest(ITftpTransfer transfer, EndPoint client)
         {
             Console.WriteLine("[" + transfer.Filename + "] Write request from "+ client + " for " + transfer.Filename);
+            DumpOptions(transfer);
             Console.WriteLine("[" + transfer.Filename + "] Denying request.");
             transfer.Cancel();
+        }
+
+        static void DumpOptions(ITftpTransfer transfer)
+        {
+            foreach(TftpTransferOption option in transfer.Options)
+                Console.WriteLine("[" + transfer.Filename + "] Option request: " + option.Name + "=" + option.Value);
         }
 
         static void server_OnReadRequest(ITftpTransfer transfer, EndPoint client)
         {
             Console.WriteLine("[" + transfer.Filename + "] Read request from " + client + " for " + transfer.Filename);
+            DumpOptions(transfer);
 
             String path = Path.Combine(ServerDirectory, transfer.Filename);
             FileInfo file = new FileInfo(path);

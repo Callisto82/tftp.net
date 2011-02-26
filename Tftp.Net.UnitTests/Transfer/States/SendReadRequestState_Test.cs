@@ -51,5 +51,26 @@ namespace Tftp.Net.UnitTests
             Assert.IsInstanceOf<Closed>(transfer.State);
             Assert.AreEqual(10, ms.Length);
         }
+
+
+        [Test]
+        public void SendsRequest()
+        {
+            Assert.IsTrue(transfer.CommandWasSent(typeof(ReadRequest)));
+        }
+
+        [Test]
+        public void ResendsRequest()
+        {
+            TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream());
+            transferWithLowTimeout.Timeout = new TimeSpan(0);
+            transferWithLowTimeout.SetState(new SendReadRequest(transferWithLowTimeout));
+
+            Assert.IsTrue(transferWithLowTimeout.CommandWasSent(typeof(ReadRequest)));
+            transferWithLowTimeout.SentCommands.Clear();
+
+            transferWithLowTimeout.OnTimer();
+            Assert.IsTrue(transferWithLowTimeout.CommandWasSent(typeof(ReadRequest)));
+        }
     }
 }
