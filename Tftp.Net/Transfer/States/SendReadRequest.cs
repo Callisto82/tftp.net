@@ -10,14 +10,32 @@ namespace Tftp.Net.Transfer.States
 {
     class SendReadRequest : BaseState
     {
+        private readonly SimpleTimer timer;
+
         public SendReadRequest(TftpTransfer context)
-            : base(context) { }
+            : base(context) 
+        {
+            timer = new SimpleTimer(Context.Timeout);
+        }
 
         public override void OnStateEnter()
         {
             //Send a read request to the server
-            ReadRequest request = new ReadRequest(Context.Filename, TftpModeType.octet);
+            SendRequest();
+        }
+
+        private void SendRequest()
+        {
+            ReadRequest request = new ReadRequest(Context.Filename, Context.TransferMode, Context.Options);
             Context.GetConnection().Send(request);
+            timer.Restart();
+        }
+
+        public override void OnTimer()
+        {
+            //Re-send the read request
+            if (timer.IsTimeout())
+                SendRequest();
         }
 
         public override void OnCommand(ITftpCommand command, EndPoint endpoint)
@@ -26,7 +44,7 @@ namespace Tftp.Net.Transfer.States
             {
                 //The server acknowledged our read request.
                 //Fix out remote endpoint
-                Context.GetConnection().SetRemoteEndPoint(endpoint);
+                Context.GetConnection().RemoteEndpoint = endpoint;
 
                 //Switch to the receiving state...
                 ITftpState nextState = new Receiving(Context);

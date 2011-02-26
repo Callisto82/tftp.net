@@ -27,6 +27,20 @@ namespace Tftp.Net.UnitTests.Transfer.States
         }
 
         [Test]
+        public void ResendsPacket()
+        {
+            TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream(new byte[5000]));
+            transferWithLowTimeout.Timeout = new TimeSpan(0);
+            transferWithLowTimeout.SetState(new Sending(transferWithLowTimeout));
+
+            Assert.IsTrue(transferWithLowTimeout.CommandWasSent(typeof(Data)));
+            transferWithLowTimeout.SentCommands.Clear();
+
+            transferWithLowTimeout.OnTimer();
+            Assert.IsTrue(transferWithLowTimeout.CommandWasSent(typeof(Data)));
+        }
+
+        [Test]
         public void HandlesAcknowledgment()
         {
             transfer.SentCommands.Clear();

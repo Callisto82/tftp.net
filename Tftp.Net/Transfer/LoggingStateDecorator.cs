@@ -48,7 +48,6 @@ namespace Tftp.Net.Transfer
             decoratee.OnCommand(command, endpoint);
         }
 
-
         public void OnTimer()
         {
             Trace.WriteLine(GetStateName() + " OnTimer");

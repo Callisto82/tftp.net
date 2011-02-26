@@ -45,14 +45,19 @@
     <Compile Include="Commands\TftpStreamReader.cs" />
     <Compile Include="Commands\TftpStreamWriter.cs" />
     <Compile Include="TftpClient.cs" />
+    <Compile Include="ITftpTransferOptions.cs" />
     <Compile Include="Transfer\LocalReadTransfer.cs" />
     <Compile Include="Transfer\LocalWriteTransfer.cs" />
     <Compile Include="Transfer\RemoteReadTransfer.cs" />
     <Compile Include="Transfer\RemoteWriteTransfer.cs" />
+    <Compile Include="Transfer\States\AcknowledgeWriteRequest.cs" />
+    <Compile Include="Transfer\States\SendOptionAcknowledgementBase.cs" />
+    <Compile Include="Transfer\States\SendOptionAcknowledgementForReadRequest.cs" />
     <Compile Include="Transfer\States\BaseState.cs" />
     <Compile Include="Transfer\States\ITftpState.cs" />
     <Compile Include="ITftpTransfer.cs" />
     <Compile Include="Transfer\LoggingStateDecorator.cs" />
+    <Compile Include="Transfer\States\SendOptionAcknowledgementForWriteRequest.cs" />
     <Compile Include="Transfer\States\SendReadRequest.cs" />
     <Compile Include="Transfer\States\SentLastPacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,13 +71,15 @@
     <Compile Include="Commands\TftpCommands.cs" />
     <Compile Include="Channel\UdpChannel.cs" />
     <Compile Include="Commands\TftpCommandParser.cs" />
-    <Compile Include="Transfer\States\StartingOutgoingWrite.cs" />
+    <Compile Include="Transfer\States\SendWriteRequest.cs" />
     <Compile Include="Transfer\States\StartOutgoingRead.cs" />
     <Compile Include="Transfer\States\StartOutgoingWrite.cs" />
     <Compile Include="Transfer\States\StateThatExpectsMessagesFromDefaultEndPoint.cs" />
-    <Compile Include="Transfer\TftpTransferWithTimeout.cs" />
+    <Compile Include="Transfer\SimpleTimer.cs" />
     <Compile Include="Transfer\TftpTransfer.cs" />
     <Compile Include="TftpServer.cs" />
+    <Compile Include="Transfer\TransferOptions.cs" />
+    <Compile Include="Transfer\TransferWithTimeout.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

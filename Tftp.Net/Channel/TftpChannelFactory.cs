@@ -37,7 +37,7 @@ namespace Tftp.Net.Channel
         {
             IPEndPoint localAddress = new IPEndPoint(IPAddress.Any, 0);
             UdpChannel channel = new UdpChannel(new UdpClient(localAddress));
-            channel.SetRemoteEndPoint(remoteAddress);
+            channel.RemoteEndpoint = remoteAddress;
             return channel;
         }
         #endregion

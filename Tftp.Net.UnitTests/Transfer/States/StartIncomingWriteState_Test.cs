@@ -41,7 +41,18 @@ namespace Tftp.Net.UnitTests.Transfer.States
             transfer.Start(new MemoryStream(new byte[50000]));
 
             Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
-            Assert.IsInstanceOf<Receiving>(transfer.State);
+            Assert.IsInstanceOf<AcknowledgeWriteRequest>(transfer.State);
+        }
+
+        [Test]
+        public void CanStartWithOptions()
+        {
+            //Simulate that we're acknowledging an option
+            transfer.Options.Add("blksize", "123");
+            transfer.Options.First().IsAcknowledged = true;
+
+            transfer.Start(new MemoryStream(new byte[50000]));
+            Assert.IsInstanceOf<SendOptionAcknowledgementForWriteRequest>(transfer.State);
         }
     }
 }

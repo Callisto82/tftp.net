@@ -27,7 +27,7 @@ namespace Tftp.Net.UnitTests
             using (ITftpChannel conn = new UdpChannel(client))
             {
                 conn.Open();
-                conn.SetRemoteEndPoint(new IPEndPoint(IPAddress.Loopback, 69));
+                conn.RemoteEndpoint = new IPEndPoint(IPAddress.Loopback, 69);
                 conn.Send(new Acknowledgement(1));
             }
         }

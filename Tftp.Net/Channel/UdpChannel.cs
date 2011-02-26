@@ -124,15 +124,23 @@ namespace Tftp.Net.Channel
             }
         }
 
-        public void SetRemoteEndPoint(EndPoint endpoint)
+        public EndPoint RemoteEndpoint
         {
-            if (!(endpoint is IPEndPoint))
-                throw new NotSupportedException("UdpChannel can only connect to IPEndPoints.");
+            get
+            {
+                return endpoint;
+            }
 
-            if (client == null)
-                throw new ObjectDisposedException("UdpChannel");
+            set
+            {
+                if (!(value is IPEndPoint))
+                    throw new NotSupportedException("UdpChannel can only connect to IPEndPoints.");
 
-            this.endpoint = (IPEndPoint)endpoint;
+                if (client == null)
+                    throw new ObjectDisposedException("UdpChannel");
+
+                this.endpoint = (IPEndPoint)value;
+            }
         }
     }
 }

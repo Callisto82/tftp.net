@@ -9,7 +9,7 @@ using System.IO;
 namespace Tftp.Net.UnitTests
 {
     [TestFixture]
-    class StartingOutgoingWrite_Test
+    class SendWriteRequest_Test
     {
         private TransferStub transfer;
 
@@ -17,7 +17,7 @@ namespace Tftp.Net.UnitTests
         public void Setup()
         {
             transfer = new TransferStub(new MemoryStream(new byte[5000]));
-            transfer.SetState(new StartingOutgoingWrite(transfer));
+            transfer.SetState(new SendWriteRequest(transfer));
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace Tftp.Net.UnitTests
         public void SendsWriteRequest()
         {
             TransferStub transfer = new TransferStub(new MemoryStream(new byte[5000]));
-            transfer.SetState(new StartingOutgoingWrite(transfer));
+            transfer.SetState(new SendWriteRequest(transfer));
             Assert.IsTrue(transfer.CommandWasSent(typeof(WriteRequest)));
         }
 
@@ -47,7 +47,7 @@ namespace Tftp.Net.UnitTests
         public void IgnoresWrongAcknowledgement()
         {
             transfer.OnCommand(new Acknowledgement(5));
-            Assert.IsInstanceOf<StartingOutgoingWrite>(transfer.State);
+            Assert.IsInstanceOf<SendWriteRequest>(transfer.State);
         }
 
         [Test]
@@ -61,6 +61,20 @@ namespace Tftp.Net.UnitTests
             Assert.IsTrue(onErrorWasCalled);
 
             Assert.IsInstanceOf<Closed>(transfer.State);
+        }
+
+        [Test]
+        public void ResendsRequest()
+        {
+            TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream());
+            transferWithLowTimeout.Timeout = new TimeSpan(0);
+            transferWithLowTimeout.SetState(new SendWriteRequest(transferWithLowTimeout));
+
+            Assert.IsTrue(transferWithLowTimeout.CommandWasSent(typeof(WriteRequest)));
+            transferWithLowTimeout.SentCommands.Clear();
+
+            transferWithLowTimeout.OnTimer();
+            Assert.IsTrue(transferWithLowTimeout.CommandWasSent(typeof(WriteRequest)));
         }
     }
 }

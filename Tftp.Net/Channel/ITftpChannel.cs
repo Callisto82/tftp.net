@@ -12,9 +12,9 @@ namespace Tftp.Net.Channel
     {
         event TftpCommandHandler OnCommandReceived;
         bool IsOpen { get; }
+        EndPoint RemoteEndpoint { get; set; }
 
         void Open();
-        void SetRemoteEndPoint(EndPoint endpoint);
         void Send(ITftpCommand command);
     }
 }

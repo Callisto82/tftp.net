@@ -13,7 +13,16 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnStart()
         {
-            Context.SetState(new Sending(Context));
+            //Do we have any acknowledged options?
+            if (Context.Options.Count(x => x.IsAcknowledged) > 0)
+            {
+                Context.SetState(new SendOptionAcknowledgementForReadRequest(Context));
+            }
+            else
+            {
+                //Otherwise just start sending
+                Context.SetState(new Sending(Context));
+            }
         }
 
         public override void OnCancel()

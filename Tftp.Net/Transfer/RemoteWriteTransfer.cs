@@ -7,11 +7,12 @@ using Tftp.Net.Transfer.States;
 
 namespace Tftp.Net.Transfer
 {
-    class RemoteWriteTransfer : TftpTransfer
+    class RemoteWriteTransfer : TransferWithTimeout
     {
         public RemoteWriteTransfer(ITftpChannel connection, String filename)
             : base(connection, filename)
         {
+            Options = new TransferOptions();
             SetState(new StartOutgoingWrite(this));
         }
     }

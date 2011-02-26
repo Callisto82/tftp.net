@@ -14,6 +14,9 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnCommand(ITftpCommand command, EndPoint endpoint)
         {
+            if (!endpoint.Equals(Context.GetConnection().RemoteEndpoint))
+                throw new Exception("Received message from illegal endpoint. Actual: " + endpoint + ". Expected: " + Context.GetConnection().RemoteEndpoint);
+
             command.Visit(this);
         }
 
@@ -38,6 +41,11 @@ namespace Tftp.Net.Transfer.States
         }
 
         public virtual void OnError(Error command)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void OnOptionAcknowledgement(OptionAcknowledgement command)
         {
             throw new NotImplementedException();
         }

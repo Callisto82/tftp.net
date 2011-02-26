@@ -6,15 +6,33 @@ using System.IO;
 
 namespace Tftp.Net.Transfer.States
 {
-    class StartingOutgoingWrite : BaseState
+    class SendWriteRequest : BaseState
     {
-        public StartingOutgoingWrite(TftpTransfer context)
+        private readonly SimpleTimer timer;
+
+        public SendWriteRequest(TftpTransfer context)
             : base(context) 
-        { }
+        {
+            timer = new SimpleTimer(Context.Timeout);
+        }
 
         public override void OnStateEnter()
         {
-            Context.GetConnection().Send(new WriteRequest(Context.Filename, TftpModeType.octet));
+            SendRequest();
+        }
+
+        public override void OnTimer()
+        {
+            //Re-send the write request
+            if (timer.IsTimeout())
+                SendRequest();
+        }
+
+        private void SendRequest()
+        {
+            WriteRequest request = new WriteRequest(Context.Filename, Context.TransferMode, Context.Options);
+            Context.GetConnection().Send(request);
+            timer.Restart();
         }
 
         public override void OnCommand(ITftpCommand command, System.Net.EndPoint endpoint)
@@ -22,7 +40,7 @@ namespace Tftp.Net.Transfer.States
             if (command is Acknowledgement && (command as Acknowledgement).BlockNumber == 0)
             {
                 //Switch to the endpoint that we received from the server
-                Context.GetConnection().SetRemoteEndPoint(endpoint);
+                Context.GetConnection().RemoteEndpoint = endpoint;
 
                 //Start sending packets
                 Context.SetState(new Sending(Context));

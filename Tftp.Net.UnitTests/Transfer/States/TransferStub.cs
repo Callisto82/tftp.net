@@ -31,7 +31,7 @@ namespace Tftp.Net.UnitTests
 
         public void OnCommand(ITftpCommand command)
         {
-            State.OnCommand(command, null);
+            State.OnCommand(command, GetConnection().RemoteEndpoint);
         }
 
         public bool CommandWasSent(Type commandType)
@@ -43,17 +43,32 @@ namespace Tftp.Net.UnitTests
         {
             return state;
         }
+
+        public void OnTimer()
+        {
+            state.OnTimer();
+        }
+
+        public override void Dispose()
+        {
+            //Dont dispose the input/output stream during unit tests
+            this.InputOutputStream = null;
+
+            base.Dispose();
+        }
     }
 
     class ChannelStub : ITftpChannel
     {
         public event TftpCommandHandler OnCommandReceived;
         public bool IsOpen { get; private set; }
+        public EndPoint RemoteEndpoint { get; set; }
         public readonly List<ITftpCommand> SentCommands = new List<ITftpCommand>();
 
         public ChannelStub()
         {
             IsOpen = false;
+            RemoteEndpoint = new IPEndPoint(IPAddress.Loopback, 69);
         }
 
         public void Open()
@@ -65,11 +80,6 @@ namespace Tftp.Net.UnitTests
         {
             if (OnCommandReceived != null)
                 OnCommandReceived(command, endpoint);
-        }
-
-        public void SetRemoteEndPoint(EndPoint endpoint)
-        {
-            //no-op
         }
 
         public void Send(ITftpCommand command)

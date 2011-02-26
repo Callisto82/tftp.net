@@ -33,7 +33,7 @@ namespace Tftp.Net.Transfer.States
         {
         }
 
-        public void OnTimer()
+        public virtual void OnTimer()
         {
             //Ignore timer events
         }
