@@ -46,12 +46,24 @@ namespace Tftp.Net.Transfer.States
                 //Fix out remote endpoint
                 Context.GetConnection().RemoteEndpoint = endpoint;
 
+                //Remove any options that were not acknowledged
+                Context.RemoveOptionsThatWereNotAcknowledged();
+
                 //Switch to the receiving state...
                 ITftpState nextState = new Receiving(Context);
                 Context.SetState(nextState);
 
                 //...and let it handle the data packet
                 nextState.OnCommand(command, endpoint);
+            }
+            else if (command is OptionAcknowledgement)
+            {
+                //the server acknowledged our options. Confirm the final options
+                Context.GetConnection().Send(new Acknowledgement(0));
+
+                //Check which options were acknowledged
+                OptionAcknowledgement ackCommand = (OptionAcknowledgement)command;
+                Context.SetOptionsAcknowledged(ackCommand.Options);
             }
             else if (command is Error)
             {

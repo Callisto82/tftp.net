@@ -146,5 +146,17 @@ namespace Tftp.Net.Transfer
         }
 
         #endregion
+
+        public void RemoveOptionsThatWereNotAcknowledged()
+        {
+            foreach (TftpTransferOption option in OptionsBackend.Where(x => !x.IsAcknowledged).ToList())
+                OptionsBackend.Remove(option.Name);
+        }
+
+        public void SetOptionsAcknowledged(IEnumerable<TftpTransferOption> acknowledgedOptions)
+        {
+            foreach (TftpTransferOption option in Options)
+                option.IsAcknowledged = acknowledgedOptions.Any(x => x.Name == option.Name);
+        }
     }
 }
