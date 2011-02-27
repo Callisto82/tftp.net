@@ -14,7 +14,7 @@ namespace Tftp.Net.UnitTests
     {
         private const int TEST_PORT = 69;
 
-        protected override Channel.ITftpChannel CreateConnection()
+        protected override Channel.IChannel CreateConnection()
         {
             return new UdpChannel(new UdpClient(TEST_PORT));
         }
@@ -24,7 +24,7 @@ namespace Tftp.Net.UnitTests
         {
             UdpClient client = new UdpClient(new IPEndPoint(IPAddress.Any, 0));
 
-            using (ITftpChannel conn = new UdpChannel(client))
+            using (IChannel conn = new UdpChannel(client))
             {
                 conn.Open();
                 conn.RemoteEndpoint = new IPEndPoint(IPAddress.Loopback, 69);

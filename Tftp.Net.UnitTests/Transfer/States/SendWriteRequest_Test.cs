@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.UnitTests
 {
@@ -12,12 +13,22 @@ namespace Tftp.Net.UnitTests
     class SendWriteRequest_Test
     {
         private TransferStub transfer;
+        private OptionHandlerStub optionHandler;
 
         [SetUp]
         public void Setup()
         {
             transfer = new TransferStub(new MemoryStream(new byte[5000]));
             transfer.SetState(new SendWriteRequest(transfer));
+
+            optionHandler = new OptionHandlerStub("blub");
+            TransferOptionHandlers.Add(optionHandler);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            TransferOptionHandlers.Remove(optionHandler);
         }
 
         [Test]
@@ -53,20 +64,23 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void HandlesOptionAcknowledgement()
         {
-            transfer.Options.Add("blub", "bla");
+            //Option handler for "blub" is registered in the setup-method.
+            transfer.Options.Request("blub", "bla");
             Assert.IsFalse(transfer.Options.First().IsAcknowledged);
+            Assert.IsFalse(optionHandler.AcknowledgeWasCalled);
             transfer.OnCommand(new OptionAcknowledgement(transfer.Options));
             Assert.IsTrue(transfer.Options.First().IsAcknowledged);
+            Assert.IsTrue(optionHandler.AcknowledgeWasCalled);
             Assert.IsInstanceOf<Sending>(transfer.State);
         }
 
         [Test]
         public void HandlesMissingOptionAcknowledgement()
         {
-            transfer.Options.Add("blub", "bla");
+            transfer.Options.Request("blub", "bla");
             Assert.IsFalse(transfer.Options.First().IsAcknowledged);
             transfer.OnCommand(new Acknowledgement(0));
-            Assert.AreEqual(0, transfer.Options.Count());
+            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
             Assert.IsInstanceOf<Sending>(transfer.State);
         }
 
@@ -74,7 +88,7 @@ namespace Tftp.Net.UnitTests
         public void HandlesError()
         {
             bool onErrorWasCalled = false;
-            transfer.OnError += delegate(ITftpTransfer t, ushort code, string error) { onErrorWasCalled = true; };
+            transfer.OnError += delegate(ITftpTransfer t, TftpTransferError error) { onErrorWasCalled = true; };
 
             Assert.IsFalse(onErrorWasCalled);
             transfer.OnCommand(new Error(123, "Test Error"));

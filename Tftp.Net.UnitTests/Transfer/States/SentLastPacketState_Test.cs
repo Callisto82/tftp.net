@@ -30,7 +30,7 @@ namespace Tftp.Net.UnitTests
         public void HandlesError()
         {
             bool OnErrorWasCalled = false;
-            transfer.OnError += delegate(ITftpTransfer t, ushort code, string error) { OnErrorWasCalled = true; };
+            transfer.OnError += delegate(ITftpTransfer t, TftpTransferError error) { OnErrorWasCalled = true; };
             Assert.IsFalse(OnErrorWasCalled);
             transfer.OnCommand(new Error(123, "Error Message"));
             Assert.IsTrue(OnErrorWasCalled);

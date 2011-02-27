@@ -32,7 +32,7 @@ namespace Tftp.Net
         /// </summary>
         public ITftpTransfer Receive(String filename)
         {
-            ITftpChannel channel = TftpChannelFactory.CreateConnection(remoteAddress);
+            IChannel channel = ChannelFactory.CreateConnection(remoteAddress);
             return new RemoteReadTransfer(channel, filename);
         }
 
@@ -42,7 +42,7 @@ namespace Tftp.Net
         /// </summary>
         public ITftpTransfer Send(String filename)
         {
-            ITftpChannel channel = TftpChannelFactory.CreateConnection(remoteAddress);
+            IChannel channel = ChannelFactory.CreateConnection(remoteAddress);
             return new RemoteWriteTransfer(channel, filename);
         }
     }

@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using Tftp.Net.Channel;
 using System.Net;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.Transfer.States
 {
@@ -46,11 +47,8 @@ namespace Tftp.Net.Transfer.States
                 //Fix out remote endpoint
                 Context.GetConnection().RemoteEndpoint = endpoint;
 
-                //Remove any options that were not acknowledged
-                Context.RemoveOptionsThatWereNotAcknowledged();
-
                 //Switch to the receiving state...
-                ITftpState nextState = new Receiving(Context);
+                ITransferState nextState = new Receiving(Context);
                 Context.SetState(nextState);
 
                 //...and let it handle the data packet
@@ -63,11 +61,11 @@ namespace Tftp.Net.Transfer.States
 
                 //Check which options were acknowledged
                 OptionAcknowledgement ackCommand = (OptionAcknowledgement)command;
-                Context.SetOptionsAcknowledged(ackCommand.Options);
+                TransferOptionHandlers.HandleAcceptedOptions(Context, ackCommand.Options);
             }
             else if (command is Error)
             {
-                Context.SetState(new ReceivedError(Context, ((Error)command).ErrorCode, ((Error)command).Message));
+                Context.SetState(new ReceivedError(Context, (Error)command));
             }
             else
                 base.OnCommand(command, endpoint);

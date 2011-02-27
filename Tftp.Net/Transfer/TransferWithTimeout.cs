@@ -6,12 +6,12 @@ using System.Threading;
 
 namespace Tftp.Net.Transfer
 {
-    class TransferWithTimeout : TftpTransfer
+    abstract class TransferWithTimeout : TftpTransfer
     {
         private Timer timer;
         private const int CALLBACK_FREQUENCY_MSECS = 500;
 
-        public TransferWithTimeout(Channel.ITftpChannel connection, string filename)
+        public TransferWithTimeout(Channel.IChannel connection, string filename)
             : base(connection, filename)
         {
             timer = new Timer(TimerCallback, null, CALLBACK_FREQUENCY_MSECS, CALLBACK_FREQUENCY_MSECS);

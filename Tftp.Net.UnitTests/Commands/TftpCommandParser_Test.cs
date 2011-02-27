@@ -26,7 +26,7 @@ namespace Tftp.Net.UnitTests
         public void ParseAck()
         {
             Acknowledgement original = new Acknowledgement(10);
-            TftpCommandParser parser = new TftpCommandParser();
+            CommandParser parser = new CommandParser();
 
             Acknowledgement parsed = (Acknowledgement)parser.Parse(CommandToBytes(original));
             Assert.AreEqual(original.BlockNumber, parsed.BlockNumber);
@@ -36,7 +36,7 @@ namespace Tftp.Net.UnitTests
         public void ParseError()
         {
             Error original = new Error(15, "Hallo Welt");
-            TftpCommandParser parser = new TftpCommandParser();
+            CommandParser parser = new CommandParser();
 
             Error parsed = (Error)parser.Parse(CommandToBytes(original));
             Assert.AreEqual(original.ErrorCode, parsed.ErrorCode);
@@ -47,7 +47,7 @@ namespace Tftp.Net.UnitTests
         public void ParseReadRequest()
         {
             ReadRequest original = new ReadRequest("Hallo Welt.txt", TftpTransferMode.netascii, null);
-            TftpCommandParser parser = new TftpCommandParser();
+            CommandParser parser = new CommandParser();
 
             ReadRequest parsed = (ReadRequest)parser.Parse(CommandToBytes(original));
             Assert.AreEqual(original.Filename, parsed.Filename);
@@ -58,7 +58,7 @@ namespace Tftp.Net.UnitTests
         public void ParseWriteRequest()
         {
             WriteRequest original = new WriteRequest("Hallo Welt.txt", TftpTransferMode.netascii, null);
-            TftpCommandParser parser = new TftpCommandParser();
+            CommandParser parser = new CommandParser();
 
             WriteRequest parsed = (WriteRequest)parser.Parse(CommandToBytes(original));
             Assert.AreEqual(original.Filename, parsed.Filename);
@@ -70,7 +70,7 @@ namespace Tftp.Net.UnitTests
         {
             byte[] data = { 12, 15, 19, 0, 4 };
             Data original = new Data(123, data);
-            TftpCommandParser parser = new TftpCommandParser();
+            CommandParser parser = new CommandParser();
 
             Data parsed = (Data)parser.Parse(CommandToBytes(original));
             Assert.AreEqual(original.BlockNumber, parsed.BlockNumber);

@@ -9,14 +9,15 @@ using System.Diagnostics;
 
 namespace Tftp.Net.Channel
 {
-    class UdpChannel : ITftpChannel
+    class UdpChannel : IChannel
     {
         public event TftpCommandHandler OnCommandReceived;
+        public event TftpChannelErrorHandler OnError;
         public bool IsOpen { get; private set; }
 
         private IPEndPoint endpoint;
         private UdpClient client;
-        private readonly TftpCommandParser parser = new TftpCommandParser();
+        private readonly CommandParser parser = new CommandParser();
 
         public UdpChannel(UdpClient client)
         {
@@ -60,13 +61,13 @@ namespace Tftp.Net.Channel
             }
             catch (SocketException e)
             {
-                //TODO: Handle receive error
-                Trace.WriteLine("Socket Exception: " + e);
+                //Handle receive error
+                RaiseOnError(new NetworkError(e));
             }
             catch (TftpParserException e2)
             {
-                //At the moment, we silently drop parser errors
-                Trace.WriteLine("Parser Exception: " + e2);
+                //Handle parser error
+                RaiseOnError(new NetworkError(e2));
             }
 
             if (command != null)
@@ -85,6 +86,12 @@ namespace Tftp.Net.Channel
         {
             if (OnCommandReceived != null)
                 OnCommandReceived(command, endpoint);
+        }
+
+        private void RaiseOnError(TftpTransferError error)
+        {
+            if (OnError != null)
+                OnError(error);
         }
 
         public void Send(ITftpCommand command)

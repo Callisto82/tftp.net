@@ -17,7 +17,7 @@ namespace Tftp.Net.Transfer.States
             if (command.BlockNumber == 1)
             {
                 //The client confirmed the options, so let's start receiving
-                ITftpState nextState = new Receiving(Context);
+                ITransferState nextState = new Receiving(Context);
                 Context.SetState(nextState);
                 nextState.OnCommand(command, Context.GetConnection().RemoteEndpoint);
             }

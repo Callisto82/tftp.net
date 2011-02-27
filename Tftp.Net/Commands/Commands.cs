@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Tftp.Net.Transfer;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net
 {
@@ -29,9 +30,9 @@ namespace Tftp.Net
 
         public String Filename { get; private set; }
         public TftpTransferMode Mode { get; private set; }
-        public IEnumerable<TftpTransferOption> Options { get; private set; }
+        public IEnumerable<ITftpTransferOption> Options { get; private set; }
 
-        protected ReadOrWriteRequest(ushort opCode, String filename, TftpTransferMode mode, IEnumerable<TftpTransferOption> options)
+        protected ReadOrWriteRequest(ushort opCode, String filename, TftpTransferMode mode, IEnumerable<ITftpTransferOption> options)
         {
             this.opCode = opCode;
             this.Filename = filename;
@@ -49,7 +50,7 @@ namespace Tftp.Net
 
             if (Options != null)
             {
-                foreach (TftpTransferOption option in Options)
+                foreach (ITftpTransferOption option in Options)
                 {
                     writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
                     writer.WriteByte(0);
@@ -64,7 +65,7 @@ namespace Tftp.Net
     {
         public const ushort OpCode = 1;
 
-        public ReadRequest(String filename, TftpTransferMode mode, IEnumerable<TftpTransferOption> options)
+        public ReadRequest(String filename, TftpTransferMode mode, IEnumerable<ITftpTransferOption> options)
             : base(OpCode, filename, mode, options) { }
 
         public void Visit(ITftpCommandVisitor visitor)
@@ -77,7 +78,7 @@ namespace Tftp.Net
     {
         public const ushort OpCode = 2;
 
-        public WriteRequest(String filename, TftpTransferMode mode, IEnumerable<TftpTransferOption> options)
+        public WriteRequest(String filename, TftpTransferMode mode, IEnumerable<ITftpTransferOption> options)
             : base(OpCode, filename, mode, options) { }
 
         public void Visit(ITftpCommandVisitor visitor)
@@ -165,9 +166,9 @@ namespace Tftp.Net
     class OptionAcknowledgement : ITftpCommand
     {
         public const ushort OpCode = 6;
-        public IEnumerable<TftpTransferOption> Options { get; private set; }
+        public IEnumerable<ITftpTransferOption> Options { get; private set; }
 
-        public OptionAcknowledgement(IEnumerable<TftpTransferOption> options)
+        public OptionAcknowledgement(IEnumerable<ITftpTransferOption> options)
         {
             this.Options = options;
         }
@@ -181,7 +182,7 @@ namespace Tftp.Net
         {
             writer.WriteUInt16(OpCode);
 
-            foreach (TftpTransferOption option in Options)
+            foreach (ITftpTransferOption option in Options)
             {
                 writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
                 writer.WriteByte(0);

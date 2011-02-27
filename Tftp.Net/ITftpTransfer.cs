@@ -8,7 +8,7 @@ namespace Tftp.Net
 {
     public delegate void TftpEventHandler(ITftpTransfer transfer);
     public delegate void TftpProgressHandler(ITftpTransfer transfer, int bytesTransferred);
-    public delegate void TftpErrorHandler(ITftpTransfer transfer, ushort code, string error);
+    public delegate void TftpErrorHandler(ITftpTransfer transfer, TftpTransferError error);
 
     public enum TftpTransferMode
     {

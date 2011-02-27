@@ -52,7 +52,7 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnError(Error command)
         {
-            Context.SetState(new ReceivedError(Context, command.ErrorCode, command.Message));
+            Context.SetState(new ReceivedError(Context, command));
         }
 
         public override void OnCancel()

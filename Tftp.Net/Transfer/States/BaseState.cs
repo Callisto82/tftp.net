@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Tftp.Net.Transfer.States
 {
-    class BaseState : ITftpState
+    class BaseState : ITransferState
     {
         protected TftpTransfer Context { get; private set; }
 

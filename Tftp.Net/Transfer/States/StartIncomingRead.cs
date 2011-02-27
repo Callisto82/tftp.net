@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.Transfer.States
 {
@@ -14,6 +15,7 @@ namespace Tftp.Net.Transfer.States
         public override void OnStart()
         {
             //Do we have any acknowledged options?
+            TransferOptionHandlers.HandleAcceptedOptions(Context, Context.Options);
             if (Context.Options.Count(x => x.IsAcknowledged) > 0)
             {
                 Context.SetState(new SendOptionAcknowledgementForReadRequest(Context));

@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.Transfer
 {
     class LocalWriteTransfer : TransferWithTimeout
     {
-        public LocalWriteTransfer(ITftpChannel connection, string filename, IEnumerable<TftpTransferOption> options)
+        public LocalWriteTransfer(IChannel connection, string filename, IEnumerable<ITftpTransferOption> options)
             : base(connection, filename)
         {
-            this.OptionsBackend.Set(options);
-            this.Options = new ReadonlyOptions(OptionsBackend);
+            this.Options = new TransferOptionsIncoming(options);
             SetState(new StartIncomingWrite(this));
         }
 
