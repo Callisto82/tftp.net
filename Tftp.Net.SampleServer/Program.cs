@@ -39,7 +39,7 @@ namespace Tftp.Net.SampleServer
 
         static void DumpOptions(ITftpTransfer transfer)
         {
-            foreach(TftpTransferOption option in transfer.Options)
+            foreach(ITftpTransferOption option in transfer.Options)
                 Console.WriteLine("[" + transfer.Filename + "] Option request: " + option.Name + "=" + option.Value);
         }
 
@@ -76,9 +76,9 @@ namespace Tftp.Net.SampleServer
             transfer.Start(str);
         }
 
-        static void transfer_OnError(ITftpTransfer transfer, ushort code, string error)
+        static void transfer_OnError(ITftpTransfer transfer, TftpTransferError error)
         {
-            Console.WriteLine("[" + transfer.Filename + "] Error: " + code + " - " + error);
+            Console.WriteLine("[" + transfer.Filename + "] Error: " + error);
         }
 
         static void transfer_OnFinished(ITftpTransfer transfer)

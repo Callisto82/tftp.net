@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.Transfer.States
 {
@@ -40,16 +41,13 @@ namespace Tftp.Net.Transfer.States
             if (command is OptionAcknowledgement)
             {
                 OptionAcknowledgement ackCommand = (OptionAcknowledgement)command;
-                Context.SetOptionsAcknowledged(ackCommand.Options);
+                TransferOptionHandlers.HandleAcceptedOptions(Context, ackCommand.Options);
             }
 
             if (command is OptionAcknowledgement || (command is Acknowledgement && (command as Acknowledgement).BlockNumber == 0))
             {
                 //Switch to the endpoint that we received from the server
                 Context.GetConnection().RemoteEndpoint = endpoint;
-
-                //Handle transfer options
-                Context.RemoveOptionsThatWereNotAcknowledged();
 
                 //Start sending packets
                 Context.SetState(new Sending(Context));
@@ -59,7 +57,7 @@ namespace Tftp.Net.Transfer.States
             {
                 //The server denied our request
                 Error error = (Error)command;
-                Context.SetState(new ReceivedError(Context, error.ErrorCode, error.Message));
+                Context.SetState(new ReceivedError(Context, error));
             }
             else
                 base.OnCommand(command, endpoint);

@@ -7,19 +7,20 @@ namespace Tftp.Net.Transfer.States
 {
     class ReceivedError : BaseState
     {
-        private readonly ushort code;
-        private readonly string error;
+        private readonly TftpTransferError error;
 
-        public ReceivedError(TftpTransfer context, ushort code, String error)
+        public ReceivedError(TftpTransfer context, Error error)
+            : this(context, new ErrorFromRemoteEndpoint(error.ErrorCode, error.Message)) { }
+
+        public ReceivedError(TftpTransfer context, TftpTransferError error)
             : base(context)
         {
             this.error = error;
-            this.code = code;
         }
 
         public override void OnStateEnter()
         {
-            Context.RaiseOnError(code, error);
+            Context.RaiseOnError(error);
             Context.SetState(new Closed(Context));
         }
     }

@@ -40,12 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Channel\ITftpChannel.cs" />
-    <Compile Include="Channel\TftpChannelFactory.cs" />
+    <Compile Include="Channel\IChannel.cs" />
+    <Compile Include="Channel\ChannelFactory.cs" />
     <Compile Include="Commands\TftpStreamReader.cs" />
     <Compile Include="Commands\TftpStreamWriter.cs" />
+    <Compile Include="ITftpTransferOption.cs" />
     <Compile Include="TftpClient.cs" />
     <Compile Include="ITftpTransferOptions.cs" />
+    <Compile Include="TftpTransferError.cs" />
+    <Compile Include="TransferOptions\BlockSizeOption.cs" />
+    <Compile Include="TransferOptions\ITftpTransferOptionHandler.cs" />
+    <Compile Include="TransferOptions\TransferOption.cs" />
+    <Compile Include="TransferOptions\TransferOptionsIncoming.cs" />
+    <Compile Include="TransferOptions\TransferOptionsOutgoing.cs" />
+    <Compile Include="TransferOptions\TransferOptionHandlers.cs" />
+    <Compile Include="TransferOptions\TransferOptionsBase.cs" />
     <Compile Include="Transfer\LocalReadTransfer.cs" />
     <Compile Include="Transfer\LocalWriteTransfer.cs" />
     <Compile Include="Transfer\RemoteReadTransfer.cs" />
@@ -54,7 +63,7 @@
     <Compile Include="Transfer\States\SendOptionAcknowledgementBase.cs" />
     <Compile Include="Transfer\States\SendOptionAcknowledgementForReadRequest.cs" />
     <Compile Include="Transfer\States\BaseState.cs" />
-    <Compile Include="Transfer\States\ITftpState.cs" />
+    <Compile Include="Transfer\States\ITransferState.cs" />
     <Compile Include="ITftpTransfer.cs" />
     <Compile Include="Transfer\LoggingStateDecorator.cs" />
     <Compile Include="Transfer\States\SendOptionAcknowledgementForWriteRequest.cs" />
@@ -68,9 +77,9 @@
     <Compile Include="Transfer\States\CancelledByUser.cs" />
     <Compile Include="Transfer\States\ReceivedError.cs" />
     <Compile Include="Transfer\States\Closed.cs" />
-    <Compile Include="Commands\TftpCommands.cs" />
+    <Compile Include="Commands\Commands.cs" />
     <Compile Include="Channel\UdpChannel.cs" />
-    <Compile Include="Commands\TftpCommandParser.cs" />
+    <Compile Include="Commands\CommandParser.cs" />
     <Compile Include="Transfer\States\SendWriteRequest.cs" />
     <Compile Include="Transfer\States\StartOutgoingRead.cs" />
     <Compile Include="Transfer\States\StartOutgoingWrite.cs" />
@@ -78,7 +87,6 @@
     <Compile Include="Transfer\SimpleTimer.cs" />
     <Compile Include="Transfer\TftpTransfer.cs" />
     <Compile Include="TftpServer.cs" />
-    <Compile Include="Transfer\TransferOptions.cs" />
     <Compile Include="Transfer\TransferWithTimeout.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

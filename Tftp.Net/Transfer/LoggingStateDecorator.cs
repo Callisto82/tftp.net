@@ -10,11 +10,11 @@ using System.Net;
 
 namespace Tftp.Net.Transfer
 {
-    class LoggingStateDecorator : ITftpState
+    class LoggingStateDecorator : ITransferState
     {
-        private readonly ITftpState decoratee;
+        private readonly ITransferState decoratee;
 
-        public LoggingStateDecorator(ITftpState decoratee)
+        public LoggingStateDecorator(ITransferState decoratee)
         {
             this.decoratee = decoratee;
         }

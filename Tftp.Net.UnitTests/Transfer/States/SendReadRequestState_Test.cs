@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.UnitTests
 {
@@ -13,6 +14,7 @@ namespace Tftp.Net.UnitTests
     {
         private MemoryStream ms;
         private TransferStub transfer;
+        private OptionHandlerStub optionHandler;
 
         [SetUp]
         public void Setup()
@@ -20,6 +22,15 @@ namespace Tftp.Net.UnitTests
             ms = new MemoryStream();
             transfer = new TransferStub(ms);
             transfer.SetState(new SendReadRequest(transfer));
+
+            optionHandler = new OptionHandlerStub("blub");
+            TransferOptionHandlers.Add(optionHandler);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            TransferOptionHandlers.Remove(optionHandler);
         }
 
         [Test]
@@ -34,7 +45,7 @@ namespace Tftp.Net.UnitTests
         public void HandlesError()
         {
             bool onErrorWasCalled = false;
-            transfer.OnError += delegate(ITftpTransfer t, ushort code, string error) { onErrorWasCalled = true; };
+            transfer.OnError += delegate(ITftpTransfer t, TftpTransferError error) { onErrorWasCalled = true; };
 
             Assert.IsFalse(onErrorWasCalled);
             transfer.OnCommand(new Error(123, "Test Error"));
@@ -55,9 +66,12 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void HandlesOptionAcknowledgement()
         {
-            transfer.Options.Add("blub", "bla");
+            //Option handler for "blub" is registered in the setup-method.
+            transfer.Options.Request("blub", "bla");
             Assert.IsFalse(transfer.Options.First().IsAcknowledged);
+            Assert.IsFalse(optionHandler.AcknowledgeWasCalled);
             transfer.OnCommand(new OptionAcknowledgement(transfer.Options));
+            Assert.IsTrue(optionHandler.AcknowledgeWasCalled);
             Assert.IsTrue(transfer.Options.First().IsAcknowledged);
             Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
             Assert.IsInstanceOf<SendReadRequest>(transfer.State);
@@ -66,10 +80,10 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void HandlesMissingOptionAcknowledgement()
         {
-            transfer.Options.Add("blub", "bla");
+            transfer.Options.Request("blub", "bla");
             Assert.IsFalse(transfer.Options.First().IsAcknowledged);
             transfer.OnCommand(new Data(1, new byte[10]));
-            Assert.AreEqual(0, transfer.Options.Count());
+            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
             Assert.IsInstanceOf<Closed>(transfer.State);
         }
 

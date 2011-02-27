@@ -7,10 +7,13 @@ using System.Net;
 namespace Tftp.Net.Channel
 {
     delegate void TftpCommandHandler(ITftpCommand command, EndPoint endpoint);
+    delegate void TftpChannelErrorHandler(TftpTransferError error);
 
-    interface ITftpChannel : IDisposable
+    interface IChannel : IDisposable
     {
         event TftpCommandHandler OnCommandReceived;
+        event TftpChannelErrorHandler OnError;
+
         bool IsOpen { get; }
         EndPoint RemoteEndpoint { get; set; }
 

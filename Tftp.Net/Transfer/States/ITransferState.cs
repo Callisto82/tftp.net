@@ -8,7 +8,7 @@ using System.Net;
 
 namespace Tftp.Net.Transfer.States
 {
-    interface ITftpState
+    interface ITransferState
     {
         //Called by TftpTransfer
         void OnStateEnter();

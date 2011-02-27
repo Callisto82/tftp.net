@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.UnitTests
 {
@@ -12,12 +13,21 @@ namespace Tftp.Net.UnitTests
     class StartIncomingReadState_Test
     {
         private TransferStub transfer;
+        private OptionHandlerStub optionHandler;
 
         [SetUp]
         public void Setup()
         {
             transfer = new TransferStub();
             transfer.SetState(new StartIncomingRead(transfer));
+            optionHandler = new OptionHandlerStub("blub");
+            TransferOptionHandlers.Add(optionHandler);
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            TransferOptionHandlers.Remove(optionHandler);
         }
 
         [Test]
@@ -45,12 +55,26 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void CanStartWithOptions()
         {
-            //Simulate that we're acknowledging an option
-            transfer.Options.Add("blksize", "123");
-            transfer.Options.First().IsAcknowledged = true;
+            //Simulate that we got a request for a option
+            transfer.Options.Request("blub", "123");
 
             transfer.Start(new MemoryStream(new byte[50000]));
             Assert.IsInstanceOf<SendOptionAcknowledgementForReadRequest>(transfer.State);
+            Assert.IsTrue(optionHandler.AcknowledgeWasCalled);
+            Assert.IsTrue(transfer.Options.First().IsAcknowledged);
+        }
+
+        [Test]
+        public void CanStartRejectOptions()
+        {
+            //Simulate that we got a request for an option
+            transfer.Options.Request("non-acceptable-option", "123");
+
+            Assert.IsFalse(optionHandler.AcknowledgeWasCalled);
+            transfer.Start(new MemoryStream(new byte[50000]));
+            Assert.IsTrue(optionHandler.AcknowledgeWasCalled);
+            Assert.IsFalse(transfer.CommandWasSent(typeof(OptionAcknowledgement)));
+            Assert.IsInstanceOf<Sending>(transfer.State);
         }
     }
 }

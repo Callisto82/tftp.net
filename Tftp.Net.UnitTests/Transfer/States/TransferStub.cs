@@ -7,6 +7,7 @@ using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
 using System.Net;
 using System.IO;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.UnitTests
 {
@@ -19,12 +20,13 @@ namespace Tftp.Net.UnitTests
             : base(new ChannelStub(), "dummy.txt") 
         {
             base.InputOutputStream = stream;
+            base.Options = new TransferOptionsOutgoing();            
         }
 
         public TransferStub()
-            : base(new ChannelStub(), "dummy.txt") { }
+            : this(null) { }
 
-        public ITftpState State
+        public ITransferState State
         {
             get { return state; }
         }
@@ -39,7 +41,7 @@ namespace Tftp.Net.UnitTests
             return SentCommands.Any(x => x.GetType().IsAssignableFrom(commandType));
         }
 
-        protected override ITftpState Decorate(ITftpState state)
+        protected override ITransferState Decorate(ITransferState state)
         {
             return state;
         }
@@ -58,9 +60,10 @@ namespace Tftp.Net.UnitTests
         }
     }
 
-    class ChannelStub : ITftpChannel
+    class ChannelStub : IChannel
     {
         public event TftpCommandHandler OnCommandReceived;
+        public event TftpChannelErrorHandler OnError;
         public bool IsOpen { get; private set; }
         public EndPoint RemoteEndpoint { get; set; }
         public readonly List<ITftpCommand> SentCommands = new List<ITftpCommand>();
@@ -82,6 +85,12 @@ namespace Tftp.Net.UnitTests
                 OnCommandReceived(command, endpoint);
         }
 
+        public void RaiseOnError(TftpTransferError error)
+        {
+            if (OnError != null)
+                OnError(error);
+        }
+
         public void Send(ITftpCommand command)
         {
             SentCommands.Add(command);
@@ -90,6 +99,23 @@ namespace Tftp.Net.UnitTests
         public void Dispose()
         {
             IsOpen = false;
+        }
+    }
+
+    class OptionHandlerStub : ITftpTransferOptionHandler
+    {
+        private readonly string optionName;
+        public bool AcknowledgeWasCalled { get; private set; }
+
+        public OptionHandlerStub(string name)
+        {
+            this.optionName = name;
+        }
+
+        public bool Acknowledge(ITftpTransfer transfer, ITftpTransferOption option)
+        {
+            AcknowledgeWasCalled = true;
+            return option.Name == optionName;
         }
     }
 }

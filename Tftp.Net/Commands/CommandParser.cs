@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net
 {
-    class TftpCommandParser
+    class CommandParser
     {
         public ITftpCommand Parse(byte[] message)
         {
@@ -58,7 +59,7 @@ namespace Tftp.Net
 
         private OptionAcknowledgement ParseOptionAcknowledgement(TftpStreamReader reader)
         {
-            IEnumerable<TftpTransferOption> options = ParseTransferOptions(reader);
+            IEnumerable<ITftpTransferOption> options = ParseTransferOptions(reader);
             return new OptionAcknowledgement(options);
         }
 
@@ -86,7 +87,7 @@ namespace Tftp.Net
         {
             String filename = ParseNullTerminatedString(reader);
             TftpTransferMode mode = ParseModeType(ParseNullTerminatedString(reader));
-            IEnumerable<TftpTransferOption> options = ParseTransferOptions(reader);
+            IEnumerable<ITftpTransferOption> options = ParseTransferOptions(reader);
             return new WriteRequest(filename, mode, options);
         }
 
@@ -94,13 +95,13 @@ namespace Tftp.Net
         {
             String filename = ParseNullTerminatedString(reader);
             TftpTransferMode mode = ParseModeType(ParseNullTerminatedString(reader));
-            IEnumerable<TftpTransferOption> options = ParseTransferOptions(reader);
+            IEnumerable<ITftpTransferOption> options = ParseTransferOptions(reader);
             return new ReadRequest(filename, mode, options);
         }
 
-        private IEnumerable<TftpTransferOption> ParseTransferOptions(TftpStreamReader reader)
+        private IEnumerable<ITftpTransferOption> ParseTransferOptions(TftpStreamReader reader)
         {
-            List<TftpTransferOption> options = new List<TftpTransferOption>();
+            List<ITftpTransferOption> options = new List<ITftpTransferOption>();
 
             while (true)
             {
@@ -119,7 +120,7 @@ namespace Tftp.Net
                     break;
 
                 string value = ParseNullTerminatedString(reader);
-                options.Add(new TftpTransferOption(name, value));
+                options.Add(new TransferOption(name, value));
             }
             return options;
         }

@@ -82,7 +82,7 @@ namespace Tftp.Net.UnitTests.Transfer.States
         public void HandlesError()
         {
             bool onErrorWasCalled = false;
-            transfer.OnError += delegate(ITftpTransfer t, ushort code, string error) { onErrorWasCalled = true; };
+            transfer.OnError += delegate(ITftpTransfer t, TftpTransferError error) { onErrorWasCalled = true; };
 
             Assert.IsFalse(onErrorWasCalled);
             transfer.OnCommand(new Error(123, "Test Error"));

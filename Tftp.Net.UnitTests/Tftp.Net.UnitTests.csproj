@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorFromRemoteEndpoint_Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TftpClientServer_Test.cs" />
     <Compile Include="Commands\TftpCommandParser_Test.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Commands\TftpStreamReader_Test.cs" />
     <Compile Include="Commands\TftpStreamWriter_Test.cs" />
     <Compile Include="Channel\UdpChannel_Test.cs" />
+    <Compile Include="TransferOptions\BlockSizeOption_Test.cs" />
     <Compile Include="Transfer\SimpleTimer_Test.cs" />
     <Compile Include="Transfer\States\CancelledByUserState_Test.cs" />
     <Compile Include="Transfer\States\ClosedState_Test.cs" />
@@ -66,6 +68,8 @@
     <Compile Include="Transfer\States\StartOutgoingRead_Test.cs" />
     <Compile Include="Transfer\States\StartOutgoingWrite_Test.cs" />
     <Compile Include="Transfer\States\TransferStub.cs" />
+    <Compile Include="TransferOptions\TransferOptionHandlers_Test.cs" />
+    <Compile Include="TransferOptions\TransferOption_Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tftp.Net\Tftp.Net.csproj">

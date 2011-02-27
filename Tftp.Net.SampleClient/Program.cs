@@ -34,9 +34,9 @@ namespace Tftp.Net.SampleClient
             Console.WriteLine("Transfer running. Got " + bytesTransferred + " bytes.");
         }
 
-        static void transfer_OnError(ITftpTransfer transfer, ushort code, string error)
+        static void transfer_OnError(ITftpTransfer transfer, TftpTransferError error)
         {
-            Console.WriteLine("Transfer failed. Code: " + code + ", reason: " + error);
+            Console.WriteLine("Transfer failed: " + error);
             TransferFinishedEvent.Set();
         }
 

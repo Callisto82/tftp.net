@@ -32,7 +32,7 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnData(Data command)
         {
-            ITftpState nextState = new Receiving(Context);
+            ITransferState nextState = new Receiving(Context);
             Context.SetState(nextState);
             nextState.OnCommand(command, Context.GetConnection().RemoteEndpoint);
         }
@@ -44,7 +44,7 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnError(Error command)
         {
-            Context.SetState(new ReceivedError(Context, command.ErrorCode, command.Message));
+            Context.SetState(new ReceivedError(Context, command));
         }
     }
 }

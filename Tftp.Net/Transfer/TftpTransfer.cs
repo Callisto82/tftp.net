@@ -9,30 +9,37 @@ using Tftp.Net.Transfer;
 using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
 using System.Threading;
+using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.Transfer
 {
     class TftpTransfer : ITftpTransfer
     {
         private const int DEFAULT_BLOCKSIZE = 512;
-        protected ITftpState state;
-        protected readonly ITftpChannel connection;
+
+        protected ITransferState state;
+        protected readonly IChannel connection;
 
         public Stream InputOutputStream { get; protected set; }
 
-        public TftpTransfer(ITftpChannel connection, String filename)
+        public TftpTransfer(IChannel connection, String filename)
         {
             if (connection == null)
                 throw new ArgumentNullException("connection");
 
+            this.BlockSize = DEFAULT_BLOCKSIZE;
             this.Filename = filename;
             this.state = null;
-            this.OptionsBackend = new TransferOptions();
-            this.Options = OptionsBackend;
 
             this.connection = connection;
             this.connection.OnCommandReceived += new TftpCommandHandler(connection_OnCommandReceived);
+            this.connection.OnError += new TftpChannelErrorHandler(connection_OnError);
             this.connection.Open();
+        }
+
+        void connection_OnError(TftpTransferError error)
+        {
+            RaiseOnError(error);
         }
 
         private void connection_OnCommandReceived(ITftpCommand command, EndPoint endpoint)
@@ -43,7 +50,7 @@ namespace Tftp.Net.Transfer
             }
         }
 
-        internal virtual void SetState(ITftpState newState)
+        internal virtual void SetState(ITransferState newState)
         {
             if (newState == null)
                 throw new ArgumentNullException("newState");
@@ -52,12 +59,12 @@ namespace Tftp.Net.Transfer
             state.OnStateEnter();
         }
 
-        protected virtual ITftpState Decorate(ITftpState state)
+        protected virtual ITransferState Decorate(ITransferState state)
         {
             return new LoggingStateDecorator(state);
         }
 
-        internal ITftpChannel GetConnection()
+        internal IChannel GetConnection()
         {
             return connection;
         }
@@ -68,10 +75,10 @@ namespace Tftp.Net.Transfer
                 OnProgress(this, bytesTransferred);
         }
 
-        internal void RaiseOnError(ushort code, String error)
+        internal void RaiseOnError(TftpTransferError error)
         {
             if (OnError != null)
-                OnError(this, code, error);
+                OnError(this, error);
         }
 
         internal void RaiseOnFinished()
@@ -89,9 +96,10 @@ namespace Tftp.Net.Transfer
 
         public object UserContext { get; set; }
         public TimeSpan Timeout { get; set; }
-        public TransferOptions OptionsBackend { get; private set; }
         public ITftpTransferOptions Options { get; protected set; }
         public string Filename { get; private set; }
+        public int BlockSize { get; set; }
+        public virtual TftpTransferMode TransferMode { get; set; }
 
         public void Start(Stream data)
         {
@@ -117,18 +125,6 @@ namespace Tftp.Net.Transfer
             }
         }
 
-        private int GetBlockSize()
-        {
-            return DEFAULT_BLOCKSIZE;
-        }
-
-        public int BlockSize
-        {
-            get { return GetBlockSize(); }
-        }
-
-        public virtual TftpTransferMode TransferMode { get;  set; }
-
         public virtual void Dispose()
         {
             lock (this)
@@ -146,17 +142,5 @@ namespace Tftp.Net.Transfer
         }
 
         #endregion
-
-        public void RemoveOptionsThatWereNotAcknowledged()
-        {
-            foreach (TftpTransferOption option in OptionsBackend.Where(x => !x.IsAcknowledged).ToList())
-                OptionsBackend.Remove(option.Name);
-        }
-
-        public void SetOptionsAcknowledged(IEnumerable<TftpTransferOption> acknowledgedOptions)
-        {
-            foreach (TftpTransferOption option in Options)
-                option.IsAcknowledged = acknowledgedOptions.Any(x => x.Name == option.Name);
-        }
     }
 }
