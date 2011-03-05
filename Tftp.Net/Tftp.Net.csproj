@@ -48,8 +48,11 @@
     <Compile Include="TftpClient.cs" />
     <Compile Include="ITftpTransferOptions.cs" />
     <Compile Include="TftpTransferError.cs" />
-    <Compile Include="TransferOptions\BlockSizeOption.cs" />
+    <Compile Include="Trace\TraceHelper.cs" />
+    <Compile Include="TransferOptions\Handlers\BlockSizeOption.cs" />
     <Compile Include="TransferOptions\ITftpTransferOptionHandler.cs" />
+    <Compile Include="TransferOptions\Handlers\TimeoutIntervalOption.cs" />
+    <Compile Include="TransferOptions\Handlers\TransferSizeOption.cs" />
     <Compile Include="TransferOptions\TransferOption.cs" />
     <Compile Include="TransferOptions\TransferOptionsIncoming.cs" />
     <Compile Include="TransferOptions\TransferOptionsOutgoing.cs" />
@@ -65,7 +68,7 @@
     <Compile Include="Transfer\States\BaseState.cs" />
     <Compile Include="Transfer\States\ITransferState.cs" />
     <Compile Include="ITftpTransfer.cs" />
-    <Compile Include="Transfer\LoggingStateDecorator.cs" />
+    <Compile Include="Trace\LoggingStateDecorator.cs" />
     <Compile Include="Transfer\States\SendOptionAcknowledgementForWriteRequest.cs" />
     <Compile Include="Transfer\States\SendReadRequest.cs" />
     <Compile Include="Transfer\States\SentLastPacket.cs" />

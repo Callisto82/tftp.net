@@ -10,6 +10,7 @@ using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
 using System.Threading;
 using Tftp.Net.TransferOptions;
+using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer
 {
@@ -30,6 +31,7 @@ namespace Tftp.Net.Transfer
             this.BlockSize = DEFAULT_BLOCKSIZE;
             this.Filename = filename;
             this.state = null;
+            this.Timeout = new TimeSpan(0, 0, 5); // set the default timeout to 5 seconds
 
             this.connection = connection;
             this.connection.OnCommandReceived += new TftpCommandHandler(connection_OnCommandReceived);
@@ -61,7 +63,7 @@ namespace Tftp.Net.Transfer
 
         protected virtual ITransferState Decorate(ITransferState state)
         {
-            return new LoggingStateDecorator(state);
+            return new LoggingStateDecorator(state, this);
         }
 
         internal IChannel GetConnection()
@@ -85,6 +87,11 @@ namespace Tftp.Net.Transfer
         {
             if (OnFinished != null)
                 OnFinished(this);
+        }
+
+        public override string ToString()
+        {
+            return GetHashCode() + " (" + Filename + ")";
         }
 
 

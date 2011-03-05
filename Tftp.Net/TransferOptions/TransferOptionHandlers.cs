@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tftp.Net.TransferOptions.Handlers;
 
 namespace Tftp.Net.TransferOptions
 {
@@ -20,6 +21,8 @@ namespace Tftp.Net.TransferOptions
         static TransferOptionHandlers()
         {
             Add(new BlockSizeOption());
+            Add(new TimeoutIntervalOption());
+            Add(new TransferSizeOption());
         }
 
         /// <summary>
@@ -53,7 +56,7 @@ namespace Tftp.Net.TransferOptions
         {
             foreach (TransferOption option in options)
             {
-                bool wasAcknowledged = All.Any(x => x.Acknowledge(transfer, option));
+                bool wasAcknowledged = All.Any(x => x.ApplyOption(transfer, option));
                 option.IsAcknowledged = wasAcknowledged;
             }
         }

@@ -112,7 +112,7 @@ namespace Tftp.Net.UnitTests
             this.optionName = name;
         }
 
-        public bool Acknowledge(ITftpTransfer transfer, ITftpTransferOption option)
+        public bool ApplyOption(ITftpTransfer transfer, ITftpTransferOption option)
         {
             AcknowledgeWasCalled = true;
             return option.Name == optionName;
