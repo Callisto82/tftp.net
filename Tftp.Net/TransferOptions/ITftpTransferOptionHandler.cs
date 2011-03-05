@@ -13,6 +13,6 @@ namespace Tftp.Net.TransferOptions
         /// <summary>
         /// Return true to acknowledge the given option, false otherwise.
         /// </summary>
-        bool Acknowledge(ITftpTransfer transfer, ITftpTransferOption option);
+        bool ApplyOption(ITftpTransfer transfer, ITftpTransferOption option);
     }
 }

@@ -7,16 +7,20 @@ using Tftp.Net.Transfer.States;
 using System.IO;
 using Tftp.Net.Channel;
 using System.Net;
+using Tftp.Net.Trace;
+using Tftp.Net.Transfer;
 
-namespace Tftp.Net.Transfer
+namespace Tftp.Net.Trace
 {
     class LoggingStateDecorator : ITransferState
     {
         private readonly ITransferState decoratee;
+        private readonly TftpTransfer transfer;
 
-        public LoggingStateDecorator(ITransferState decoratee)
+        public LoggingStateDecorator(ITransferState decoratee, TftpTransfer transfer)
         {
             this.decoratee = decoratee;
+            this.transfer = transfer;
         }
 
         public String GetStateName()
@@ -26,31 +30,31 @@ namespace Tftp.Net.Transfer
 
         public void OnStateEnter()
         {
-            Trace.WriteLine(GetStateName() + " OnStateEnter");
+            TftpTrace.Trace(GetStateName() + " OnStateEnter", transfer);
             decoratee.OnStateEnter();
         }
 
         public void OnStart()
         {
-            Trace.WriteLine(GetStateName() + " OnStart");
+            TftpTrace.Trace(GetStateName() + " OnStart", transfer);
             decoratee.OnStart();
         }
 
         public void OnCancel()
         {
-            Trace.WriteLine(GetStateName() + " OnCancel");
+            TftpTrace.Trace(GetStateName() + " OnCancel", transfer);
             decoratee.OnCancel();
         }
 
         public void OnCommand(ITftpCommand command, EndPoint endpoint)
         {
-            Trace.WriteLine(GetStateName() + " OnCommand: " + command + " from " + endpoint);
+            TftpTrace.Trace(GetStateName() + " OnCommand: " + command + " from " + endpoint, transfer);
             decoratee.OnCommand(command, endpoint);
         }
 
         public void OnTimer()
         {
-            Trace.WriteLine(GetStateName() + " OnTimer");
+            TftpTrace.Trace(GetStateName() + " OnTimer", transfer);
             decoratee.OnTimer();
         }
     }

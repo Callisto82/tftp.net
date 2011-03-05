@@ -11,7 +11,7 @@ namespace Tftp.Net.TransferOptions
 
         public IEnumerator<ITftpTransferOption> GetEnumerator()
         {
-            return options.Values.GetEnumerator();
+            return options.Values.Cast<ITftpTransferOption>().GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

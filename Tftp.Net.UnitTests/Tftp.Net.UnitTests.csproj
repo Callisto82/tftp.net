@@ -53,7 +53,10 @@
     <Compile Include="Commands\TftpStreamReader_Test.cs" />
     <Compile Include="Commands\TftpStreamWriter_Test.cs" />
     <Compile Include="Channel\UdpChannel_Test.cs" />
+    <Compile Include="Trace\TftpTrace_Test.cs" />
     <Compile Include="TransferOptions\BlockSizeOption_Test.cs" />
+    <Compile Include="TransferOptions\TimeoutIntervalOption_Test.cs" />
+    <Compile Include="TransferOptions\TransferSizeOption_Test.cs" />
     <Compile Include="Transfer\SimpleTimer_Test.cs" />
     <Compile Include="Transfer\States\CancelledByUserState_Test.cs" />
     <Compile Include="Transfer\States\ClosedState_Test.cs" />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Tftp.Net.TransferOptions;
+using Tftp.Net.TransferOptions.Handlers;
 
 namespace Tftp.Net.UnitTests.TransferOptions
 {
@@ -31,7 +32,7 @@ namespace Tftp.Net.UnitTests.TransferOptions
         {
             Assert.AreNotEqual(16, transfer.BlockSize);
             ITftpTransferOption option = new TransferOption("blksize", "16");
-            Assert.IsTrue(blockSizeOption.Acknowledge(transfer, option));
+            Assert.IsTrue(blockSizeOption.ApplyOption(transfer, option));
             Assert.AreEqual(16, transfer.BlockSize);
         }
 
@@ -39,34 +40,34 @@ namespace Tftp.Net.UnitTests.TransferOptions
         public void IgnoreUnknownOption()
         {
             ITftpTransferOption option = new TransferOption("blub", "16");
-            Assert.IsFalse(blockSizeOption.Acknowledge(transfer, option));
+            Assert.IsFalse(blockSizeOption.ApplyOption(transfer, option));
         }
 
         [Test]
         public void IgnoreInvalidValue()
         {
             ITftpTransferOption option = new TransferOption("blksize", "not-a-number");
-            Assert.IsFalse(blockSizeOption.Acknowledge(transfer, option));
+            Assert.IsFalse(blockSizeOption.ApplyOption(transfer, option));
         }
 
         [Test]
         public void AcceptMinBlocksize()
         {
             ITftpTransferOption option = new TransferOption("blksize", "8");
-            Assert.IsTrue(blockSizeOption.Acknowledge(transfer, option));
+            Assert.IsTrue(blockSizeOption.ApplyOption(transfer, option));
 
             option = new TransferOption("blksize", "7");
-            Assert.IsFalse(blockSizeOption.Acknowledge(transfer, option));
+            Assert.IsFalse(blockSizeOption.ApplyOption(transfer, option));
         }
 
         [Test]
         public void AcceptMaxBlocksize()
         {
             ITftpTransferOption option = new TransferOption("blksize", "65464");
-            Assert.IsTrue(blockSizeOption.Acknowledge(transfer, option));
+            Assert.IsTrue(blockSizeOption.ApplyOption(transfer, option));
 
             option = new TransferOption("blksize", "65465");
-            Assert.IsFalse(blockSizeOption.Acknowledge(transfer, option));
+            Assert.IsFalse(blockSizeOption.ApplyOption(transfer, option));
         }
     }
 }

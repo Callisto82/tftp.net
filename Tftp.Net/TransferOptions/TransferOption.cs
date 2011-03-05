@@ -13,7 +13,7 @@ namespace Tftp.Net.TransferOptions
         #region ITftpTransferOption
 
         public String Name { get; private set; }
-        public String Value { get; private set; }
+        public String Value { get; set; }
         public bool IsAcknowledged { get; internal set; }
 
         #endregion
