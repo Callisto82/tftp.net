@@ -12,7 +12,7 @@ namespace Tftp.Net
     public delegate void TftpServerEventHandler(ITftpTransfer transfer, EndPoint client);
 
     /// <summary>
-    /// A simple TFTP server class
+    /// A simple TFTP server class. <code>Dispose()</code> the server to close the socket that it listens on.
     /// </summary>
     public class TftpServer : IDisposable
     {
@@ -45,7 +45,7 @@ namespace Tftp.Net
             serverSocket.Open();
         }
 
-        void serverSocket_OnCommandReceived(ITftpCommand command, EndPoint endpoint)
+        private void serverSocket_OnCommandReceived(ITftpCommand command, EndPoint endpoint)
         {
             //Ignore all other commands
             if (!(command is ReadOrWriteRequest))

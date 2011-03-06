@@ -4,18 +4,19 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using System.IO;
+using Tftp.Net.Commands;
 
 namespace Tftp.Net.UnitTests
 {
     [TestFixture]
-    class TftpCommandParser_Test
+    class TftpCommandParserAndSerializer_Test
     {
         private byte[] CommandToBytes(ITftpCommand command)
         {
             using (MemoryStream stream = new MemoryStream())
             using (TftpStreamWriter writer = new TftpStreamWriter(stream))
             {
-                command.Write(writer);
+                CommandSerializer.Serialize(command, writer);
                 byte[] commandAsBytes = stream.GetBuffer();
                 Array.Resize(ref commandAsBytes, (int)stream.Length);
                 return commandAsBytes;

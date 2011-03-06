@@ -7,8 +7,14 @@ using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net
 {
+    /// <summary>
+    /// Parses a ITftpCommand.
+    /// </summary>
     class CommandParser
     {
+        /// <summary>
+        /// Parses an ITftpCommand from the given byte array. If the byte array cannot be parsed for some reason, a TftpParserException is thrown.
+        /// </summary>
         public ITftpCommand Parse(byte[] message)
         {
             try
