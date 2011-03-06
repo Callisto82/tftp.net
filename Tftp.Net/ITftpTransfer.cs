@@ -17,10 +17,25 @@ namespace Tftp.Net
         mail
     }
 
+    /// <summary>
+    /// Represents a single data transfer between a TFTP server and client.
+    /// </summary>
     public interface ITftpTransfer : IDisposable
     {
+        /// <summary>
+        /// Event that is being called while data is being transferred.
+        /// </summary>
         event TftpProgressHandler OnProgress;
+
+        /// <summary>
+        /// Event that will be called once the data transfer is finished.
+        /// </summary>
         event TftpEventHandler OnFinished; 
+
+        /// <summary>
+        /// Event that will be called if there is an error during the data transfer.
+        /// Currently, this will return instances of ErrorFromRemoteEndpoint or NetworkError.
+        /// </summary>
         event TftpErrorHandler OnError;
 
         /// <summary>

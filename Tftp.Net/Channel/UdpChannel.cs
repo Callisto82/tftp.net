@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 using System.Diagnostics;
+using Tftp.Net.Commands;
 
 namespace Tftp.Net.Channel
 {
@@ -111,8 +112,7 @@ namespace Tftp.Net.Channel
             using (MemoryStream stream = new MemoryStream())
             using (TftpStreamWriter writer = new TftpStreamWriter(stream))
             {
-                command.Write(writer);
-
+                CommandSerializer.Serialize(command, writer);
                 byte[] data = stream.GetBuffer();
                 client.Send(data, (int)stream.Length, endpoint);
             }

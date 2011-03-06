@@ -26,7 +26,7 @@ namespace Tftp.Net.UnitTests.Runner
             setup.ConfigurationFile = Path.Combine(NUNIT_FOLDER, "NUnit.exe.config");
 
             AppDomain nunitDomain = AppDomain.CreateDomain("NUnit", null, setup);
-            nunitDomain.ExecuteAssembly(Path.Combine(NUNIT_FOLDER, NUNIT_EXE),
+            nunitDomain.ExecuteAssembly(Path.Combine(NUNIT_FOLDER, NUNIT_EXE), null,
                 new string[] { Path.Combine(
                     Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                     @"Tftp.Net.UnitTests.dll") });

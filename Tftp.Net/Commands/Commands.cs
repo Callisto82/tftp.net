@@ -11,7 +11,6 @@ namespace Tftp.Net
     interface ITftpCommand
     {
         void Visit(ITftpCommandVisitor visitor);
-        void Write(TftpStreamWriter writer);
     }
 
     interface ITftpCommandVisitor
@@ -38,26 +37,6 @@ namespace Tftp.Net
             this.Filename = filename;
             this.Mode = mode;
             this.Options = options;
-        }
-
-        public void Write(TftpStreamWriter writer)
-        {
-            writer.WriteUInt16(opCode);
-            writer.WriteBytes(Encoding.ASCII.GetBytes(Filename));
-            writer.WriteByte(0);
-            writer.WriteBytes(Encoding.ASCII.GetBytes(Mode.ToString()));
-            writer.WriteByte(0);
-
-            if (Options != null)
-            {
-                foreach (ITftpTransferOption option in Options)
-                {
-                    writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
-                    writer.WriteByte(0);
-                    writer.WriteBytes(Encoding.ASCII.GetBytes(option.Value));
-                    writer.WriteByte(0);
-                }
-            }
         }
     }
 
@@ -104,13 +83,6 @@ namespace Tftp.Net
         {
             visitor.OnData(this);
         }
-
-        public void Write(TftpStreamWriter writer)
-        {
-            writer.WriteUInt16(OpCode);
-            writer.WriteUInt16(BlockNumber);
-            writer.WriteBytes(Bytes);
-        }
     }
 
     class Acknowledgement : ITftpCommand
@@ -127,12 +99,6 @@ namespace Tftp.Net
         public void Visit(ITftpCommandVisitor visitor)
         {
             visitor.OnAcknowledgement(this);
-        }
-
-        public void Write(TftpStreamWriter writer)
-        {
-            writer.WriteUInt16(OpCode);
-            writer.WriteUInt16(BlockNumber);
         }
     }
 
@@ -153,14 +119,6 @@ namespace Tftp.Net
         {
             visitor.OnError(this);
         }
-
-        public void Write(TftpStreamWriter writer)
-        {
-            writer.WriteUInt16(OpCode);
-            writer.WriteUInt16(ErrorCode);
-            writer.WriteBytes(Encoding.ASCII.GetBytes(Message));
-            writer.WriteByte(0);
-        }
     }
 
     class OptionAcknowledgement : ITftpCommand
@@ -176,19 +134,6 @@ namespace Tftp.Net
         public void Visit(ITftpCommandVisitor visitor)
         {
             visitor.OnOptionAcknowledgement(this);
-        }
-
-        public void Write(TftpStreamWriter writer)
-        {
-            writer.WriteUInt16(OpCode);
-
-            foreach (ITftpTransferOption option in Options)
-            {
-                writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
-                writer.WriteByte(0);
-                writer.WriteBytes(Encoding.ASCII.GetBytes(option.Value));
-                writer.WriteByte(0);
-            }
         }
     }
 }
