@@ -14,17 +14,23 @@ namespace Tftp.Net.SampleClient
 
         static void Main(string[] args)
         {
-            IPEndPoint receiveFrom = new IPEndPoint(IPAddress.Loopback, 69);
-            TftpClient client = new TftpClient(receiveFrom);
+            //Setup a TftpClient instance
+            IPEndPoint serverAddress = new IPEndPoint(IPAddress.Loopback, 69);
+            TftpClient client = new TftpClient(serverAddress);
+
+            //Prepare a simple transfer (GET test.dat)
             ITftpTransfer transfer = client.Receive("test.dat");
+
+            //Capture the events that may happen during the transfer
             transfer.OnProgress += new TftpProgressHandler(transfer_OnProgress);
             transfer.OnFinished += new TftpEventHandler(transfer_OnFinshed);
             transfer.OnError += new TftpErrorHandler(transfer_OnError);
 
+            //Start the transfer and write the data that we're downloading into a memory stream
             MemoryStream stream = new MemoryStream();
-            transfer.UserContext = stream;
             transfer.Start(stream);
 
+            //Wait for the transfer to finish
             TransferFinishedEvent.WaitOne();
             Console.ReadKey();
         }
@@ -42,7 +48,7 @@ namespace Tftp.Net.SampleClient
 
         static void transfer_OnFinshed(ITftpTransfer transfer)
         {
-            Console.WriteLine("Transfer succeeded. Loaded " + ((Stream)transfer.UserContext).Length + " bytes from server.");
+            Console.WriteLine("Transfer succeeded.");
             TransferFinishedEvent.Set();
         }
     }

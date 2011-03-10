@@ -14,7 +14,7 @@ namespace Tftp.Net.SampleServer
 
         static void Main(string[] args)
         {
-            ServerDirectory = @"C:\Temp\tftp";
+            ServerDirectory = Environment.CurrentDirectory;
 
             Console.WriteLine("Running TFTP server for directory: " + ServerDirectory);
             Console.WriteLine();
