@@ -41,7 +41,10 @@ namespace Tftp.Net.Transfer
 
         void connection_OnError(TftpTransferError error)
         {
-            RaiseOnError(error);
+            lock (this)
+            {
+                RaiseOnError(error);
+            }
         }
 
         private void connection_OnCommandReceived(ITftpCommand command, EndPoint endpoint)

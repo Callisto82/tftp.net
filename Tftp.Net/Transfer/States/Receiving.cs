@@ -35,10 +35,9 @@ namespace Tftp.Net.Transfer.States
                 }
                 else
                 {
+                    nextBlockNumber++;
                     bytesReceived += command.Bytes.Length;
                     Context.RaiseOnProgress(bytesReceived);
-
-                    nextBlockNumber++;
                 }
             }
             else

@@ -10,6 +10,7 @@ using Tftp.Net.Transfer;
 namespace Tftp.Net
 {
     public delegate void TftpServerEventHandler(ITftpTransfer transfer, EndPoint client);
+    public delegate void TftpServerErrorHandler(TftpTransferError error);
 
     /// <summary>
     /// A simple TFTP server class. <code>Dispose()</code> the server to close the socket that it listens on.
@@ -27,6 +28,11 @@ namespace Tftp.Net
         public event TftpServerEventHandler OnWriteRequest;
 
         /// <summary>
+        /// Fired when the server encounters an error (for example, a non-parseable request)
+        /// </summary>
+        public event TftpServerErrorHandler OnError;
+
+        /// <summary>
         /// Server port that we're listening on.
         /// </summary>
         private readonly IChannel serverSocket;
@@ -35,6 +41,7 @@ namespace Tftp.Net
         {
             serverSocket = ChannelFactory.CreateServer(localAddress);
             serverSocket.OnCommandReceived += new TftpCommandHandler(serverSocket_OnCommandReceived);
+            serverSocket.OnError += new TftpChannelErrorHandler(serverSocket_OnError);
         }
 
         /// <summary>
@@ -43,6 +50,11 @@ namespace Tftp.Net
         public void Start()
         {
             serverSocket.Open();
+        }
+
+        void serverSocket_OnError(TftpTransferError error)
+        {
+            RaiseOnError(error);
         }
 
         private void serverSocket_OnCommandReceived(ITftpCommand command, EndPoint endpoint)
@@ -72,6 +84,12 @@ namespace Tftp.Net
             serverSocket.Dispose();
         }
         #endregion
+
+        private void RaiseOnError(TftpTransferError error)
+        {
+            if (OnError != null)
+                OnError(error);
+        }
 
         private void RaiseOnWriteRequest(ITftpTransfer transfer, EndPoint client)
         {

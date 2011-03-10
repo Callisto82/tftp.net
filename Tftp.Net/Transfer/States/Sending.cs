@@ -44,10 +44,11 @@ namespace Tftp.Net.Transfer.States
 
             //Notify our observers about our progress
             bytesSent += lastSentPacket.Length;
-            Context.RaiseOnProgress(bytesSent);
 
             SendNextPacket((ushort)(lastBlockNumber + 1));
             timer.Restart();
+
+            Context.RaiseOnProgress(bytesSent);
         }
 
         public override void OnError(Error command)
@@ -63,6 +64,9 @@ namespace Tftp.Net.Transfer.States
         #region Helper Methods
         private void SendNextPacket(ushort blockNumber)
         {
+            if (Context.InputOutputStream == null)
+                return;
+
             int packetLength = Context.InputOutputStream.Read(lastSentPacket, 0, lastSentPacket.Length);
             lastBlockNumber = blockNumber;
 
