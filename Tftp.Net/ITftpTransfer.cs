@@ -76,8 +76,8 @@ namespace Tftp.Net
         void Start(Stream data);
 
         /// <summary>
-        /// Cancel the currently running transfer.
+        /// Cancel the currently running transfer, possibly sending the provided reason to the remote endpoint.
         /// </summary>
-        void Cancel();
+        void Cancel(TftpErrorPacket reason);
     }
 }

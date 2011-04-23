@@ -16,7 +16,7 @@ namespace Tftp.Net.Transfer.States
             Context.SetState(new SendWriteRequest(Context));
         }
 
-        public override void OnCancel()
+        public override void OnCancel(TftpErrorPacket reason)
         {
             Context.SetState(new Closed(Context));
         }

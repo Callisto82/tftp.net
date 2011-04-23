@@ -12,7 +12,7 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void Create()
         {
-            ErrorFromRemoteEndpoint error = new ErrorFromRemoteEndpoint(123, "Test Message");
+            TftpErrorPacket error = new TftpErrorPacket(123, "Test Message");
             Assert.AreEqual(123, error.ErrorCode);
             Assert.AreEqual("Test Message", error.ErrorMessage);
         }
@@ -21,14 +21,14 @@ namespace Tftp.Net.UnitTests
         [ExpectedException(typeof(ArgumentException))]
         public void CreateInvalidMessage1()
         {
-            ErrorFromRemoteEndpoint error = new ErrorFromRemoteEndpoint(123, null);
+            TftpErrorPacket error = new TftpErrorPacket(123, null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
         public void CreateInvalidMessage2()
         {
-            ErrorFromRemoteEndpoint error = new ErrorFromRemoteEndpoint(123, "");
+            TftpErrorPacket error = new TftpErrorPacket(123, "");
         }
     }
 }

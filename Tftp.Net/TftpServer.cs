@@ -99,7 +99,7 @@ namespace Tftp.Net
             }
             else
             {
-                transfer.Cancel();
+                transfer.Cancel(new TftpErrorPacket(0, "Server did not provide a OnWriteRequest handler."));
             }
         }
 
@@ -111,7 +111,7 @@ namespace Tftp.Net
             }
             else
             {
-                transfer.Cancel();
+                transfer.Cancel(new TftpErrorPacket(0, "Server did not provide a OnReadRequest handler."));
             }
         }
     }

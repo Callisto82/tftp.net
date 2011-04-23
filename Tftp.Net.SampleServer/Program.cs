@@ -34,7 +34,7 @@ namespace Tftp.Net.SampleServer
             Console.WriteLine("[" + transfer.Filename + "] Write request from "+ client + " for " + transfer.Filename);
             DumpOptions(transfer);
             Console.WriteLine("[" + transfer.Filename + "] Denying request.");
-            transfer.Cancel();
+            transfer.Cancel(TftpErrorPacket.IllegalOperation);
         }
 
         static void DumpOptions(ITftpTransfer transfer)
@@ -55,7 +55,7 @@ namespace Tftp.Net.SampleServer
             if (!file.FullName.ToLower().StartsWith(ServerDirectory.ToLower()))
             {
                 Console.WriteLine("[" + transfer.Filename + "] Denying request because the file is outside the server directory.");
-                transfer.Cancel();
+                transfer.Cancel(TftpErrorPacket.AccessViolation);
                 return;
             }
 
@@ -63,7 +63,7 @@ namespace Tftp.Net.SampleServer
             if (!file.Exists)
             {
                 Console.WriteLine("[" + transfer.Filename + "] Denying request because the file does not exist.");
-                transfer.Cancel();
+                transfer.Cancel(TftpErrorPacket.FileNotFound);
                 return;
             }
 

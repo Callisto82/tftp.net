@@ -36,7 +36,7 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void CanCancel()
         {
-            transfer.Cancel();
+            transfer.Cancel(TftpErrorPacket.IllegalOperation);
             Assert.IsTrue(transfer.CommandWasSent(typeof(Error)));
             Assert.IsInstanceOf<Closed>(transfer.State);
         }

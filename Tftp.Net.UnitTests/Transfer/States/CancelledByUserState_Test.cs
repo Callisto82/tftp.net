@@ -16,7 +16,7 @@ namespace Tftp.Net.UnitTests
         public void Setup()
         {
             transfer = new TransferStub();
-            transfer.SetState(new CancelledByUser(transfer));
+            transfer.SetState(new CancelledByUser(transfer, TftpErrorPacket.IllegalOperation));
         }
 
         [Test]

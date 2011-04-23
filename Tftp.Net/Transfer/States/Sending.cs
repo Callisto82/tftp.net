@@ -56,9 +56,9 @@ namespace Tftp.Net.Transfer.States
             Context.SetState(new ReceivedError(Context, command));
         }
 
-        public override void OnCancel()
+        public override void OnCancel(TftpErrorPacket reason)
         {
-            Context.SetState(new CancelledByUser(Context));
+            Context.SetState(new CancelledByUser(Context, reason));
         }
 
         #region Helper Methods

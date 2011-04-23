@@ -17,7 +17,7 @@ namespace Tftp.Net
     /// Errors that are sent from the remote party using the TFTP Error Packet are represented
     /// by this class.
     /// </summary>
-    public class ErrorFromRemoteEndpoint : TftpTransferError
+    public class TftpErrorPacket : TftpTransferError
     {
         /// <summary>
         /// Error code that was sent from the other party.
@@ -29,7 +29,7 @@ namespace Tftp.Net
         /// </summary>
         public string ErrorMessage { get; private set; }
 
-        public ErrorFromRemoteEndpoint(ushort errorCode, string errorMessage)
+        public TftpErrorPacket(ushort errorCode, string errorMessage)
         {
             if (String.IsNullOrEmpty(errorMessage))
                 throw new ArgumentException("You must provide an errorMessage.");
@@ -42,6 +42,16 @@ namespace Tftp.Net
         {
             return ErrorCode + " - " + ErrorMessage;
         }
+
+        #region Predefined error packets from RFC 1350
+        public static readonly TftpErrorPacket FileNotFound = new TftpErrorPacket(1, "File not found");
+        public static readonly TftpErrorPacket AccessViolation = new TftpErrorPacket(2, "Access violation");
+        public static readonly TftpErrorPacket DiskFull = new TftpErrorPacket(3, "Disk full or allocation exceeded");
+        public static readonly TftpErrorPacket IllegalOperation = new TftpErrorPacket(4, "Illegal TFTP operation");
+        public static readonly TftpErrorPacket UnknownTransferId = new TftpErrorPacket(5, "Unknown transfer ID");
+        public static readonly TftpErrorPacket FileAlreadyExists = new TftpErrorPacket(6, "File already exists");
+        public static readonly TftpErrorPacket NoSuchUser = new TftpErrorPacket(7, "No such user");
+        #endregion
     }
 
     /// <summary>

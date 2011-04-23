@@ -25,7 +25,7 @@ namespace Tftp.Net.Transfer.States
         {
         }
 
-        public virtual void OnCancel()
+        public virtual void OnCancel(TftpErrorPacket reason)
         {
         }
 

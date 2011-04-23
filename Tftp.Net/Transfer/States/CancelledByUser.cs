@@ -7,12 +7,17 @@ namespace Tftp.Net.Transfer.States
 {
     class CancelledByUser : BaseState
     {
-        public CancelledByUser(TftpTransfer context)
-            : base(context) { }
+        private readonly TftpErrorPacket reason;
+
+        public CancelledByUser(TftpTransfer context, TftpErrorPacket reason)
+            : base(context) 
+        {
+            this.reason = reason;
+        }
 
         public override void OnStateEnter()
         {
-            Error command = new Error(0, "Transfer cancelled by user.");
+            Error command = new Error(reason.ErrorCode, reason.ErrorMessage);
             Context.GetConnection().Send(command);
             Context.SetState(new Closed(Context));
         }

@@ -10,7 +10,7 @@ namespace Tftp.Net.Transfer.States
         private readonly TftpTransferError error;
 
         public ReceivedError(TftpTransfer context, Error error)
-            : this(context, new ErrorFromRemoteEndpoint(error.ErrorCode, error.Message)) { }
+            : this(context, new TftpErrorPacket(error.ErrorCode, error.Message)) { }
 
         public ReceivedError(TftpTransfer context, TftpTransferError error)
             : base(context)
