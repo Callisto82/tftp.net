@@ -127,11 +127,11 @@ namespace Tftp.Net.Transfer
             }
         }
 
-        public void Cancel()
+        public void Cancel(TftpErrorPacket reason)
         {
             lock (this)
             {
-                state.OnCancel();
+                state.OnCancel(reason);
             }
         }
 
@@ -139,7 +139,7 @@ namespace Tftp.Net.Transfer
         {
             lock (this)
             {
-                Cancel();
+                Cancel(new TftpErrorPacket(0, "ITftpTransfer has been disposed."));
 
                 if (InputOutputStream != null)
                 {

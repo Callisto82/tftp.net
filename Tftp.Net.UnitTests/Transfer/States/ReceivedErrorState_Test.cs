@@ -16,7 +16,7 @@ namespace Tftp.Net.UnitTests
         public void Setup()
         {
             transfer = new TransferStub();
-            transfer.SetState(new ReceivedError(transfer, new ErrorFromRemoteEndpoint(123, "Error")));
+            transfer.SetState(new ReceivedError(transfer, new TftpErrorPacket(123, "Error")));
         }
 
         [Test]
@@ -29,14 +29,14 @@ namespace Tftp.Net.UnitTests
                 OnErrorWasCalled = true;
                 Assert.AreEqual(transfer, t);
 
-                Assert.IsInstanceOf<ErrorFromRemoteEndpoint>(error);
+                Assert.IsInstanceOf<TftpErrorPacket>(error);
 
-                Assert.AreEqual(123, ((ErrorFromRemoteEndpoint)error).ErrorCode);
-                Assert.AreEqual("My Error", ((ErrorFromRemoteEndpoint)error).ErrorMessage);
+                Assert.AreEqual(123, ((TftpErrorPacket)error).ErrorCode);
+                Assert.AreEqual("My Error", ((TftpErrorPacket)error).ErrorMessage);
             };
 
             Assert.IsFalse(OnErrorWasCalled);
-            transfer.SetState(new ReceivedError(transfer, new ErrorFromRemoteEndpoint(123, "My Error")));
+            transfer.SetState(new ReceivedError(transfer, new TftpErrorPacket(123, "My Error")));
             Assert.IsTrue(OnErrorWasCalled);
         }
 

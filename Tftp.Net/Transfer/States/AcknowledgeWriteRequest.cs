@@ -37,9 +37,9 @@ namespace Tftp.Net.Transfer.States
             nextState.OnCommand(command, Context.GetConnection().RemoteEndpoint);
         }
 
-        public override void OnCancel()
+        public override void OnCancel(TftpErrorPacket reason)
         {
-            Context.SetState(new CancelledByUser(Context));
+            Context.SetState(new CancelledByUser(Context, reason));
         }
 
         public override void OnError(Error command)

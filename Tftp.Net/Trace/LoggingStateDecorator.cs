@@ -40,10 +40,10 @@ namespace Tftp.Net.Trace
             decoratee.OnStart();
         }
 
-        public void OnCancel()
+        public void OnCancel(TftpErrorPacket reason)
         {
-            TftpTrace.Trace(GetStateName() + " OnCancel", transfer);
-            decoratee.OnCancel();
+            TftpTrace.Trace(GetStateName() + " OnCancel: " + reason, transfer);
+            decoratee.OnCancel(reason);
         }
 
         public void OnCommand(ITftpCommand command, EndPoint endpoint)
