@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Tftp.Net.TransferOptions;
+using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer.States
 {
@@ -26,7 +27,10 @@ namespace Tftp.Net.Transfer.States
         {
             //Re-send the write request
             if (timer.IsTimeout())
+            {
+                TftpTrace.Trace("Timeout. Resending write request.", Context);
                 SendRequest();
+            }
         }
 
         private void SendRequest()

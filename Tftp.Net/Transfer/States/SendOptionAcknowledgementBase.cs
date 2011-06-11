@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Tftp.Net.Transfer.States;
+using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer
 {
@@ -27,6 +28,7 @@ namespace Tftp.Net.Transfer
             if (timer.IsTimeout())
             {
                 //We didn't get an acknowledgement in time. Re-send the option acknowledgement
+                TftpTrace.Trace("Timeout. Resending option acknowledgment.", Context);
                 SendAcknowledgement();
                 timer.Restart();
             }
