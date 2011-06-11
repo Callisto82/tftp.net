@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer.States
 {
@@ -25,6 +26,7 @@ namespace Tftp.Net.Transfer.States
         {
             if (timer.IsTimeout())
             {
+                TftpTrace.Trace("Timeout. Resending acknowledgment of write request.", Context);
                 Context.GetConnection().Send(new Acknowledgement(0));
                 timer.Restart();
             }

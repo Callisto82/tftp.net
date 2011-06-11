@@ -29,5 +29,10 @@ namespace Tftp.Net.TransferOptions
             this.Name = name;
             this.Value = value;
         }
+
+        public override string ToString()
+        {
+            return Name + "=" + Value;
+        }
     }
 }

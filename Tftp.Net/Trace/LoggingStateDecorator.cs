@@ -54,7 +54,6 @@ namespace Tftp.Net.Trace
 
         public void OnTimer()
         {
-            TftpTrace.Trace(GetStateName() + " OnTimer", transfer);
             decoratee.OnTimer();
         }
     }

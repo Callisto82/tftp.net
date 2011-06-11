@@ -6,6 +6,7 @@ using System.IO;
 using Tftp.Net.Channel;
 using System.Net;
 using Tftp.Net.TransferOptions;
+using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer.States
 {
@@ -36,7 +37,10 @@ namespace Tftp.Net.Transfer.States
         {
             //Re-send the read request
             if (timer.IsTimeout())
+            {
+                TftpTrace.Trace("Timeout. Resending read request.", Context);
                 SendRequest();
+            }
         }
 
         public override void OnCommand(ITftpCommand command, EndPoint endpoint)

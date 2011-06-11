@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer.States
 {
@@ -25,6 +26,7 @@ namespace Tftp.Net.Transfer.States
             if (timer.IsTimeout())
             {
                 //We didn't get an acknowledgement in time. Re-send the last data packet
+                TftpTrace.Trace("Timeout. Resending last packet.", Context);
                 SendPacket(lastBlockNumber, lastSentPacket);
                 timer.Restart();
             }

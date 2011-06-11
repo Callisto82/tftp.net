@@ -21,7 +21,7 @@ namespace Tftp.Net.Trace
             Enabled = true;
         }
 
-        internal static void Trace(String message, TftpTransfer transfer)
+        internal static void Trace(String message, ITftpTransfer transfer)
         {
             if (!Enabled)
                 return;

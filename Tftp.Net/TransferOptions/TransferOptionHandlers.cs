@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Tftp.Net.TransferOptions.Handlers;
+using Tftp.Net.Trace;
 
 namespace Tftp.Net.TransferOptions
 {
@@ -54,10 +55,13 @@ namespace Tftp.Net.TransferOptions
         /// </summary>
         internal static void HandleAcceptedOptions(ITftpTransfer transfer, IEnumerable<ITftpTransferOption> options)
         {
+            TftpTrace.Trace("Handling transfer options", transfer);
+
             foreach (TransferOption option in options)
             {
                 bool wasAcknowledged = All.Any(x => x.ApplyOption(transfer, option));
                 option.IsAcknowledged = wasAcknowledged;
+                TftpTrace.Trace(" " + option + " (" + (wasAcknowledged ? "Acknowledged" : "Not acknnowledged") + ")", transfer);
             }
         }
     }

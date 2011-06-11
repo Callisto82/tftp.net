@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer.States
 {
@@ -20,6 +21,7 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnStateEnter()
         {
+            TftpTrace.Trace("Received error: " + error, Context);
             Context.RaiseOnError(error);
             Context.SetState(new Closed(Context));
         }
