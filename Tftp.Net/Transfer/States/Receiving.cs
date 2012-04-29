@@ -62,6 +62,7 @@ namespace Tftp.Net.Transfer.States
         {
             Acknowledgement ack = new Acknowledgement(blockNumber);
             Context.GetConnection().Send(ack);
+            ResetTimeout();
         }
     }
 }

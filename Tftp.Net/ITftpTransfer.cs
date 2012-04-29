@@ -57,7 +57,12 @@ namespace Tftp.Net
         /// <summary>
         /// Timeout after which commands are sent again.
         /// </summary>
-        TimeSpan Timeout { get; set; }
+        TimeSpan RetryTimeout { get; set; }
+
+        /// <summary>
+        /// Number of times that a RetryTimeout may occour before the transfer is cancelled with a TimeoutError.
+        /// </summary>
+        int RetryCount { get; set; }
 
         /// <summary>
         /// Filename for the transferred file.

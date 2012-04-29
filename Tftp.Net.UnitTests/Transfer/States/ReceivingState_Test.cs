@@ -57,7 +57,6 @@ namespace Tftp.Net.UnitTests.Transfer.States
             Assert.IsInstanceOf<Closed>(transfer.State);
         }
 
-
         [Test]
         public void RaisesProgress()
         {
@@ -89,6 +88,20 @@ namespace Tftp.Net.UnitTests.Transfer.States
             Assert.IsTrue(onErrorWasCalled);
 
             Assert.IsInstanceOf<Closed>(transfer.State);
+        }
+
+        [Test]
+        public void TimeoutWhenNoDataIsReceivedAndRetryCountIsExceeded()
+        {
+            TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream(new byte[5000]));
+            transferWithLowTimeout.RetryTimeout = new TimeSpan(0);
+            transferWithLowTimeout.RetryCount = 1;
+            transferWithLowTimeout.SetState(new Receiving(transferWithLowTimeout));
+
+            transferWithLowTimeout.OnTimer();
+            Assert.IsFalse(transferWithLowTimeout.HadNetworkTimeout);
+            transferWithLowTimeout.OnTimer();
+            Assert.IsTrue(transferWithLowTimeout.HadNetworkTimeout);
         }
     }
 }

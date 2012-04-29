@@ -24,7 +24,7 @@ namespace Tftp.Net.TransferOptions.Handlers
             if (timeout < 1 || timeout > 255)
                 return false;
 
-            transfer.Timeout = new TimeSpan(0, 0, timeout);
+            transfer.RetryTimeout = new TimeSpan(0, 0, timeout);
             return true;
         }
     }

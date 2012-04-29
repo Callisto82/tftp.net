@@ -10,15 +10,10 @@ using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer.States
 {
-    class SendReadRequest : BaseState
+    class SendReadRequest : StateWithNetworkTimeout
     {
-        private readonly SimpleTimer timer;
-
         public SendReadRequest(TftpTransfer context)
-            : base(context) 
-        {
-            timer = new SimpleTimer(Context.Timeout);
-        }
+            : base(context)  { }
 
         public override void OnStateEnter()
         {
@@ -29,18 +24,7 @@ namespace Tftp.Net.Transfer.States
         private void SendRequest()
         {
             ReadRequest request = new ReadRequest(Context.Filename, Context.TransferMode, Context.Options);
-            Context.GetConnection().Send(request);
-            timer.Restart();
-        }
-
-        public override void OnTimer()
-        {
-            //Re-send the read request
-            if (timer.IsTimeout())
-            {
-                TftpTrace.Trace("Timeout. Resending read request.", Context);
-                SendRequest();
-            }
+            SendAndRepeat(request);
         }
 
         public override void OnCommand(ITftpCommand command, EndPoint endpoint)

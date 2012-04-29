@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Tftp.Net.Transfer.States
 {
-    class StateThatExpectsMessagesFromDefaultEndPoint : BaseState, ITftpCommandVisitor
+    class StateThatExpectsMessagesFromDefaultEndPoint : StateWithNetworkTimeout, ITftpCommandVisitor
     {
         public StateThatExpectsMessagesFromDefaultEndPoint(TftpTransfer context)
             : base(context) { }

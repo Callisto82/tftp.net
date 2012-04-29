@@ -8,28 +8,14 @@ namespace Tftp.Net.Transfer.States
 {
     class AcknowledgeWriteRequest : StateThatExpectsMessagesFromDefaultEndPoint
     {
-        private readonly SimpleTimer timer;
-
         public AcknowledgeWriteRequest(TftpTransfer context)
             : base(context) 
         {
-            timer = new SimpleTimer(context.Timeout);
         }
 
         public override void OnStateEnter()
         {
-            Context.GetConnection().Send(new Acknowledgement(0));
-            timer.Restart();
-        }
-
-        public override void OnTimer()
-        {
-            if (timer.IsTimeout())
-            {
-                TftpTrace.Trace("Timeout. Resending acknowledgment of write request.", Context);
-                Context.GetConnection().Send(new Acknowledgement(0));
-                timer.Restart();
-            }
+            SendAndRepeat(new Acknowledgement(0));
         }
 
         public override void OnData(Data command)
