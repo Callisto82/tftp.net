@@ -15,12 +15,21 @@ namespace Tftp.Net.UnitTests
     {
         private ChannelStub Channel { get { return (ChannelStub)connection; } }
         public List<ITftpCommand> SentCommands { get { return Channel.SentCommands; } }
+        public bool HadNetworkTimeout { get; set; }
 
         public TransferStub(MemoryStream stream)
             : base(new ChannelStub(), "dummy.txt") 
         {
             base.InputOutputStream = stream;
-            base.Options = new TransferOptionsOutgoing();            
+            base.Options = new TransferOptionsOutgoing();
+            HadNetworkTimeout = false;
+            this.OnError += new TftpErrorHandler(TransferStub_OnError);
+        }
+
+        void TransferStub_OnError(ITftpTransfer transfer, TftpTransferError error)
+        {
+            if (error is TimeoutError)
+                HadNetworkTimeout = true;
         }
 
         public TransferStub()

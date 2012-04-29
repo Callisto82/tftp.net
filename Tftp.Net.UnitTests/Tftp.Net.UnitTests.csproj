@@ -64,7 +64,6 @@
     <Compile Include="Transfer\States\ReceivingState_Test.cs" />
     <Compile Include="Transfer\States\SendingState_Test.cs" />
     <Compile Include="Transfer\States\SendReadRequestState_Test.cs" />
-    <Compile Include="Transfer\States\SentLastPacketState_Test.cs" />
     <Compile Include="Transfer\States\StartIncomingReadState_Test.cs" />
     <Compile Include="Transfer\States\StartIncomingWriteState_Test.cs" />
     <Compile Include="Transfer\States\SendWriteRequest_Test.cs" />

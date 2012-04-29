@@ -70,6 +70,25 @@ namespace Tftp.Net
         {
             return Exception.ToString();
         }
+    }
 
+    /// <summary>
+    /// $(ITftpTransfer.RetryTimeout) has been exceeded more than $(ITftpTransfer.RetryCount) times in a row.
+    /// </summary>
+    public class TimeoutError : TftpTransferError
+    {
+        private readonly TimeSpan RetryTimeout;
+        private readonly int RetryCount;
+
+        public TimeoutError(TimeSpan retryTimeout, int retryCount)
+        {
+            this.RetryTimeout = retryTimeout;
+            this.RetryCount = retryCount;
+        }
+
+        public override string ToString()
+        {
+            return "Timeout error. RetryTimeout (" + RetryCount + ") violated more than " + RetryCount + " times in a row";
+        }
     }
 }

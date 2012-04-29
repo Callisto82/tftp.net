@@ -8,14 +8,11 @@ using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer.States
 {
-    class SendWriteRequest : BaseState
+    class SendWriteRequest : StateWithNetworkTimeout
     {
-        private readonly SimpleTimer timer;
-
         public SendWriteRequest(TftpTransfer context)
             : base(context) 
         {
-            timer = new SimpleTimer(Context.Timeout);
         }
 
         public override void OnStateEnter()
@@ -23,21 +20,10 @@ namespace Tftp.Net.Transfer.States
             SendRequest();
         }
 
-        public override void OnTimer()
-        {
-            //Re-send the write request
-            if (timer.IsTimeout())
-            {
-                TftpTrace.Trace("Timeout. Resending write request.", Context);
-                SendRequest();
-            }
-        }
-
         private void SendRequest()
         {
             WriteRequest request = new WriteRequest(Context.Filename, Context.TransferMode, Context.Options);
-            Context.GetConnection().Send(request);
-            timer.Restart();
+            SendAndRepeat(request);
         }
 
         public override void OnCommand(ITftpCommand command, System.Net.EndPoint endpoint)

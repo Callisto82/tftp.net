@@ -9,33 +9,21 @@ namespace Tftp.Net.Transfer.States
 {
     class Sending : StateThatExpectsMessagesFromDefaultEndPoint
     {
-        private readonly SimpleTimer timer;
-        private byte[] lastSentPacket;
+        private byte[] lastData;
         private ushort lastBlockNumber;
         private int bytesSent = 0;
+        private bool lastPacketWasSent;
 
         public Sending(TftpTransfer context)
             : base(context)
         {
-            timer = new SimpleTimer(context.Timeout);
-            lastSentPacket = new byte[context.BlockSize];
-        }
-
-        public override void OnTimer()
-        {
-            if (timer.IsTimeout())
-            {
-                //We didn't get an acknowledgement in time. Re-send the last data packet
-                TftpTrace.Trace("Timeout. Resending last packet.", Context);
-                SendPacket(lastBlockNumber, lastSentPacket);
-                timer.Restart();
-            }
+            lastData = new byte[context.BlockSize];
+            lastPacketWasSent = false;
         }
 
         public override void OnStateEnter()
         {
  	         SendNextPacket(1);
-             timer.Restart();
         }
 
         public override void OnAcknowledgement(Acknowledgement command)
@@ -45,12 +33,19 @@ namespace Tftp.Net.Transfer.States
                 return;
 
             //Notify our observers about our progress
-            bytesSent += lastSentPacket.Length;
-
-            SendNextPacket((ushort)(lastBlockNumber + 1));
-            timer.Restart();
-
+            bytesSent += lastData.Length;
             Context.RaiseOnProgress(bytesSent);
+
+            if (lastPacketWasSent)
+            {
+                //We're done here
+                Context.RaiseOnFinished();
+                Context.SetState(new Closed(Context));
+            }
+            else
+            {
+                SendNextPacket((ushort)(lastBlockNumber + 1));
+            }
         }
 
         public override void OnError(Error command)
@@ -69,24 +64,20 @@ namespace Tftp.Net.Transfer.States
             if (Context.InputOutputStream == null)
                 return;
 
-            int packetLength = Context.InputOutputStream.Read(lastSentPacket, 0, lastSentPacket.Length);
+            int packetLength = Context.InputOutputStream.Read(lastData, 0, lastData.Length);
             lastBlockNumber = blockNumber;
 
-            if (packetLength != lastSentPacket.Length)
+            if (packetLength != lastData.Length)
             {
                 //This means we just sent the last packet
-                Array.Resize(ref lastSentPacket, packetLength);
-                Context.SetState(new SentLastPacket(Context, lastBlockNumber));
+                lastPacketWasSent = true;
+                Array.Resize(ref lastData, packetLength);
             }
 
-            SendPacket(blockNumber, lastSentPacket);
+            ITftpCommand dataCommand = new Data(blockNumber, lastData);
+            SendAndRepeat(dataCommand);
         }
 
-        private void SendPacket(ushort blockNumber, byte[] data)
-        {
-            ITftpCommand dataCommand = new Data(blockNumber, data);
-            Context.GetConnection().Send(dataCommand);
-        }
         #endregion
     }
 }

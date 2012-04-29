@@ -32,35 +32,35 @@ namespace Tftp.Net.UnitTests.TransferOptions
         public void AcceptsValidTimeout()
         {
             Assert.IsTrue(timeoutOption.ApplyOption(transfer, new TransferOption("timeout", "10")));
-            Assert.AreEqual(10, transfer.Timeout.TotalSeconds);
+            Assert.AreEqual(10, transfer.RetryTimeout.TotalSeconds);
         }
 
         [Test]
         public void AcceptsMinTimeout()
         {
             Assert.IsTrue(timeoutOption.ApplyOption(transfer, new TransferOption("timeout", "1")));
-            Assert.AreEqual(1, transfer.Timeout.TotalSeconds);
+            Assert.AreEqual(1, transfer.RetryTimeout.TotalSeconds);
         }
 
         [Test]
         public void AcceptsMaxTimeout()
         {
             Assert.IsTrue(timeoutOption.ApplyOption(transfer, new TransferOption("timeout", "255")));
-            Assert.AreEqual(255, transfer.Timeout.TotalSeconds);
+            Assert.AreEqual(255, transfer.RetryTimeout.TotalSeconds);
         }
 
         [Test]
         public void RejectsTimeoutTooLow()
         {
             Assert.IsFalse(timeoutOption.ApplyOption(transfer, new TransferOption("timeout", "0")));
-            Assert.AreNotEqual(0, transfer.Timeout.TotalSeconds);
+            Assert.AreNotEqual(0, transfer.RetryTimeout.TotalSeconds);
         }
 
         [Test]
         public void RejectsTimeoutTooHigh()
         {
             Assert.IsFalse(timeoutOption.ApplyOption(transfer, new TransferOption("timeout", "256")));
-            Assert.AreNotEqual(256, transfer.Timeout.TotalSeconds);
+            Assert.AreNotEqual(256, transfer.RetryTimeout.TotalSeconds);
         }
 
         [Test]

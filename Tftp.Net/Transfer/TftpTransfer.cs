@@ -31,7 +31,8 @@ namespace Tftp.Net.Transfer
             this.BlockSize = DEFAULT_BLOCKSIZE;
             this.Filename = filename;
             this.state = null;
-            this.Timeout = new TimeSpan(0, 0, 5); // set the default timeout to 5 seconds
+            this.RetryCount = 5;
+            this.RetryTimeout = new TimeSpan(0, 0, 5); // set the default timeout to 5 seconds
 
             this.connection = connection;
             this.connection.OnCommandReceived += new TftpCommandHandler(connection_OnCommandReceived);
@@ -105,9 +106,10 @@ namespace Tftp.Net.Transfer
         public event TftpErrorHandler OnError;
 
         public object UserContext { get; set; }
-        public TimeSpan Timeout { get; set; }
+        public TimeSpan RetryTimeout { get; set; }
         public ITftpTransferOptions Options { get; protected set; }
         public string Filename { get; private set; }
+        public int RetryCount { get; set; }
         public int BlockSize { get; set; }
         public virtual TftpTransferMode TransferMode { get; set; }
 
