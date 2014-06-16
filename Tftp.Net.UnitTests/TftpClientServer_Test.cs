@@ -24,7 +24,7 @@ namespace Tftp.Net.UnitTests
                 server.Start();
 
                 TftpClient client = new TftpClient(new IPEndPoint(IPAddress.Loopback, 69));
-                using (ITftpTransfer transfer = client.Receive("Demo File"))
+                using (ITftpTransfer transfer = client.Download("Demo File"))
                 {
                     MemoryStream ms = new MemoryStream();
                     transfer.OnFinished += new TftpEventHandler(transfer_OnFinished);

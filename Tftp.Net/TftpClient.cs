@@ -15,6 +15,7 @@ namespace Tftp.Net
     /// </summary>
     public class TftpClient
     {
+        private const int DEFAULT_SERVER_PORT = 69;
         private readonly IPEndPoint remoteAddress;
 
         /// <summary>
@@ -27,20 +28,63 @@ namespace Tftp.Net
         }
 
         /// <summary>
-        /// GET (receive) a file from the server.
-        /// You have to call start on the returned ITftpTransfer to start the transfer.
+        /// Connects to a server
         /// </summary>
-        public ITftpTransfer Receive(String filename)
+        /// <param name="ip">Address of the server that you want connect to.</param>
+        /// <param name="port">Port on the server that you want connect to (default: 69)</param>
+        public TftpClient(IPAddress ip, int port)
+            : this(new IPEndPoint(ip, port)) 
+        { 
+        }
+
+        /// <summary>
+        /// Connects to a server on port 69.
+        /// </summary>
+        /// <param name="ip">Address of the server that you want connect to.</param>
+        public TftpClient(IPAddress ip)
+            : this(new IPEndPoint(ip, DEFAULT_SERVER_PORT))
+        {
+        }
+
+        /// <summary>
+        /// Connect to a server by hostname.
+        /// </summary>
+        /// <param name="host">Hostname or ip to connect to</param>
+        public TftpClient(String host)
+            : this(host, DEFAULT_SERVER_PORT)
+        {
+        }
+
+        /// <summary>
+        /// Connect to a server by hostname and port .
+        /// </summary>
+        /// <param name="host">Hostname or ip to connect to</param>
+        /// <param name="port">Port to connect to</param>
+        public TftpClient(String host, int port)
+        {
+            IPAddress ip = Dns.GetHostAddresses(host).FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+
+            if (ip == null)
+                throw new ArgumentException("Could not convert host to an IPv4 address.", "host");
+
+            this.remoteAddress = new IPEndPoint(ip, port);
+        }
+
+        /// <summary>
+        /// GET a file from the server.
+        /// You have to call Start() on the returned ITftpTransfer to start the transfer.
+        /// </summary>
+        public ITftpTransfer Download(String filename)
         {
             IChannel channel = ChannelFactory.CreateConnection(remoteAddress);
             return new RemoteReadTransfer(channel, filename);
         }
 
         /// <summary>
-        /// PUT (write) a file from the server.
-        /// You have to call start on the returned ITftpTransfer to start the transfer.
+        /// PUT a file from the server.
+        /// You have to call Start() on the returned ITftpTransfer to start the transfer.
         /// </summary>
-        public ITftpTransfer Send(String filename)
+        public ITftpTransfer Upload(String filename)
         {
             IChannel channel = ChannelFactory.CreateConnection(remoteAddress);
             return new RemoteWriteTransfer(channel, filename);
