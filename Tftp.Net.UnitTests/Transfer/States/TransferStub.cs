@@ -7,7 +7,6 @@ using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
 using System.Net;
 using System.IO;
-using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net.UnitTests
 {
@@ -21,7 +20,6 @@ namespace Tftp.Net.UnitTests
             : base(new ChannelStub(), "dummy.txt") 
         {
             base.InputOutputStream = stream;
-            base.Options = new TransferOptionsOutgoing();
             HadNetworkTimeout = false;
             this.OnError += new TftpErrorHandler(TransferStub_OnError);
         }
@@ -50,7 +48,7 @@ namespace Tftp.Net.UnitTests
             return SentCommands.Any(x => x.GetType().IsAssignableFrom(commandType));
         }
 
-        protected override ITransferState Decorate(ITransferState state)
+        protected override ITransferState DecorateForLogging(ITransferState state)
         {
             return state;
         }
@@ -108,23 +106,6 @@ namespace Tftp.Net.UnitTests
         public void Dispose()
         {
             IsOpen = false;
-        }
-    }
-
-    class OptionHandlerStub : ITftpTransferOptionHandler
-    {
-        private readonly string optionName;
-        public bool AcknowledgeWasCalled { get; private set; }
-
-        public OptionHandlerStub(string name)
-        {
-            this.optionName = name;
-        }
-
-        public bool ApplyOption(ITftpTransfer transfer, ITftpTransferOption option)
-        {
-            AcknowledgeWasCalled = true;
-            return option.Name == optionName;
         }
     }
 }

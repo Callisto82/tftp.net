@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using Tftp.Net.TransferOptions.Handlers;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 using System.IO;
 
 namespace Tftp.Net.UnitTests.TransferOptions
@@ -12,55 +11,39 @@ namespace Tftp.Net.UnitTests.TransferOptions
     [TestFixture]
     class TransferSizeOption_Test
     {
-        private TransferStub transfer;
-        private TransferSizeOption transferSizeOption;
+        private TftpTransferOptions options;
 
         [SetUp]
         public void Setup()
         {
-            transfer = new TransferStub(new MemoryStream(new byte[4001]));
-            transferSizeOption = new TransferSizeOption();
-        }
-
-        [Test]
-        public void OptionIsSupportedByDefault()
-        {
-            Assert.IsTrue(TransferOptionHandlers.All.Any(x => x is TransferSizeOption));
+            options = new TftpTransferOptions();
         }
 
         [Test]
         public void ReadsTransferSize()
         {
-            TransferOption option = new TransferOption("tsize", "");
-            Assert.IsTrue(transferSizeOption.ApplyOption(transfer, option));
-            Assert.AreEqual("4001", option.Value);
+            Parse(new TransferOption("tsize", "0"));
+            Assert.IsTrue(options.IsTransferSizeOptionActive);
+            Assert.AreEqual(0, options.TransferSize);
         }
 
         [Test]
-        public void CannotReadTransferSize()
+        public void RejectsNegativeTransferSize()
         {
-            TransferStub stub = new TransferStub(null);
-            TransferOption option = new TransferOption("tsize", "");
-            Assert.IsFalse(transferSizeOption.ApplyOption(stub, option));
+            Parse(new TransferOption("tsize", "-1"));
+            Assert.IsFalse(options.IsTransferSizeOptionActive);
         }
 
         [Test]
-        public void ErrorReadingTransferSize()
+        public void RejectsNonIntegerTransferSize()
         {
-            TransferStub stub = new TransferStub(new StreamThatThrowsExceptionWhenReadingLength());
-            TransferOption option = new TransferOption("tsize", "");
-            Assert.IsFalse(transferSizeOption.ApplyOption(stub, option));
+            Parse(new TransferOption("tsize", "abc"));
+            Assert.IsFalse(options.IsTransferSizeOptionActive);
         }
 
-        private class StreamThatThrowsExceptionWhenReadingLength : MemoryStream
+        private void Parse(TransferOption option)
         {
-            public override long Length
-            {
-                get
-                {
-                    throw new NotSupportedException();
-                }
-            }
+            options.SetActiveOptions(new TransferOption[] { option });
         }
     }
 }

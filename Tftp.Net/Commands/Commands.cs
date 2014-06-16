@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Tftp.Net.Transfer;
-using Tftp.Net.TransferOptions;
 
 namespace Tftp.Net
 {
@@ -29,9 +28,9 @@ namespace Tftp.Net
 
         public String Filename { get; private set; }
         public TftpTransferMode Mode { get; private set; }
-        public IEnumerable<ITftpTransferOption> Options { get; private set; }
+        public IEnumerable<TransferOption> Options { get; private set; }
 
-        protected ReadOrWriteRequest(ushort opCode, String filename, TftpTransferMode mode, IEnumerable<ITftpTransferOption> options)
+        protected ReadOrWriteRequest(ushort opCode, String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
         {
             this.opCode = opCode;
             this.Filename = filename;
@@ -44,7 +43,7 @@ namespace Tftp.Net
     {
         public const ushort OpCode = 1;
 
-        public ReadRequest(String filename, TftpTransferMode mode, IEnumerable<ITftpTransferOption> options)
+        public ReadRequest(String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
             : base(OpCode, filename, mode, options) { }
 
         public void Visit(ITftpCommandVisitor visitor)
@@ -57,7 +56,7 @@ namespace Tftp.Net
     {
         public const ushort OpCode = 2;
 
-        public WriteRequest(String filename, TftpTransferMode mode, IEnumerable<ITftpTransferOption> options)
+        public WriteRequest(String filename, TftpTransferMode mode, IEnumerable<TransferOption> options)
             : base(OpCode, filename, mode, options) { }
 
         public void Visit(ITftpCommandVisitor visitor)
@@ -124,9 +123,9 @@ namespace Tftp.Net
     class OptionAcknowledgement : ITftpCommand
     {
         public const ushort OpCode = 6;
-        public IEnumerable<ITftpTransferOption> Options { get; private set; }
+        public IEnumerable<TransferOption> Options { get; private set; }
 
-        public OptionAcknowledgement(IEnumerable<ITftpTransferOption> options)
+        public OptionAcknowledgement(IEnumerable<TransferOption> options)
         {
             this.Options = options;
         }

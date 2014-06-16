@@ -61,7 +61,7 @@ namespace Tftp.Net.UnitTests.Transfer.States
         public void RaisesProgress()
         {
             bool onProgressWasCalled = false;
-            transfer.OnProgress += delegate(ITftpTransfer t, int bytesTransferred) { Assert.AreEqual(transfer, t); Assert.IsTrue(bytesTransferred > 0); onProgressWasCalled = true; };
+            transfer.OnProgress += delegate(ITftpTransfer t, TftpTransferProgress progress) { Assert.AreEqual(transfer, t); Assert.IsTrue(progress.TransferredBytes > 0); onProgressWasCalled = true; };
 
             Assert.IsFalse(onProgressWasCalled);
             transfer.OnCommand(new Data(1, new byte[1000]));

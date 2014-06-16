@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 
 namespace Tftp.Net.UnitTests
 {
@@ -14,7 +14,6 @@ namespace Tftp.Net.UnitTests
     {
         private MemoryStream ms;
         private TransferStub transfer;
-        private OptionHandlerStub optionHandler;
 
         [SetUp]
         public void Setup()
@@ -22,15 +21,6 @@ namespace Tftp.Net.UnitTests
             ms = new MemoryStream();
             transfer = new TransferStub(ms);
             transfer.SetState(new SendReadRequest(transfer));
-
-            optionHandler = new OptionHandlerStub("blub");
-            TransferOptionHandlers.Add(optionHandler);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            TransferOptionHandlers.Remove(optionHandler);
         }
 
         [Test]
@@ -66,25 +56,18 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void HandlesOptionAcknowledgement()
         {
-            //Option handler for "blub" is registered in the setup-method.
-            transfer.Options.Request("blub", "bla");
-            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
-            Assert.IsFalse(optionHandler.AcknowledgeWasCalled);
-            transfer.OnCommand(new OptionAcknowledgement(transfer.Options));
-            Assert.IsTrue(optionHandler.AcknowledgeWasCalled);
-            Assert.IsTrue(transfer.Options.First().IsAcknowledged);
+            transfer.BlockSize = 999;
+            transfer.OnCommand(new OptionAcknowledgement(new TransferOption[] { new TransferOption("blksize", "999") }));
             Assert.IsTrue(transfer.CommandWasSent(typeof(Acknowledgement)));
-            Assert.IsInstanceOf<SendReadRequest>(transfer.State);
+            Assert.AreEqual(999, transfer.BlockSize);
         }
 
         [Test]
         public void HandlesMissingOptionAcknowledgement()
         {
-            transfer.Options.Request("blub", "bla");
-            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
+            transfer.BlockSize = 999;
             transfer.OnCommand(new Data(1, new byte[10]));
-            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
-            Assert.IsInstanceOf<Closed>(transfer.State);
+            Assert.AreEqual(512, transfer.BlockSize);
         }
 
         [Test]

@@ -70,7 +70,6 @@
     <Compile Include="Transfer\States\StartOutgoingRead_Test.cs" />
     <Compile Include="Transfer\States\StartOutgoingWrite_Test.cs" />
     <Compile Include="Transfer\States\TransferStub.cs" />
-    <Compile Include="TransferOptions\TransferOptionHandlers_Test.cs" />
     <Compile Include="TransferOptions\TransferOption_Test.cs" />
   </ItemGroup>
   <ItemGroup>

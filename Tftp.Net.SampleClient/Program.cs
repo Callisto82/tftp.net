@@ -19,7 +19,7 @@ namespace Tftp.Net.SampleClient
             TftpClient client = new TftpClient(serverAddress);
 
             //Prepare a simple transfer (GET test.dat)
-            ITftpTransfer transfer = client.Receive("test.dat");
+            ITftpTransfer transfer = client.Receive("EUPL-EN.pdf");
 
             //Capture the events that may happen during the transfer
             transfer.OnProgress += new TftpProgressHandler(transfer_OnProgress);
@@ -27,7 +27,7 @@ namespace Tftp.Net.SampleClient
             transfer.OnError += new TftpErrorHandler(transfer_OnError);
 
             //Start the transfer and write the data that we're downloading into a memory stream
-            MemoryStream stream = new MemoryStream();
+            Stream stream = new MemoryStream();
             transfer.Start(stream);
 
             //Wait for the transfer to finish
@@ -35,9 +35,9 @@ namespace Tftp.Net.SampleClient
             Console.ReadKey();
         }
 
-        static void transfer_OnProgress(ITftpTransfer transfer, int bytesTransferred)
+        static void transfer_OnProgress(ITftpTransfer transfer, TftpTransferProgress progress)
         {
-            Console.WriteLine("Transfer running. Got " + bytesTransferred + " bytes.");
+            Console.WriteLine("Transfer running. Progress: " + progress);
         }
 
         static void transfer_OnError(ITftpTransfer transfer, TftpTransferError error)

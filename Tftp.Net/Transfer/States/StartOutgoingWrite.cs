@@ -13,6 +13,7 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnStart()
         {
+            Context.FillOrDisableTransferSizeOption();
             Context.SetState(new SendWriteRequest(Context));
         }
 

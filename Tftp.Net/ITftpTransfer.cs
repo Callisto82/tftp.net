@@ -7,7 +7,7 @@ using System.IO;
 namespace Tftp.Net
 {
     public delegate void TftpEventHandler(ITftpTransfer transfer);
-    public delegate void TftpProgressHandler(ITftpTransfer transfer, int bytesTransferred);
+    public delegate void TftpProgressHandler(ITftpTransfer transfer, TftpTransferProgress progress);
     public delegate void TftpErrorHandler(ITftpTransfer transfer, TftpTransferError error);
 
     public enum TftpTransferMode
@@ -39,23 +39,18 @@ namespace Tftp.Net
         event TftpErrorHandler OnError;
 
         /// <summary>
-        /// TFTP transfer options. For outgoing transfers, these can be modified.
-        /// For incoming transfer requests, set the IsAcknowledged flag on all options that you would like to acknowledge.
-        /// </summary>
-        ITftpTransferOptions Options { get; }
-
-        /// <summary>
         /// Requested TFTP transfer mode. For outgoing transfers, this member may be used to set the transfer mode.
         /// </summary>
         TftpTransferMode TransferMode { get; set; }
 
         /// <summary>
-        /// Transfer blocksize.
+        /// Transfer blocksize. Set this member to control the TFTP blocksize option (RFC 2349).
         /// </summary>
-        int BlockSize { get; }
+        int BlockSize { get; set; }
 
         /// <summary>
         /// Timeout after which commands are sent again.
+        /// This member is also transmitted as the TFTP timeout interval option (RFC 2349).
         /// </summary>
         TimeSpan RetryTimeout { get; set; }
 
@@ -65,12 +60,17 @@ namespace Tftp.Net
         int RetryCount { get; set; }
 
         /// <summary>
+        /// Expected transfer size in bytes. 0 if size is unknown.
+        /// </summary>
+        int ExpectedSize { get; set; }
+
+        /// <summary>
         /// Filename for the transferred file.
         /// </summary>
         String Filename { get; }
 
         /// <summary>
-        /// You can set your own object here to associated custom data with this transfer.
+        /// You can set your own object here to associate custom data with this transfer.
         /// </summary>
         object UserContext { get; set; }
 

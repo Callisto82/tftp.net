@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 
 namespace Tftp.Net
 {
@@ -65,7 +65,7 @@ namespace Tftp.Net
 
         private OptionAcknowledgement ParseOptionAcknowledgement(TftpStreamReader reader)
         {
-            IEnumerable<ITftpTransferOption> options = ParseTransferOptions(reader);
+            IEnumerable<TransferOption> options = ParseTransferOptions(reader);
             return new OptionAcknowledgement(options);
         }
 
@@ -93,7 +93,7 @@ namespace Tftp.Net
         {
             String filename = ParseNullTerminatedString(reader);
             TftpTransferMode mode = ParseModeType(ParseNullTerminatedString(reader));
-            IEnumerable<ITftpTransferOption> options = ParseTransferOptions(reader);
+            IEnumerable<TransferOption> options = ParseTransferOptions(reader);
             return new WriteRequest(filename, mode, options);
         }
 
@@ -101,13 +101,13 @@ namespace Tftp.Net
         {
             String filename = ParseNullTerminatedString(reader);
             TftpTransferMode mode = ParseModeType(ParseNullTerminatedString(reader));
-            IEnumerable<ITftpTransferOption> options = ParseTransferOptions(reader);
+            IEnumerable<TransferOption> options = ParseTransferOptions(reader);
             return new ReadRequest(filename, mode, options);
         }
 
-        private IEnumerable<ITftpTransferOption> ParseTransferOptions(TftpStreamReader reader)
+        private List<TransferOption> ParseTransferOptions(TftpStreamReader reader)
         {
-            List<ITftpTransferOption> options = new List<ITftpTransferOption>();
+            List<TransferOption> options = new List<TransferOption>();
 
             while (true)
             {

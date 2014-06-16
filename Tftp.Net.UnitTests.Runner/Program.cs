@@ -13,7 +13,7 @@ namespace Tftp.Net.UnitTests.Runner
     class Program
     {
         //Set this to the folder where you installed NUnit.
-        private static readonly string NUNIT_FOLDER = @"C:\Program Files (x86)\NUnit 2.5.9\bin\net-2.0";
+        private static readonly string NUNIT_FOLDER = @"C:\Program Files (x86)\NUnit 2.6.3\bin\";
 
         //The executable that will be used to run the tests
         private static readonly string NUNIT_EXE = @"NUnit.exe"; 

@@ -9,16 +9,14 @@ using Tftp.Net.Transfer;
 using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
 using System.Threading;
-using Tftp.Net.TransferOptions;
 using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer
 {
     class TftpTransfer : ITftpTransfer
     {
-        private const int DEFAULT_BLOCKSIZE = 512;
-
         protected ITransferState state;
+        protected TftpTransferOptions tftpOptions = new TftpTransferOptions();
         protected readonly IChannel connection;
 
         public Stream InputOutputStream { get; protected set; }
@@ -28,11 +26,9 @@ namespace Tftp.Net.Transfer
             if (connection == null)
                 throw new ArgumentNullException("connection");
 
-            this.BlockSize = DEFAULT_BLOCKSIZE;
             this.Filename = filename;
             this.state = null;
             this.RetryCount = 5;
-            this.RetryTimeout = new TimeSpan(0, 0, 5); // set the default timeout to 5 seconds
 
             this.connection = connection;
             this.connection.OnCommandReceived += new TftpCommandHandler(connection_OnCommandReceived);
@@ -61,13 +57,13 @@ namespace Tftp.Net.Transfer
             if (newState == null)
                 throw new ArgumentNullException("newState");
 
-            state = Decorate(newState);
+            state = DecorateForLogging(newState);
             state.OnStateEnter();
         }
 
-        protected virtual ITransferState Decorate(ITransferState state)
+        protected virtual ITransferState DecorateForLogging(ITransferState state)
         {
-            return new LoggingStateDecorator(state, this);
+            return TftpTrace.Enabled ? new LoggingStateDecorator(state, this) : state;
         }
 
         internal IChannel GetConnection()
@@ -78,7 +74,7 @@ namespace Tftp.Net.Transfer
         internal void RaiseOnProgress(int bytesTransferred)
         {
             if (OnProgress != null)
-                OnProgress(this, bytesTransferred);
+                OnProgress(this, new TftpTransferProgress(bytesTransferred, ExpectedSize));
         }
 
         internal void RaiseOnError(TftpTransferError error)
@@ -93,11 +89,35 @@ namespace Tftp.Net.Transfer
                 OnFinished(this);
         }
 
+        internal void SetActiveTransferOptions(IEnumerable<TransferOption> options)
+        {
+            tftpOptions.SetActiveOptions(options);
+        }
+
+        internal List<TransferOption> GetActiveTransferOptions()
+        {
+            return tftpOptions.GetActiveOptions();
+        }
+
         public override string ToString()
         {
             return GetHashCode() + " (" + Filename + ")";
         }
 
+        internal void FillOrDisableTransferSizeOption()
+        {
+            try
+            {
+                if (InputOutputStream.Length > 0)
+                    tftpOptions.TransferSize = (int)InputOutputStream.Length;
+            }
+            catch (NotSupportedException) { }
+            finally
+            {
+                if (tftpOptions.TransferSize <= 0)
+                    tftpOptions.IsTransferSizeOptionActive = false;
+            }
+        }
 
         #region ITftpTransfer
 
@@ -105,13 +125,28 @@ namespace Tftp.Net.Transfer
         public event TftpEventHandler OnFinished;
         public event TftpErrorHandler OnError;
 
-        public object UserContext { get; set; }
-        public TimeSpan RetryTimeout { get; set; }
-        public ITftpTransferOptions Options { get; protected set; }
         public string Filename { get; private set; }
         public int RetryCount { get; set; }
-        public int BlockSize { get; set; }
         public virtual TftpTransferMode TransferMode { get; set; }
+        public virtual TimeSpan RetryTimeout 
+        {
+            get { return tftpOptions.Timeout; }
+            set { tftpOptions.Timeout = value; }
+        }
+
+        public virtual int ExpectedSize 
+        {
+            get { return tftpOptions.TransferSize; }
+            set { tftpOptions.TransferSize = value; }
+        }
+
+        public virtual int BlockSize 
+        { 
+            get { return tftpOptions.BlockSize; }
+            set { tftpOptions.BlockSize = value; }
+        }
+
+        public object UserContext { get; set; }
 
         public void Start(Stream data)
         {

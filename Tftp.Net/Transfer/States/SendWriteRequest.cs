@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer.States
@@ -22,7 +22,7 @@ namespace Tftp.Net.Transfer.States
 
         private void SendRequest()
         {
-            WriteRequest request = new WriteRequest(Context.Filename, Context.TransferMode, Context.Options);
+            WriteRequest request = new WriteRequest(Context.Filename, Context.TransferMode, Context.GetActiveTransferOptions());
             SendAndRepeat(request);
         }
 
@@ -31,16 +31,14 @@ namespace Tftp.Net.Transfer.States
             if (command is OptionAcknowledgement)
             {
                 OptionAcknowledgement ackCommand = (OptionAcknowledgement)command;
-                TransferOptionHandlers.HandleAcceptedOptions(Context, ackCommand.Options);
+                Context.SetActiveTransferOptions(ackCommand.Options);
+                BeginSendingTo(endpoint);
             }
-
-            if (command is OptionAcknowledgement || (command is Acknowledgement && (command as Acknowledgement).BlockNumber == 0))
+            else
+            if (command is Acknowledgement && (command as Acknowledgement).BlockNumber == 0)
             {
-                //Switch to the endpoint that we received from the server
-                Context.GetConnection().RemoteEndpoint = endpoint;
-
-                //Start sending packets
-                Context.SetState(new Sending(Context));
+                Context.SetActiveTransferOptions(new TransferOption[0]);
+                BeginSendingTo(endpoint);
             }
             else
             if (command is Error)
@@ -51,6 +49,15 @@ namespace Tftp.Net.Transfer.States
             }
             else
                 base.OnCommand(command, endpoint);
+        }
+
+        private void BeginSendingTo(System.Net.EndPoint endpoint)
+        {
+            //Switch to the endpoint that we received from the server
+            Context.GetConnection().RemoteEndpoint = endpoint;
+
+            //Start sending packets
+            Context.SetState(new Sending(Context));
         }
 
         public override void OnCancel(TftpErrorPacket reason)

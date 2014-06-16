@@ -4,23 +4,34 @@ using System.Linq;
 using System.Text;
 using Tftp.Net.Transfer.States;
 using Tftp.Net.Channel;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 
 namespace Tftp.Net.Transfer
 {
     class LocalReadTransfer : TransferWithTimeout
     {
-        public LocalReadTransfer(IChannel connection, string filename, IEnumerable<ITftpTransferOption> options)
-            : base(connection, filename)
+        public LocalReadTransfer(IChannel connection, string filename, IEnumerable<TransferOption> options)
+            : base(connection, filename) 
         {
-            this.Options = new TransferOptionsIncoming(options);
-            SetState(new StartIncomingRead(this));
+            SetState(new StartIncomingRead(this, options));
         }
 
         public override TftpTransferMode TransferMode
         {
             get { return base.TransferMode; }
             set { throw new NotSupportedException("Cannot change the transfer mode for incoming transfers. The transfer mode is determined by the client."); }
+        }
+
+        public override int BlockSize
+        {
+            get { return base.BlockSize; }
+            set { throw new NotSupportedException("For incoming transfers, the blocksize is determined by the client."); }
+        }
+
+        public override TimeSpan RetryTimeout
+        {
+            get { return base.RetryTimeout; }
+            set { throw new NotSupportedException("For incoming transfers, the retry timeout is determined by the client."); }
         }
     }
 }
