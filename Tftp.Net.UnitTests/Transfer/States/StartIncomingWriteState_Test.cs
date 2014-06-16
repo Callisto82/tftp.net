@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 
 namespace Tftp.Net.UnitTests.Transfer.States
 {
@@ -13,21 +13,17 @@ namespace Tftp.Net.UnitTests.Transfer.States
     class StartIncomingWriteState_Test
     {
         private TransferStub transfer;
-        private OptionHandlerStub optionHandler;
 
         [SetUp]
         public void Setup()
         {
             transfer = new TransferStub();
-            transfer.SetState(new StartIncomingWrite(transfer));
-            optionHandler = new OptionHandlerStub("blub");
-            TransferOptionHandlers.Add(optionHandler);
+            transfer.SetState(new StartIncomingWrite(transfer, new TransferOption[0]));
         }
 
         [TearDown]
         public void Teardown()
         {
-            TransferOptionHandlers.Remove(optionHandler);
         }
 
         [Test]
@@ -46,7 +42,7 @@ namespace Tftp.Net.UnitTests.Transfer.States
         }
 
         [Test]
-        public void CanStart()
+        public void CanStartWithoutOptions()
         {
             transfer.Start(new MemoryStream(new byte[50000]));
 
@@ -57,27 +53,12 @@ namespace Tftp.Net.UnitTests.Transfer.States
         [Test]
         public void CanStartWithOptions()
         {
-            //Simulate that we got a request for an option
-            transfer.Options.Request("blub", "123");
-
-            Assert.IsFalse(optionHandler.AcknowledgeWasCalled);
+            transfer.SetState(new StartIncomingWrite(transfer, new TransferOption[] { new TransferOption("blksize", "999") }));
+            Assert.AreEqual(999, transfer.BlockSize);
             transfer.Start(new MemoryStream(new byte[50000]));
-            Assert.IsTrue(optionHandler.AcknowledgeWasCalled);
-            Assert.IsTrue(transfer.CommandWasSent(typeof(OptionAcknowledgement)));
+            OptionAcknowledgement cmd = (OptionAcknowledgement)transfer.SentCommands.Last();
+            cmd.Options.Contains(new TransferOption("blksize", "999"));
             Assert.IsInstanceOf<SendOptionAcknowledgementForWriteRequest>(transfer.State);
-        }
-
-        [Test]
-        public void CanStartRejectOptions()
-        {
-            //Simulate that we got a request for an option
-            transfer.Options.Request("non-acceptable-option", "123");
-
-            Assert.IsFalse(optionHandler.AcknowledgeWasCalled);
-            transfer.Start(new MemoryStream(new byte[50000]));
-            Assert.IsTrue(optionHandler.AcknowledgeWasCalled);
-            Assert.IsFalse(transfer.CommandWasSent(typeof(OptionAcknowledgement)));
-            Assert.IsInstanceOf<AcknowledgeWriteRequest>(transfer.State);
         }
     }
 }

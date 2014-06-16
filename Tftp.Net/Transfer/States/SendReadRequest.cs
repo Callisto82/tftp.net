@@ -5,13 +5,15 @@ using System.Text;
 using System.IO;
 using Tftp.Net.Channel;
 using System.Net;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 using Tftp.Net.Trace;
 
 namespace Tftp.Net.Transfer.States
 {
     class SendReadRequest : StateWithNetworkTimeout
     {
+        private bool ServerAcknowledgedOptions = false;
+
         public SendReadRequest(TftpTransfer context)
             : base(context)  { }
 
@@ -23,17 +25,23 @@ namespace Tftp.Net.Transfer.States
 
         private void SendRequest()
         {
-            ReadRequest request = new ReadRequest(Context.Filename, Context.TransferMode, Context.Options);
+            ReadRequest request = new ReadRequest(Context.Filename, Context.TransferMode, Context.GetActiveTransferOptions());
             SendAndRepeat(request);
         }
 
         public override void OnCommand(ITftpCommand command, EndPoint endpoint)
         {
-            if (command is Data)
+            if (command is Data || command is OptionAcknowledgement)
             {
                 //The server acknowledged our read request.
                 //Fix out remote endpoint
                 Context.GetConnection().RemoteEndpoint = endpoint;
+            }
+
+            if (command is Data)
+            {
+                if (!ServerAcknowledgedOptions)
+                    Context.SetActiveTransferOptions(new List<TransferOption>());
 
                 //Switch to the receiving state...
                 ITransferState nextState = new Receiving(Context);
@@ -44,12 +52,13 @@ namespace Tftp.Net.Transfer.States
             }
             else if (command is OptionAcknowledgement)
             {
-                //the server acknowledged our options. Confirm the final options
-                Context.GetConnection().Send(new Acknowledgement(0));
-
                 //Check which options were acknowledged
+                ServerAcknowledgedOptions = true;
                 OptionAcknowledgement ackCommand = (OptionAcknowledgement)command;
-                TransferOptionHandlers.HandleAcceptedOptions(Context, ackCommand.Options);
+                Context.SetActiveTransferOptions(ackCommand.Options);
+
+                //the server acknowledged our options. Confirm the final options
+                SendAndRepeat(new Acknowledgement(0));
             }
             else if (command is Error)
             {

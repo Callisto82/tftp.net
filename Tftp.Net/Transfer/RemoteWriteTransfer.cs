@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Tftp.Net.Channel;
 using Tftp.Net.Transfer.States;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 
 namespace Tftp.Net.Transfer
 {
@@ -13,7 +13,6 @@ namespace Tftp.Net.Transfer
         public RemoteWriteTransfer(IChannel connection, String filename)
             : base(connection, filename)
         {
-            Options = new TransferOptionsOutgoing();
             SetState(new StartOutgoingWrite(this));
         }
     }

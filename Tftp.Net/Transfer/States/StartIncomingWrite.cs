@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 
 namespace Tftp.Net.Transfer.States
 {
     class StartIncomingWrite : BaseState
     {
-        public StartIncomingWrite(TftpTransfer context)
-            : base(context) { }
+        public StartIncomingWrite(TftpTransfer context, IEnumerable<TransferOption> optionsRequestedByClient)
+            : base(context) 
+        {
+            Context.SetActiveTransferOptions(optionsRequestedByClient);
+        }
 
         public override void OnStart()
         {
             //Do we have any acknowledged options?
-            TransferOptionHandlers.HandleAcceptedOptions(Context, Context.Options);
-            if (Context.Options.Count(x => x.IsAcknowledged) > 0)
+            List<TransferOption> options = Context.GetActiveTransferOptions();
+            if (options.Count > 0)
             {
                 Context.SetState(new SendOptionAcknowledgementForWriteRequest(Context));
             }

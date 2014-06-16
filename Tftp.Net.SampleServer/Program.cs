@@ -31,22 +31,23 @@ namespace Tftp.Net.SampleServer
 
         static void server_OnWriteRequest(ITftpTransfer transfer, EndPoint client)
         {
-            Console.WriteLine("[" + transfer.Filename + "] Write request from "+ client + " for " + transfer.Filename);
-            DumpOptions(transfer);
-            Console.WriteLine("[" + transfer.Filename + "] Denying request.");
-            transfer.Cancel(TftpErrorPacket.IllegalOperation);
-        }
+            String file = Path.Combine(ServerDirectory, transfer.Filename);
 
-        static void DumpOptions(ITftpTransfer transfer)
-        {
-            foreach(ITftpTransferOption option in transfer.Options)
-                Console.WriteLine("[" + transfer.Filename + "] Option request: " + option.Name + "=" + option.Value);
+            if (File.Exists(file))
+            {
+                Console.WriteLine("[" + transfer.Filename + "] Rejecting Write request from " + client + " for " + transfer.Filename + ": File already exists");
+                transfer.Cancel(TftpErrorPacket.FileAlreadyExists);
+            }
+            else
+            {
+                Console.WriteLine("[" + transfer.Filename + "] Write request from " + client + " for " + transfer.Filename);
+                transfer.Start(new FileStream(file, FileMode.CreateNew));
+            }
         }
 
         static void server_OnReadRequest(ITftpTransfer transfer, EndPoint client)
         {
             Console.WriteLine("[" + transfer.Filename + "] Read request from " + client + " for " + transfer.Filename);
-            DumpOptions(transfer);
 
             String path = Path.Combine(ServerDirectory, transfer.Filename);
             FileInfo file = new FileInfo(path);
@@ -86,9 +87,9 @@ namespace Tftp.Net.SampleServer
             Console.WriteLine("[" + transfer.Filename + "] Finished.");
         }
 
-        static void transfer_OnProgress(ITftpTransfer transfer, int bytesTransferred)
+        static void transfer_OnProgress(ITftpTransfer transfer, TftpTransferProgress progress)
         {
-            Console.WriteLine("[" + transfer.Filename + "] Progress: " + bytesTransferred + " bytes");
+            Console.WriteLine("[" + transfer.Filename + "] Progress: " + progress);
         }
     }
 }

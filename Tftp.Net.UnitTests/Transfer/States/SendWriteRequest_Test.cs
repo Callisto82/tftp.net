@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Tftp.Net.Transfer.States;
 using System.IO;
-using Tftp.Net.TransferOptions;
+using Tftp.Net.Transfer;
 
 namespace Tftp.Net.UnitTests
 {
@@ -13,22 +13,12 @@ namespace Tftp.Net.UnitTests
     class SendWriteRequest_Test
     {
         private TransferStub transfer;
-        private OptionHandlerStub optionHandler;
 
         [SetUp]
         public void Setup()
         {
             transfer = new TransferStub(new MemoryStream(new byte[5000]));
             transfer.SetState(new SendWriteRequest(transfer));
-
-            optionHandler = new OptionHandlerStub("blub");
-            TransferOptionHandlers.Add(optionHandler);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            TransferOptionHandlers.Remove(optionHandler);
         }
 
         [Test]
@@ -64,24 +54,17 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void HandlesOptionAcknowledgement()
         {
-            //Option handler for "blub" is registered in the setup-method.
-            transfer.Options.Request("blub", "bla");
-            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
-            Assert.IsFalse(optionHandler.AcknowledgeWasCalled);
-            transfer.OnCommand(new OptionAcknowledgement(transfer.Options));
-            Assert.IsTrue(transfer.Options.First().IsAcknowledged);
-            Assert.IsTrue(optionHandler.AcknowledgeWasCalled);
-            Assert.IsInstanceOf<Sending>(transfer.State);
+            transfer.BlockSize = 999;
+            transfer.OnCommand(new OptionAcknowledgement(new TransferOption[] { new TransferOption("blksize", "800") }));
+            Assert.AreEqual(800, transfer.BlockSize);
         }
 
         [Test]
         public void HandlesMissingOptionAcknowledgement()
         {
-            transfer.Options.Request("blub", "bla");
-            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
+            transfer.BlockSize = 999;
             transfer.OnCommand(new Acknowledgement(0));
-            Assert.IsFalse(transfer.Options.First().IsAcknowledged);
-            Assert.IsInstanceOf<Sending>(transfer.State);
+            Assert.AreEqual(512, transfer.BlockSize);
         }
 
         [Test]

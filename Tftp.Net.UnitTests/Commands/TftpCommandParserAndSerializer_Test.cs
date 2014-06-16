@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using System.IO;
-using Tftp.Net.Commands;
 
 namespace Tftp.Net.UnitTests
 {

@@ -3,20 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Tftp.Net.TransferOptions
+namespace Tftp.Net
 {
     /// <summary>
     /// A single transfer options according to RFC2347.
     /// </summary>
-    public class TransferOption : ITftpTransferOption
+    public class TransferOption
     {
-        #region ITftpTransferOption
-
         public String Name { get; private set; }
         public String Value { get; set; }
         public bool IsAcknowledged { get; internal set; }
-
-        #endregion
 
         internal TransferOption(string name, string value)
         {

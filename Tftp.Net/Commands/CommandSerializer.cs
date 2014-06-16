@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Tftp.Net.Commands
+namespace Tftp.Net
 {
     /// <summary>
     /// Serializes an ITftpCommand into a stream of bytes.
@@ -40,7 +40,7 @@ namespace Tftp.Net.Commands
 
                 if (command.Options != null)
                 {
-                    foreach (ITftpTransferOption option in command.Options)
+                    foreach (var option in command.Options)
                     {
                         writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
                         writer.WriteByte(0);
@@ -87,7 +87,7 @@ namespace Tftp.Net.Commands
             {
                 writer.WriteUInt16(OptionAcknowledgement.OpCode);
 
-                foreach (ITftpTransferOption option in command.Options)
+                foreach (var option in command.Options)
                 {
                     writer.WriteBytes(Encoding.ASCII.GetBytes(option.Name));
                     writer.WriteByte(0);
