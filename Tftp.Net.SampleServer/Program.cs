@@ -20,7 +20,7 @@ namespace Tftp.Net.SampleServer
             Console.WriteLine();
             Console.WriteLine("Press any key to close the server.");
 
-            using (TftpServer server = new TftpServer(new IPEndPoint(IPAddress.Any, 69)))
+            using (var server = new TftpServer())
             {
                 server.OnReadRequest += new TftpServerEventHandler(server_OnReadRequest);
                 server.OnWriteRequest += new TftpServerEventHandler(server_OnWriteRequest);

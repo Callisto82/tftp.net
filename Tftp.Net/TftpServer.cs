@@ -17,6 +17,8 @@ namespace Tftp.Net
     /// </summary>
     public class TftpServer : IDisposable
     {
+        public const int DEFAULT_SERVER_PORT = 69;
+
         /// <summary>
         /// Fired when the server receives a new read request.
         /// </summary>
@@ -43,6 +45,27 @@ namespace Tftp.Net
             serverSocket.OnCommandReceived += new TftpCommandHandler(serverSocket_OnCommandReceived);
             serverSocket.OnError += new TftpChannelErrorHandler(serverSocket_OnError);
         }
+
+        public TftpServer(IPAddress localAddress)
+            : this(localAddress, DEFAULT_SERVER_PORT)
+        {
+        }
+
+        public TftpServer(IPAddress localAddress, int port)
+            : this(new IPEndPoint(localAddress, port))
+        {
+        }
+
+        public TftpServer(int port)
+            : this(new IPEndPoint(IPAddress.Any, port))
+        {
+        }
+
+        public TftpServer()
+            : this(DEFAULT_SERVER_PORT)
+        {
+        }
+
 
         /// <summary>
         /// Start accepting incoming connections.

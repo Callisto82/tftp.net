@@ -15,11 +15,10 @@ namespace Tftp.Net.SampleClient
         static void Main(string[] args)
         {
             //Setup a TftpClient instance
-            IPEndPoint serverAddress = new IPEndPoint(IPAddress.Loopback, 69);
-            TftpClient client = new TftpClient(serverAddress);
+            var client = new TftpClient("localhost");
 
             //Prepare a simple transfer (GET test.dat)
-            ITftpTransfer transfer = client.Receive("EUPL-EN.pdf");
+            var transfer = client.Download("EUPL-EN.pdf");
 
             //Capture the events that may happen during the transfer
             transfer.OnProgress += new TftpProgressHandler(transfer_OnProgress);
