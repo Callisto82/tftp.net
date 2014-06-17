@@ -11,19 +11,18 @@ namespace Tftp.Net.UnitTests.TransferOptions
     [TestFixture]
     class TransferSizeOption_Test
     {
-        private TftpTransferOptions options;
+        private TransferOptionSet options;
 
         [SetUp]
         public void Setup()
         {
-            options = new TftpTransferOptions();
         }
 
         [Test]
         public void ReadsTransferSize()
         {
             Parse(new TransferOption("tsize", "0"));
-            Assert.IsTrue(options.IsTransferSizeOptionActive);
+            Assert.IsTrue(options.IncludesTransferSizeOption);
             Assert.AreEqual(0, options.TransferSize);
         }
 
@@ -31,19 +30,19 @@ namespace Tftp.Net.UnitTests.TransferOptions
         public void RejectsNegativeTransferSize()
         {
             Parse(new TransferOption("tsize", "-1"));
-            Assert.IsFalse(options.IsTransferSizeOptionActive);
+            Assert.IsFalse(options.IncludesTransferSizeOption);
         }
 
         [Test]
         public void RejectsNonIntegerTransferSize()
         {
             Parse(new TransferOption("tsize", "abc"));
-            Assert.IsFalse(options.IsTransferSizeOptionActive);
+            Assert.IsFalse(options.IncludesTransferSizeOption);
         }
 
         private void Parse(TransferOption option)
         {
-            options.SetActiveOptions(new TransferOption[] { option });
+            options = new TransferOptionSet(new TransferOption[] { option });
         }
     }
 }

@@ -16,9 +16,11 @@ namespace Tftp.Net.Transfer
     class TftpTransfer : ITftpTransfer
     {
         protected ITransferState state;
-        protected TftpTransferOptions tftpOptions = new TftpTransferOptions();
+        public TransferOptionSet ProposedOptions { get; set; }
+        public TransferOptionSet NegotiatedOptions { get; private set; }
         protected readonly IChannel connection;
 
+        public bool WasStarted { get; private set; }
         public Stream InputOutputStream { get; protected set; }
 
         public TftpTransfer(IChannel connection, String filename)
@@ -26,6 +28,7 @@ namespace Tftp.Net.Transfer
             if (connection == null)
                 throw new ArgumentNullException("connection");
 
+            this.ProposedOptions = TransferOptionSet.NewDefaultSet();
             this.Filename = filename;
             this.state = null;
             this.RetryCount = 5;
@@ -89,14 +92,14 @@ namespace Tftp.Net.Transfer
                 OnFinished(this);
         }
 
-        internal void SetActiveTransferOptions(IEnumerable<TransferOption> options)
+        internal void FinishOptionNegotiation(TransferOptionSet negotiated)
         {
-            tftpOptions.SetActiveOptions(options);
-        }
+            NegotiatedOptions = negotiated;
+            if (!NegotiatedOptions.IncludesBlockSizeOption)
+                NegotiatedOptions.BlockSize = TransferOptionSet.DEFAULT_BLOCKSIZE;
 
-        internal List<TransferOption> GetActiveTransferOptions()
-        {
-            return tftpOptions.GetActiveOptions();
+            if (!NegotiatedOptions.IncludesTimeoutOption)
+                NegotiatedOptions.Timeout = TransferOptionSet.DEFAULT_TIMEOUT_SECS;
         }
 
         public override string ToString()
@@ -109,13 +112,13 @@ namespace Tftp.Net.Transfer
             try
             {
                 if (InputOutputStream.Length > 0)
-                    tftpOptions.TransferSize = (int)InputOutputStream.Length;
+                    ProposedOptions.TransferSize = (int)InputOutputStream.Length;
             }
             catch (NotSupportedException) { }
             finally
             {
-                if (tftpOptions.TransferSize <= 0)
-                    tftpOptions.IsTransferSizeOptionActive = false;
+                if (ProposedOptions.TransferSize <= 0)
+                    ProposedOptions.IncludesTransferSizeOption = false;
             }
         }
 
@@ -128,34 +131,40 @@ namespace Tftp.Net.Transfer
         public string Filename { get; private set; }
         public int RetryCount { get; set; }
         public virtual TftpTransferMode TransferMode { get; set; }
+        public object UserContext { get; set; }
         public virtual TimeSpan RetryTimeout 
         {
-            get { return tftpOptions.Timeout; }
-            set { tftpOptions.Timeout = value; }
+            get { return TimeSpan.FromSeconds(NegotiatedOptions != null ? NegotiatedOptions.Timeout : ProposedOptions.Timeout); }
+            set { ThrowExceptionIfTransferAlreadyStarted(); ProposedOptions.Timeout = value.Seconds; }
         }
 
         public virtual int ExpectedSize 
         {
-            get { return tftpOptions.TransferSize; }
-            set { tftpOptions.TransferSize = value; }
+            get { return NegotiatedOptions != null ? NegotiatedOptions.TransferSize : ProposedOptions.TransferSize; }
+            set { ThrowExceptionIfTransferAlreadyStarted(); ProposedOptions.TransferSize = value; }
         }
 
         public virtual int BlockSize 
-        { 
-            get { return tftpOptions.BlockSize; }
-            set { tftpOptions.BlockSize = value; }
+        {
+            get { return NegotiatedOptions != null ? NegotiatedOptions.BlockSize : ProposedOptions.BlockSize; }
+            set { ThrowExceptionIfTransferAlreadyStarted(); ProposedOptions.BlockSize = value; }
         }
 
-        public object UserContext { get; set; }
+        private void ThrowExceptionIfTransferAlreadyStarted()
+        {
+            if (WasStarted)
+                throw new InvalidOperationException("You cannot change tftp transfer options after the transfer has been started.");
+        }
 
         public void Start(Stream data)
         {
             if (data == null)
                 throw new ArgumentNullException("data");
 
-            if (InputOutputStream != null)
+            if (WasStarted)
                 throw new InvalidOperationException("This transfer has already been started.");
 
+            this.WasStarted = true;
             this.InputOutputStream = data;
 
             lock (this)

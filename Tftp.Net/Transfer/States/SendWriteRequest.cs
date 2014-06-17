@@ -22,7 +22,7 @@ namespace Tftp.Net.Transfer.States
 
         private void SendRequest()
         {
-            WriteRequest request = new WriteRequest(Context.Filename, Context.TransferMode, Context.GetActiveTransferOptions());
+            WriteRequest request = new WriteRequest(Context.Filename, Context.TransferMode, Context.ProposedOptions.ToOptionList());
             SendAndRepeat(request);
         }
 
@@ -30,14 +30,14 @@ namespace Tftp.Net.Transfer.States
         {
             if (command is OptionAcknowledgement)
             {
-                OptionAcknowledgement ackCommand = (OptionAcknowledgement)command;
-                Context.SetActiveTransferOptions(ackCommand.Options);
+                TransferOptionSet acknowledged = new TransferOptionSet((command as OptionAcknowledgement).Options);
+                Context.FinishOptionNegotiation(acknowledged);
                 BeginSendingTo(endpoint);
             }
             else
             if (command is Acknowledgement && (command as Acknowledgement).BlockNumber == 0)
             {
-                Context.SetActiveTransferOptions(new TransferOption[0]);
+                Context.FinishOptionNegotiation(TransferOptionSet.NewEmptySet());
                 BeginSendingTo(endpoint);
             }
             else

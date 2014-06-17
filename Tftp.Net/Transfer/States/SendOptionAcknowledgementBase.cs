@@ -17,7 +17,7 @@ namespace Tftp.Net.Transfer
         public override void OnStateEnter()
         {
             //Send an option acknowledgement
-            SendAndRepeat(new OptionAcknowledgement(Context.GetActiveTransferOptions()));
+            SendAndRepeat(new OptionAcknowledgement(Context.NegotiatedOptions.ToOptionList()));
         }
 
         public override void OnError(Error command)

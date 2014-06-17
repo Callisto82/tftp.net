@@ -12,13 +12,14 @@ namespace Tftp.Net.Transfer.States
         public StartIncomingWrite(TftpTransfer context, IEnumerable<TransferOption> optionsRequestedByClient)
             : base(context) 
         {
-            Context.SetActiveTransferOptions(optionsRequestedByClient);
+            Context.ProposedOptions = new TransferOptionSet(optionsRequestedByClient);
         }
 
         public override void OnStart()
         {
             //Do we have any acknowledged options?
-            List<TransferOption> options = Context.GetActiveTransferOptions();
+            Context.FinishOptionNegotiation(Context.ProposedOptions);
+            List<TransferOption> options = Context.NegotiatedOptions.ToOptionList();
             if (options.Count > 0)
             {
                 Context.SetState(new SendOptionAcknowledgementForWriteRequest(Context));

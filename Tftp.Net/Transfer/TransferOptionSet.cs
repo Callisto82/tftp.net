@@ -6,33 +6,37 @@ using Tftp.Net.Transfer;
 
 namespace Tftp.Net.Transfer
 {
-    class TftpTransferOptions
+    class TransferOptionSet
     {
-        public bool IsBlockSizeOptionActive;
-        public int BlockSize;
+        public const int DEFAULT_BLOCKSIZE = 512;
+        public const int DEFAULT_TIMEOUT_SECS = 5;
 
-        public bool IsTimeoutOptionActive;
-        public TimeSpan Timeout;
+        public bool IncludesBlockSizeOption = false;
+        public int BlockSize = DEFAULT_BLOCKSIZE;
 
-        public bool IsTransferSizeOptionActive;
+        public bool IncludesTimeoutOption = false;
+        public int Timeout = DEFAULT_TIMEOUT_SECS;
+
+        public bool IncludesTransferSizeOption = false;
         public int TransferSize = 0;
 
-        public TftpTransferOptions()
+        public static TransferOptionSet NewDefaultSet()
         {
-            SetDefaultValues();
-            IsBlockSizeOptionActive = IsTimeoutOptionActive = IsTransferSizeOptionActive = true;
+            return new TransferOptionSet() { IncludesBlockSizeOption = true, IncludesTimeoutOption = true, IncludesTransferSizeOption = true };
         }
 
-        private void SetDefaultValues()
+        public static TransferOptionSet NewEmptySet()
         {
-            BlockSize = 512;
-            Timeout = TimeSpan.FromSeconds(5);
+            return new TransferOptionSet() { IncludesBlockSizeOption = false, IncludesTimeoutOption = false, IncludesTransferSizeOption = false };
         }
 
-        public void SetActiveOptions(IEnumerable<TransferOption> options)
+        public TransferOptionSet()
         {
-            SetDefaultValues();
-            IsBlockSizeOptionActive = IsTimeoutOptionActive = IsTransferSizeOptionActive = false;
+        }
+
+        public TransferOptionSet(IEnumerable<TransferOption> options)
+        {
+            IncludesBlockSizeOption = IncludesTimeoutOption = IncludesTransferSizeOption = false;
 
             foreach (TransferOption option in options)
             {
@@ -45,29 +49,29 @@ namespace Tftp.Net.Transfer
             switch (option.Name)
             {
                 case "blksize":
-                    IsBlockSizeOptionActive = ParseBlockSizeOption(option.Value);
+                    IncludesBlockSizeOption = ParseBlockSizeOption(option.Value);
                     break;
 
                 case "timeout":
-                    IsTimeoutOptionActive = ParseTimeoutOption(option.Value);
+                    IncludesTimeoutOption = ParseTimeoutOption(option.Value);
                     break;
 
                 case "tsize":
-                    IsTransferSizeOptionActive = ParseTransferSizeOption(option.Value);
+                    IncludesTransferSizeOption = ParseTransferSizeOption(option.Value);
                     break;
             }
         }
 
-        public List<TransferOption> GetActiveOptions()
+        public List<TransferOption> ToOptionList()
         {
             List<TransferOption> result = new List<TransferOption>();
-            if (IsBlockSizeOptionActive)
+            if (IncludesBlockSizeOption)
                 result.Add(new TransferOption("blksize", BlockSize.ToString()));
 
-            if (IsTimeoutOptionActive)
-                result.Add(new TransferOption("timeout", Timeout.Seconds.ToString()));
+            if (IncludesTimeoutOption)
+                result.Add(new TransferOption("timeout", Timeout.ToString()));
 
-            if (IsTransferSizeOptionActive)
+            if (IncludesTransferSizeOption)
                 result.Add(new TransferOption("tsize", TransferSize.ToString()));
 
             return result;
@@ -88,7 +92,7 @@ namespace Tftp.Net.Transfer
             if (timeout < 1 || timeout > 255)
                 return false;
 
-            Timeout = new TimeSpan(0, 0, timeout);
+            Timeout = timeout;
             return true;
         }
 
