@@ -10,16 +10,16 @@ namespace Tftp.Net.Transfer.States
     class StartIncomingRead : BaseState
     {
         public StartIncomingRead(TftpTransfer context, IEnumerable<TransferOption> optionsRequestedByClient)
-            : base(context) {
-                Context.SetActiveTransferOptions(optionsRequestedByClient);
+            : base(context) 
+        {
+            Context.ProposedOptions = new TransferOptionSet(optionsRequestedByClient);
         }
 
         public override void OnStart()
         {
             Context.FillOrDisableTransferSizeOption();
-
-            //Do we have any acknowledged options?
-            List<TransferOption> options = Context.GetActiveTransferOptions();
+            Context.FinishOptionNegotiation(Context.ProposedOptions);
+            List<TransferOption> options = Context.NegotiatedOptions.ToOptionList();
             if (options.Count > 0)
             {
                 Context.SetState(new SendOptionAcknowledgementForReadRequest(Context));

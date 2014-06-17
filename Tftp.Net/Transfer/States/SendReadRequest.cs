@@ -12,8 +12,6 @@ namespace Tftp.Net.Transfer.States
 {
     class SendReadRequest : StateWithNetworkTimeout
     {
-        private bool ServerAcknowledgedOptions = false;
-
         public SendReadRequest(TftpTransfer context)
             : base(context)  { }
 
@@ -25,7 +23,7 @@ namespace Tftp.Net.Transfer.States
 
         private void SendRequest()
         {
-            ReadRequest request = new ReadRequest(Context.Filename, Context.TransferMode, Context.GetActiveTransferOptions());
+            ReadRequest request = new ReadRequest(Context.Filename, Context.TransferMode, Context.ProposedOptions.ToOptionList());
             SendAndRepeat(request);
         }
 
@@ -40,8 +38,8 @@ namespace Tftp.Net.Transfer.States
 
             if (command is Data)
             {
-                if (!ServerAcknowledgedOptions)
-                    Context.SetActiveTransferOptions(new List<TransferOption>());
+                if (Context.NegotiatedOptions == null)
+                    Context.FinishOptionNegotiation(TransferOptionSet.NewEmptySet());
 
                 //Switch to the receiving state...
                 ITransferState nextState = new Receiving(Context);
@@ -53,9 +51,7 @@ namespace Tftp.Net.Transfer.States
             else if (command is OptionAcknowledgement)
             {
                 //Check which options were acknowledged
-                ServerAcknowledgedOptions = true;
-                OptionAcknowledgement ackCommand = (OptionAcknowledgement)command;
-                Context.SetActiveTransferOptions(ackCommand.Options);
+                Context.FinishOptionNegotiation(new TransferOptionSet( (command as OptionAcknowledgement).Options ));
 
                 //the server acknowledged our options. Confirm the final options
                 SendAndRepeat(new Acknowledgement(0));
