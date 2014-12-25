@@ -8,12 +8,12 @@ using Tftp.Net.Transfer;
 
 namespace Tftp.Net.Transfer
 {
-    class LocalReadTransfer : TransferWithTimeout
+    class LocalReadTransfer : TftpTransfer
     {
-        public LocalReadTransfer(IChannel connection, string filename, IEnumerable<TransferOption> options)
+        public LocalReadTransfer(ITransferChannel connection, string filename, IEnumerable<TransferOption> options)
             : base(connection, filename) 
         {
-            SetState(new StartIncomingRead(this, options));
+            SetState(new StartIncomingRead(options));
         }
 
         public override TftpTransferMode TransferMode

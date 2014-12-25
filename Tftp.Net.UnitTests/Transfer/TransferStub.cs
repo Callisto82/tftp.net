@@ -8,7 +8,7 @@ using Tftp.Net.Channel;
 using System.Net;
 using System.IO;
 
-namespace Tftp.Net.UnitTests
+namespace Tftp.Net.UnitTests.Transfer
 {
     class TransferStub : TftpTransfer
     {
@@ -64,44 +64,6 @@ namespace Tftp.Net.UnitTests
             this.InputOutputStream = null;
 
             base.Dispose();
-        }
-    }
-
-    class ChannelStub : ITransferChannel
-    {
-        public event TftpCommandHandler OnCommandReceived;
-        public event TftpChannelErrorHandler OnError;
-        public EndPoint RemoteEndpoint { get; set; }
-        public readonly List<ITftpCommand> SentCommands = new List<ITftpCommand>();
-
-        public ChannelStub()
-        {
-            RemoteEndpoint = new IPEndPoint(IPAddress.Loopback, 69);
-        }
-
-        public void Open()
-        {
-        }
-
-        public void RaiseCommandReceived(ITftpCommand command, EndPoint endpoint)
-        {
-            if (OnCommandReceived != null)
-                OnCommandReceived(command, endpoint);
-        }
-
-        public void RaiseOnError(TftpTransferError error)
-        {
-            if (OnError != null)
-                OnError(error);
-        }
-
-        public void Send(ITftpCommand command)
-        {
-            SentCommands.Add(command);
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

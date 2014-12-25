@@ -16,34 +16,35 @@ namespace Tftp.Net.Transfer
     class TftpTransfer : ITftpTransfer
     {
         protected ITransferState state;
+        protected readonly ITransferChannel connection;
+        protected Timer timer;
+
         public TransferOptionSet ProposedOptions { get; set; }
         public TransferOptionSet NegotiatedOptions { get; private set; }
-        protected readonly IChannel connection;
-
         public bool WasStarted { get; private set; }
         public Stream InputOutputStream { get; protected set; }
 
-        public TftpTransfer(IChannel connection, String filename)
+        public TftpTransfer(ITransferChannel connection, String filename)
         {
             if (connection == null)
                 throw new ArgumentNullException("connection");
 
             this.ProposedOptions = TransferOptionSet.NewDefaultSet();
             this.Filename = filename;
-            this.state = null;
+            this.state = new Uninitialized();
             this.RetryCount = 5;
-
+            this.timer = new Timer(timer_OnTimer, null, 500, 500);
             this.connection = connection;
             this.connection.OnCommandReceived += new TftpCommandHandler(connection_OnCommandReceived);
             this.connection.OnError += new TftpChannelErrorHandler(connection_OnError);
             this.connection.Open();
         }
 
-        void connection_OnError(TftpTransferError error)
+        private void timer_OnTimer(object context)
         {
             lock (this)
             {
-                RaiseOnError(error);
+                state.OnTimer();
             }
         }
 
@@ -55,12 +56,21 @@ namespace Tftp.Net.Transfer
             }
         }
 
+        private void connection_OnError(TftpTransferError error)
+        {
+            lock (this)
+            {
+                RaiseOnError(error);
+            }
+        }
+
         internal virtual void SetState(ITransferState newState)
         {
             if (newState == null)
                 throw new ArgumentNullException("newState");
 
             state = DecorateForLogging(newState);
+            state.Context = this;
             state.OnStateEnter();
         }
 
@@ -69,7 +79,7 @@ namespace Tftp.Net.Transfer
             return TftpTrace.Enabled ? new LoggingStateDecorator(state, this) : state;
         }
 
-        internal IChannel GetConnection()
+        internal ITransferChannel GetConnection()
         {
             return connection;
         }
@@ -111,8 +121,7 @@ namespace Tftp.Net.Transfer
         {
             try
             {
-                if (InputOutputStream.Length > 0)
-                    ProposedOptions.TransferSize = (int)InputOutputStream.Length;
+                ProposedOptions.TransferSize = (int)InputOutputStream.Length;
             }
             catch (NotSupportedException) { }
             finally
@@ -185,6 +194,7 @@ namespace Tftp.Net.Transfer
         {
             lock (this)
             {
+                timer.Dispose();
                 Cancel(new TftpErrorPacket(0, "ITftpTransfer has been disposed."));
 
                 if (InputOutputStream != null)

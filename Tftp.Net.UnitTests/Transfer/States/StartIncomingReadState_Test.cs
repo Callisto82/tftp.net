@@ -18,7 +18,7 @@ namespace Tftp.Net.UnitTests
         public void Setup()
         {
             transfer = new TransferStub();
-            transfer.SetState(new StartIncomingRead(transfer, new TransferOption[] { new TransferOption("tsize", "0") }));
+            transfer.SetState(new StartIncomingRead(new TransferOption[] { new TransferOption("tsize", "0") }));
         }
 
         [TearDown]
@@ -44,7 +44,7 @@ namespace Tftp.Net.UnitTests
         [Test]
         public void CanStartWithoutOptions()
         {
-            transfer.SetState(new StartIncomingRead(transfer, new TransferOption[0]));
+            transfer.SetState(new StartIncomingRead(new TransferOption[0]));
             transfer.Start(new MemoryStream(new byte[50000]));
             Assert.IsInstanceOf<Sending>(transfer.State);
         }
@@ -53,7 +53,7 @@ namespace Tftp.Net.UnitTests
         public void CanStartWithOptions()
         {
             //Simulate that we got a request for a option
-            transfer.SetState(new StartIncomingRead(transfer, new TransferOption[] { new TransferOption("blksize", "999") }));
+            transfer.SetState(new StartIncomingRead( new TransferOption[] { new TransferOption("blksize", "999") }));
             Assert.AreEqual(999, transfer.BlockSize);
             transfer.Start(new MemoryStream(new byte[50000]));
             Assert.IsInstanceOf<SendOptionAcknowledgementForReadRequest>(transfer.State);

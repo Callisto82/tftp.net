@@ -9,8 +9,7 @@ namespace Tftp.Net.Transfer.States
     {
         private readonly TftpErrorPacket reason;
 
-        public CancelledByUser(TftpTransfer context, TftpErrorPacket reason)
-            : base(context) 
+        public CancelledByUser(TftpErrorPacket reason)
         {
             this.reason = reason;
         }
@@ -19,7 +18,7 @@ namespace Tftp.Net.Transfer.States
         {
             Error command = new Error(reason.ErrorCode, reason.ErrorMessage);
             Context.GetConnection().Send(command);
-            Context.SetState(new Closed(Context));
+            Context.SetState(new Closed());
         }
     }
 }

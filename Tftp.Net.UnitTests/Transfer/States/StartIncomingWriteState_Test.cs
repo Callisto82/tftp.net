@@ -18,7 +18,7 @@ namespace Tftp.Net.UnitTests.Transfer.States
         public void Setup()
         {
             transfer = new TransferStub();
-            transfer.SetState(new StartIncomingWrite(transfer, new TransferOption[0]));
+            transfer.SetState(new StartIncomingWrite(new TransferOption[0]));
         }
 
         [TearDown]
@@ -53,7 +53,7 @@ namespace Tftp.Net.UnitTests.Transfer.States
         [Test]
         public void CanStartWithOptions()
         {
-            transfer.SetState(new StartIncomingWrite(transfer, new TransferOption[] { new TransferOption("blksize", "999") }));
+            transfer.SetState(new StartIncomingWrite(new TransferOption[] { new TransferOption("blksize", "999") }));
             Assert.AreEqual(999, transfer.BlockSize);
             transfer.Start(new MemoryStream(new byte[50000]));
             OptionAcknowledgement cmd = (OptionAcknowledgement)transfer.SentCommands.Last();

@@ -9,11 +9,10 @@ using System.Diagnostics;
 
 namespace Tftp.Net.Channel
 {
-    class UdpChannel : IChannel
+    class UdpChannel : ITransferChannel
     {
         public event TftpCommandHandler OnCommandReceived;
         public event TftpChannelErrorHandler OnError;
-        public bool IsOpen { get; private set; }
 
         private IPEndPoint endpoint;
         private UdpClient client;
@@ -25,7 +24,6 @@ namespace Tftp.Net.Channel
                 throw new ArgumentNullException("client");
 
             this.client = client;
-            this.IsOpen = false;
             this.endpoint = null;
         }
 
@@ -34,10 +32,6 @@ namespace Tftp.Net.Channel
             if (client == null)
                 throw new ObjectDisposedException("UdpChannel");
 
-            if (IsOpen)
-                throw new InvalidOperationException("Cannot open a connection that is already open.");
-
-            IsOpen = true;
             client.BeginReceive(UdpReceivedCallback, null);
         }
 
@@ -52,7 +46,7 @@ namespace Tftp.Net.Channel
 
                 lock (this)
                 {
-                    if (!IsOpen)
+                    if (client == null)
                         return;
 
                     data = client.EndReceive(result, ref endpoint);
@@ -77,7 +71,7 @@ namespace Tftp.Net.Channel
 
             lock (this)
             {
-                if (IsOpen)
+                if (client != null)
                     client.BeginReceive(UdpReceivedCallback, null);
             }
         }
@@ -102,9 +96,6 @@ namespace Tftp.Net.Channel
             if (command == null)
                 throw new ArgumentNullException("command");
 
-            if (!IsOpen)
-                throw new InvalidOperationException("Cannot send on closed connections.");
-
             if (endpoint == null)
                 throw new InvalidOperationException("SetRemoteEndPoint() needs to be called before you can send TFTP commands.");
 
@@ -126,7 +117,6 @@ namespace Tftp.Net.Channel
 
                 client.Close();
                 this.client = null;
-                this.IsOpen = false;
             }
         }
 

@@ -18,7 +18,7 @@ namespace Tftp.Net.UnitTests
         public void Setup()
         {
             transfer = new TransferStub(new MemoryStream(new byte[5000]));
-            transfer.SetState(new SendWriteRequest(transfer));
+            transfer.SetState(new SendWriteRequest());
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace Tftp.Net.UnitTests
         public void SendsWriteRequest()
         {
             TransferStub transfer = new TransferStub(new MemoryStream(new byte[5000]));
-            transfer.SetState(new SendWriteRequest(transfer));
+            transfer.SetState(new SendWriteRequest());
             Assert.IsTrue(transfer.CommandWasSent(typeof(WriteRequest)));
         }
 
@@ -85,7 +85,7 @@ namespace Tftp.Net.UnitTests
         {
             TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream());
             transferWithLowTimeout.RetryTimeout = new TimeSpan(0);
-            transferWithLowTimeout.SetState(new SendWriteRequest(transferWithLowTimeout));
+            transferWithLowTimeout.SetState(new SendWriteRequest());
 
             Assert.IsTrue(transferWithLowTimeout.CommandWasSent(typeof(WriteRequest)));
             transferWithLowTimeout.SentCommands.Clear();
@@ -100,7 +100,7 @@ namespace Tftp.Net.UnitTests
             TransferStub transferWithLowTimeout = new TransferStub(new MemoryStream(new byte[5000]));
             transferWithLowTimeout.RetryTimeout = new TimeSpan(0);
             transferWithLowTimeout.RetryCount = 1;
-            transferWithLowTimeout.SetState(new SendWriteRequest(transferWithLowTimeout));
+            transferWithLowTimeout.SetState(new SendWriteRequest());
 
             transferWithLowTimeout.OnTimer();
             Assert.IsFalse(transferWithLowTimeout.HadNetworkTimeout);

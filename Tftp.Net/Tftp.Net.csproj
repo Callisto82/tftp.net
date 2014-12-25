@@ -40,8 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Channel\IChannel.cs" />
-    <Compile Include="Channel\ChannelFactory.cs" />
+    <Compile Include="Channel\ITransferChannel.cs" />
+    <Compile Include="Channel\TransferChannelFactory.cs" />
     <Compile Include="Commands\CommandSerializer.cs" />
     <Compile Include="Commands\TftpStreamReader.cs" />
     <Compile Include="Commands\TftpStreamWriter.cs" />
@@ -50,6 +50,7 @@
     <Compile Include="TftpTransferProgress.cs" />
     <Compile Include="Trace\TraceHelper.cs" />
     <Compile Include="Commands\TransferOption.cs" />
+    <Compile Include="Transfer\States\Uninitialized.cs" />
     <Compile Include="Transfer\TransferOptionSet.cs" />
     <Compile Include="Transfer\LocalReadTransfer.cs" />
     <Compile Include="Transfer\LocalWriteTransfer.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="Transfer\States\StateWithNetworkTimeout.cs" />
     <Compile Include="Transfer\TftpTransfer.cs" />
     <Compile Include="TftpServer.cs" />
-    <Compile Include="Transfer\TransferWithTimeout.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

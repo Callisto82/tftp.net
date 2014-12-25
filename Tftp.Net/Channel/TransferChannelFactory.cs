@@ -7,9 +7,9 @@ using System.Net.Sockets;
 
 namespace Tftp.Net.Channel
 {
-    static class ChannelFactory
+    static class TransferChannelFactory
     {
-        public static IChannel CreateServer(EndPoint localAddress)
+        public static ITransferChannel CreateServer(EndPoint localAddress)
         {
             if (localAddress is IPEndPoint)
                 return CreateServerUdp((IPEndPoint)localAddress);
@@ -17,7 +17,7 @@ namespace Tftp.Net.Channel
             throw new NotSupportedException("Unsupported endpoint type.");
         }
 
-        public static IChannel CreateConnection(EndPoint remoteAddress)
+        public static ITransferChannel CreateConnection(EndPoint remoteAddress)
         {
             if (remoteAddress is IPEndPoint)
                 return CreateConnectionUdp((IPEndPoint)remoteAddress);
@@ -27,13 +27,13 @@ namespace Tftp.Net.Channel
 
         #region UDP connections
 
-        private static IChannel CreateServerUdp(IPEndPoint localAddress)
+        private static ITransferChannel CreateServerUdp(IPEndPoint localAddress)
         {
             UdpClient socket = new UdpClient(localAddress);
             return new UdpChannel(socket);
         }
 
-        private static IChannel CreateConnectionUdp(IPEndPoint remoteAddress)
+        private static ITransferChannel CreateConnectionUdp(IPEndPoint remoteAddress)
         {
             IPEndPoint localAddress = new IPEndPoint(IPAddress.Any, 0);
             UdpChannel channel = new UdpChannel(new UdpClient(localAddress));

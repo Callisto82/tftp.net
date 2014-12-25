@@ -16,7 +16,7 @@ namespace Tftp.Net.UnitTests
         public void Setup()
         {
             transfer = new TransferStub();
-            transfer.SetState(new ReceivedError(transfer, new TftpErrorPacket(123, "Error")));
+            transfer.SetState(new ReceivedError(new TftpErrorPacket(123, "Error")));
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace Tftp.Net.UnitTests
             };
 
             Assert.IsFalse(OnErrorWasCalled);
-            transfer.SetState(new ReceivedError(transfer, new TftpErrorPacket(123, "My Error")));
+            transfer.SetState(new ReceivedError(new TftpErrorPacket(123, "My Error")));
             Assert.IsTrue(OnErrorWasCalled);
         }
 

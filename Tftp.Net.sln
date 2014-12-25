@@ -1,17 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net", "Tftp.Net\Tftp.Net.csproj", "{A3F0DE15-AC97-428D-830C-4F9721EE3627}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net.UnitTests", "Tftp.Net.UnitTests\Tftp.Net.UnitTests.csproj", "{DA4D3CE2-0495-431B-AEEF-E469DC127D5F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A3F0DE15-AC97-428D-830C-4F9721EE3627} = {A3F0DE15-AC97-428D-830C-4F9721EE3627}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net.UnitTests.Runner", "Tftp.Net.UnitTests.Runner\Tftp.Net.UnitTests.Runner.csproj", "{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A3F0DE15-AC97-428D-830C-4F9721EE3627} = {A3F0DE15-AC97-428D-830C-4F9721EE3627}
-		{DA4D3CE2-0495-431B-AEEF-E469DC127D5F} = {DA4D3CE2-0495-431B-AEEF-E469DC127D5F}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net.SampleServer", "Tftp.Net.SampleServer\Tftp.Net.SampleServer.csproj", "{43947662-85F3-4577-81D8-096323FE8345}"
@@ -48,16 +44,6 @@ Global
 		{DA4D3CE2-0495-431B-AEEF-E469DC127D5F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DA4D3CE2-0495-431B-AEEF-E469DC127D5F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DA4D3CE2-0495-431B-AEEF-E469DC127D5F}.Release|x86.ActiveCfg = Release|Any CPU
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Debug|x86.ActiveCfg = Debug|x86
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Debug|x86.Build.0 = Debug|x86
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Release|Any CPU.ActiveCfg = Release|x86
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Release|Mixed Platforms.Build.0 = Release|x86
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Release|x86.ActiveCfg = Release|x86
-		{CACD4BB4-1F8F-4593-88FF-BFB29BA0A8B0}.Release|x86.Build.0 = Release|x86
 		{43947662-85F3-4577-81D8-096323FE8345}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{43947662-85F3-4577-81D8-096323FE8345}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{43947662-85F3-4577-81D8-096323FE8345}.Debug|Mixed Platforms.Build.0 = Debug|x86

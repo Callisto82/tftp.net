@@ -5,11 +5,7 @@ using System.Text;
 
 namespace Tftp.Net.Transfer.States
 {
-    class Closed : BaseState
+    class Uninitialized : BaseState
     {
-        public override void OnStateEnter()
-        {
-            Context.Dispose();
-        }
     }
 }

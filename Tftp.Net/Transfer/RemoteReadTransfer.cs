@@ -8,12 +8,12 @@ using Tftp.Net.Transfer;
 
 namespace Tftp.Net.Transfer
 {
-    class RemoteReadTransfer : TransferWithTimeout
+    class RemoteReadTransfer : TftpTransfer
     {
-        public RemoteReadTransfer(IChannel connection, String filename)
+        public RemoteReadTransfer(ITransferChannel connection, String filename)
             : base(connection, filename)
         {
-            SetState(new StartOutgoingRead(this));
+            SetState(new StartOutgoingRead());
         }
 
         public override int ExpectedSize

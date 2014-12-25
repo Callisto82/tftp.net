@@ -8,31 +8,27 @@ namespace Tftp.Net.Transfer.States
 {
     class AcknowledgeWriteRequest : StateThatExpectsMessagesFromDefaultEndPoint
     {
-        public AcknowledgeWriteRequest(TftpTransfer context)
-            : base(context) 
-        {
-        }
-
         public override void OnStateEnter()
         {
+            base.OnStateEnter();
             SendAndRepeat(new Acknowledgement(0));
         }
 
         public override void OnData(Data command)
         {
-            ITransferState nextState = new Receiving(Context);
+            var nextState = new Receiving();
             Context.SetState(nextState);
             nextState.OnCommand(command, Context.GetConnection().RemoteEndpoint);
         }
 
         public override void OnCancel(TftpErrorPacket reason)
         {
-            Context.SetState(new CancelledByUser(Context, reason));
+            Context.SetState(new CancelledByUser(reason));
         }
 
         public override void OnError(Error command)
         {
-            Context.SetState(new ReceivedError(Context, command));
+            Context.SetState(new ReceivedError(command));
         }
     }
 }

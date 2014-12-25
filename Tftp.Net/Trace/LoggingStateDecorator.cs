@@ -14,6 +14,12 @@ namespace Tftp.Net.Trace
 {
     class LoggingStateDecorator : ITransferState
     {
+        public TftpTransfer Context 
+        {
+            get { return decoratee.Context; }
+            set { decoratee.Context = value; }
+        }
+
         private readonly ITransferState decoratee;
         private readonly TftpTransfer transfer;
 

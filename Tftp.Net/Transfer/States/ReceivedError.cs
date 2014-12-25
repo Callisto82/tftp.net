@@ -10,11 +10,10 @@ namespace Tftp.Net.Transfer.States
     {
         private readonly TftpTransferError error;
 
-        public ReceivedError(TftpTransfer context, Error error)
-            : this(context, new TftpErrorPacket(error.ErrorCode, error.Message)) { }
+        public ReceivedError(Error error)
+            : this(new TftpErrorPacket(error.ErrorCode, error.Message)) { }
 
-        public ReceivedError(TftpTransfer context, TftpTransferError error)
-            : base(context)
+        public ReceivedError(TftpTransferError error)
         {
             this.error = error;
         }
@@ -23,7 +22,7 @@ namespace Tftp.Net.Transfer.States
         {
             TftpTrace.Trace("Received error: " + error, Context);
             Context.RaiseOnError(error);
-            Context.SetState(new Closed(Context));
+            Context.SetState(new Closed());
         }
     }
 }

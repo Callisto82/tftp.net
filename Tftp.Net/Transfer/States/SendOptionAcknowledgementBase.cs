@@ -9,25 +9,20 @@ namespace Tftp.Net.Transfer
 {
     class SendOptionAcknowledgementBase : StateThatExpectsMessagesFromDefaultEndPoint
     {
-        public SendOptionAcknowledgementBase(TftpTransfer context)
-            : base(context)
-        {
-        }
-
         public override void OnStateEnter()
         {
-            //Send an option acknowledgement
+            base.OnStateEnter();
             SendAndRepeat(new OptionAcknowledgement(Context.NegotiatedOptions.ToOptionList()));
         }
 
         public override void OnError(Error command)
         {
-            Context.SetState(new ReceivedError(Context, command));
+            Context.SetState(new ReceivedError(command));
         }
 
         public override void OnCancel(TftpErrorPacket reason)
         {
-            Context.SetState(new CancelledByUser(Context, reason));
+            Context.SetState(new CancelledByUser(reason));
         }
     }
 }

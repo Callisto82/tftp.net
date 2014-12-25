@@ -30,7 +30,7 @@ namespace Tftp.Net.Transfer
             return new TransferOptionSet() { IncludesBlockSizeOption = false, IncludesTimeoutOption = false, IncludesTransferSizeOption = false };
         }
 
-        public TransferOptionSet()
+        private TransferOptionSet()
         {
         }
 

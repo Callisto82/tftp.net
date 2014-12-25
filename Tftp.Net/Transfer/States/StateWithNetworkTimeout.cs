@@ -8,15 +8,13 @@ namespace Tftp.Net.Transfer.States
 {
     class StateWithNetworkTimeout : BaseState
     {
-        private readonly SimpleTimer timer;
+        private SimpleTimer timer;
         private ITftpCommand lastCommand;
-        private int retriesUsed;
+        private int retriesUsed = 0;
 
-        public StateWithNetworkTimeout(TftpTransfer context)
-            : base(context) 
+        public override void OnStateEnter()
         {
-            timer = new SimpleTimer(context.RetryTimeout);
-            retriesUsed = 0;
+            timer = new SimpleTimer(Context.RetryTimeout);
         }
 
         public override void OnTimer()
@@ -29,7 +27,7 @@ namespace Tftp.Net.Transfer.States
                 if (retriesUsed++ >= Context.RetryCount)
                 {
                     TftpTransferError error = new TimeoutError(Context.RetryTimeout, Context.RetryCount);
-                    Context.SetState(new ReceivedError(Context, error));
+                    Context.SetState(new ReceivedError(error));
                 }
                 else
                     HandleTimeout();

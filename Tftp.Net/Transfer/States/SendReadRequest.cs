@@ -12,13 +12,10 @@ namespace Tftp.Net.Transfer.States
 {
     class SendReadRequest : StateWithNetworkTimeout
     {
-        public SendReadRequest(TftpTransfer context)
-            : base(context)  { }
-
         public override void OnStateEnter()
         {
-            //Send a read request to the server
-            SendRequest();
+            base.OnStateEnter();
+            SendRequest(); //Send a read request to the server
         }
 
         private void SendRequest()
@@ -42,7 +39,7 @@ namespace Tftp.Net.Transfer.States
                     Context.FinishOptionNegotiation(TransferOptionSet.NewEmptySet());
 
                 //Switch to the receiving state...
-                ITransferState nextState = new Receiving(Context);
+                ITransferState nextState = new Receiving();
                 Context.SetState(nextState);
 
                 //...and let it handle the data packet
@@ -58,7 +55,7 @@ namespace Tftp.Net.Transfer.States
             }
             else if (command is Error)
             {
-                Context.SetState(new ReceivedError(Context, (Error)command));
+                Context.SetState(new ReceivedError((Error)command));
             }
             else
                 base.OnCommand(command, endpoint);
@@ -66,7 +63,7 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnCancel(TftpErrorPacket reason)
         {
-            Context.SetState(new CancelledByUser(Context, reason));
+            Context.SetState(new CancelledByUser(reason));
         }
     }
 }
