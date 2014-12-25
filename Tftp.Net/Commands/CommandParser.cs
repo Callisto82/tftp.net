@@ -21,45 +21,43 @@ namespace Tftp.Net
             {
                 return ParseInternal(message);
             }
-            catch (TftpParserException e)
+            catch (TftpParserException)
             {
-                //Rethrow
-                throw e;
+                throw;
             }
-            catch (Exception e2)
+            catch (Exception e)
             {
-                throw new TftpParserException(e2);
+                throw new TftpParserException(e);
             }
         }
 
         private ITftpCommand ParseInternal(byte[] message)
         {
-            using (TftpStreamReader reader = new TftpStreamReader(new MemoryStream(message)))
+            TftpStreamReader reader = new TftpStreamReader(new MemoryStream(message));
+
+            ushort opcode = reader.ReadUInt16();
+            switch (opcode)
             {
-                ushort opcode = reader.ReadUInt16();
-                switch (opcode)
-                {
-                    case ReadRequest.OpCode:
-                        return ParseReadRequest(reader);
+                case ReadRequest.OpCode:
+                    return ParseReadRequest(reader);
 
-                    case WriteRequest.OpCode:
-                        return ParseWriteRequest(reader);
+                case WriteRequest.OpCode:
+                    return ParseWriteRequest(reader);
 
-                    case Data.OpCode:
-                        return ParseData(reader);
+                case Data.OpCode:
+                    return ParseData(reader);
 
-                    case Acknowledgement.OpCode:
-                        return ParseAcknowledgement(reader);
+                case Acknowledgement.OpCode:
+                    return ParseAcknowledgement(reader);
 
-                    case Error.OpCode:
-                        return ParseError(reader);
+                case Error.OpCode:
+                    return ParseError(reader);
 
-                    case OptionAcknowledgement.OpCode:
-                        return ParseOptionAcknowledgement(reader);
+                case OptionAcknowledgement.OpCode:
+                    return ParseOptionAcknowledgement(reader);
 
-                    default:
-                        throw new TftpParserException("Invalid opcode");
-                }
+                default:
+                    throw new TftpParserException("Invalid opcode");
             }
         }
 
@@ -160,6 +158,7 @@ namespace Tftp.Net
         }
     }
 
+    [Serializable]
     class TftpParserException : Exception
     {
         public TftpParserException(String message)

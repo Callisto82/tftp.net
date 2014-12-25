@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace Tftp.Net
 {
-    class TftpStreamReader : IDisposable
+    class TftpStreamReader
     {
         private readonly Stream stream;
 
@@ -43,11 +43,6 @@ namespace Tftp.Net
 
             Array.Resize(ref buffer, bytesRead);
             return buffer;
-        }
-
-        public void Dispose()
-        {
-            stream.Dispose();
         }
     }
 }

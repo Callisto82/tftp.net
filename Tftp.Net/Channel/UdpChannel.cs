@@ -100,8 +100,8 @@ namespace Tftp.Net.Channel
                 throw new InvalidOperationException("SetRemoteEndPoint() needs to be called before you can send TFTP commands.");
 
             using (MemoryStream stream = new MemoryStream())
-            using (TftpStreamWriter writer = new TftpStreamWriter(stream))
             {
+                TftpStreamWriter writer = new TftpStreamWriter(stream);
                 CommandSerializer.Serialize(command, writer);
                 byte[] data = stream.GetBuffer();
                 client.Send(data, (int)stream.Length, endpoint);

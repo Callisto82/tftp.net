@@ -11,72 +11,60 @@ namespace Tftp.Net.UnitTests
     class TftpStreamReader_Test
     {
         private byte[] Data = { 0x00, 0x01, 0x02, 0x03 };
+        private TftpStreamReader tested;
 
-        [Test]
-        public void TestReadByte()
+        [SetUp]
+        public void Setup()
         {
             MemoryStream ms = new MemoryStream(Data);
-            using (TftpStreamReader reader = new TftpStreamReader(ms))
-            {
-                Assert.AreEqual(0x00, reader.ReadByte());
-                Assert.AreEqual(0x01, reader.ReadByte());
-                Assert.AreEqual(0x02, reader.ReadByte());
-                Assert.AreEqual(0x03, reader.ReadByte());
-            }
+            tested = new TftpStreamReader(ms);
         }
 
         [Test]
-        public void TestReadUInt16()
+        public void ReadsSingleBytes()
         {
-            MemoryStream ms = new MemoryStream(Data);
-            using (TftpStreamReader reader = new TftpStreamReader(ms))
-            {
-                Assert.AreEqual(0x0001, reader.ReadUInt16());
-                Assert.AreEqual(0x0203, reader.ReadUInt16());
-            }
+            Assert.AreEqual(0x00, tested.ReadByte());
+            Assert.AreEqual(0x01, tested.ReadByte());
+            Assert.AreEqual(0x02, tested.ReadByte());
+            Assert.AreEqual(0x03, tested.ReadByte());
         }
 
         [Test]
-        public void TestReadBytes1()
+        public void ReadsShorts()
         {
-            MemoryStream ms = new MemoryStream(Data);
-            using (TftpStreamReader reader = new TftpStreamReader(ms))
-            {
-                byte[] bytes = reader.ReadBytes(2);
-                Assert.AreEqual(2, bytes.Length);
-                Assert.AreEqual(0x00, bytes[0]);
-                Assert.AreEqual(0x01, bytes[1]);
-            }
+            Assert.AreEqual(0x0001, tested.ReadUInt16());
+            Assert.AreEqual(0x0203, tested.ReadUInt16());
         }
 
         [Test]
-        public void TestReadBytes2()
+        public void ReadsIntoSmallerArrays()
         {
-            MemoryStream ms = new MemoryStream(Data);
-            using (TftpStreamReader reader = new TftpStreamReader(ms))
-            {
-                byte[] bytes = reader.ReadBytes(4);
-                Assert.AreEqual(4, bytes.Length);
-                Assert.AreEqual(0x00, bytes[0]);
-                Assert.AreEqual(0x01, bytes[1]);
-                Assert.AreEqual(0x02, bytes[2]);
-                Assert.AreEqual(0x03, bytes[3]);
-            }
+            byte[] bytes = tested.ReadBytes(2);
+            Assert.AreEqual(2, bytes.Length);
+            Assert.AreEqual(0x00, bytes[0]);
+            Assert.AreEqual(0x01, bytes[1]);
         }
 
         [Test]
-        public void TestReadBytes3()
+        public void ReadsIntoArraysWithPerfectSize()
         {
-            MemoryStream ms = new MemoryStream(Data);
-            using (TftpStreamReader reader = new TftpStreamReader(ms))
-            {
-                byte[] bytes = reader.ReadBytes(10);
-                Assert.AreEqual(4, bytes.Length);
-                Assert.AreEqual(0x00, bytes[0]);
-                Assert.AreEqual(0x01, bytes[1]);
-                Assert.AreEqual(0x02, bytes[2]);
-                Assert.AreEqual(0x03, bytes[3]);
-            }
+            byte[] bytes = tested.ReadBytes(4);
+            Assert.AreEqual(4, bytes.Length);
+            Assert.AreEqual(0x00, bytes[0]);
+            Assert.AreEqual(0x01, bytes[1]);
+            Assert.AreEqual(0x02, bytes[2]);
+            Assert.AreEqual(0x03, bytes[3]);
+        }
+
+        [Test]
+        public void ReadsIntoLargerArrays()
+        {
+            byte[] bytes = tested.ReadBytes(10);
+            Assert.AreEqual(4, bytes.Length);
+            Assert.AreEqual(0x00, bytes[0]);
+            Assert.AreEqual(0x01, bytes[1]);
+            Assert.AreEqual(0x02, bytes[2]);
+            Assert.AreEqual(0x03, bytes[3]);
         }
     }
 }

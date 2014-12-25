@@ -13,8 +13,8 @@ namespace Tftp.Net.UnitTests
         private byte[] CommandToBytes(ITftpCommand command)
         {
             using (MemoryStream stream = new MemoryStream())
-            using (TftpStreamWriter writer = new TftpStreamWriter(stream))
             {
+                TftpStreamWriter writer = new TftpStreamWriter(stream);
                 CommandSerializer.Serialize(command, writer);
                 byte[] commandAsBytes = stream.GetBuffer();
                 Array.Resize(ref commandAsBytes, (int)stream.Length);

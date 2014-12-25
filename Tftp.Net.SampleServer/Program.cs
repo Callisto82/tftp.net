@@ -35,61 +35,68 @@ namespace Tftp.Net.SampleServer
 
             if (File.Exists(file))
             {
-                Console.WriteLine("[" + transfer.Filename + "] Rejecting Write request from " + client + " for " + transfer.Filename + ": File already exists");
-                transfer.Cancel(TftpErrorPacket.FileAlreadyExists);
+                CancelTransfer(transfer, TftpErrorPacket.FileAlreadyExists);
             }
             else
             {
-                Console.WriteLine("[" + transfer.Filename + "] Write request from " + client + " for " + transfer.Filename);
-                transfer.Start(new FileStream(file, FileMode.CreateNew));
+                OutputTransferStatus(transfer, "Accepting write request from " + client);
+                StartTransfer(transfer, new FileStream(file, FileMode.CreateNew));
             }
         }
 
         static void server_OnReadRequest(ITftpTransfer transfer, EndPoint client)
         {
-            Console.WriteLine("[" + transfer.Filename + "] Read request from " + client + " for " + transfer.Filename);
-
             String path = Path.Combine(ServerDirectory, transfer.Filename);
             FileInfo file = new FileInfo(path);
 
             //Is the file within the server directory?
-            if (!file.FullName.ToLower().StartsWith(ServerDirectory.ToLower()))
+            if (!file.FullName.StartsWith(ServerDirectory, StringComparison.InvariantCultureIgnoreCase))
             {
-                Console.WriteLine("[" + transfer.Filename + "] Denying request because the file is outside the server directory.");
-                transfer.Cancel(TftpErrorPacket.AccessViolation);
-                return;
+                CancelTransfer(transfer, TftpErrorPacket.AccessViolation);
             }
-
-            //Does the file exist at all?
-            if (!file.Exists)
+            else if (!file.Exists)
             {
-                Console.WriteLine("[" + transfer.Filename + "] Denying request because the file does not exist.");
-                transfer.Cancel(TftpErrorPacket.FileNotFound);
-                return;
+                CancelTransfer(transfer, TftpErrorPacket.FileNotFound);
             }
+            else
+            {
+                OutputTransferStatus(transfer, "Accepting request from " + client);
+                StartTransfer(transfer, new FileStream(file.FullName, FileMode.Open));
+            }
+        }
 
-            //Ok, start the transfer
-            Stream str = new FileStream(file.FullName, FileMode.Open);
-            Console.WriteLine("[" + transfer.Filename + "] Accepting request");
+        private static void StartTransfer(ITftpTransfer transfer, Stream stream)
+        {
             transfer.OnProgress += new TftpProgressHandler(transfer_OnProgress);
             transfer.OnError += new TftpErrorHandler(transfer_OnError);
             transfer.OnFinished += new TftpEventHandler(transfer_OnFinished);
-            transfer.Start(str);
+            transfer.Start(stream);
+        }
+
+        private static void CancelTransfer(ITftpTransfer transfer, TftpErrorPacket reason)
+        {
+            OutputTransferStatus(transfer, "Cancelling transfer: " + reason.ErrorMessage);
+            transfer.Cancel(reason);
         }
 
         static void transfer_OnError(ITftpTransfer transfer, TftpTransferError error)
         {
-            Console.WriteLine("[" + transfer.Filename + "] Error: " + error);
+            OutputTransferStatus(transfer, "Error: " + error);
         }
 
         static void transfer_OnFinished(ITftpTransfer transfer)
         {
-            Console.WriteLine("[" + transfer.Filename + "] Finished.");
+            OutputTransferStatus(transfer, "Finished");
         }
 
         static void transfer_OnProgress(ITftpTransfer transfer, TftpTransferProgress progress)
         {
-            Console.WriteLine("[" + transfer.Filename + "] Progress: " + progress);
+            OutputTransferStatus(transfer, "Progress " + progress);
+        }
+
+        private static void OutputTransferStatus(ITftpTransfer transfer, string message)
+        {
+            Console.WriteLine("[" + transfer.Filename + "] " + message);
         }
     }
 }
