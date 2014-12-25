@@ -10,6 +10,8 @@ namespace Tftp.Net.Transfer.States
 {
     interface ITransferState
     {
+        TftpTransfer Context { get; set; }
+
         //Called by TftpTransfer
         void OnStateEnter();
 

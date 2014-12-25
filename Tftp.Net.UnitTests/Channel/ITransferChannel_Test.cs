@@ -8,35 +8,14 @@ using Tftp.Net.Channel;
 namespace Tftp.Net.UnitTests
 {
     [TestFixture]
-    abstract class ITftpChannel_Test
+    abstract class ITransferChannel_Test
     {
-        protected abstract IChannel CreateConnection();
-
-        [Test]
-        public void Create()
-        {
-            using (IChannel conn = CreateConnection())
-            {
-                Assert.False(conn.IsOpen);
-                conn.Open();
-                Assert.True(conn.IsOpen);
-            }
-        }
-
-        [Test]
-        public void DisabledAfterDispose()
-        {
-            IChannel conn = CreateConnection();
-            conn.Open();
-            Assert.True(conn.IsOpen);
-            conn.Dispose();
-            Assert.False(conn.IsOpen);
-        }
+        protected abstract ITransferChannel CreateConnection();
 
         [Test, ExpectedException(typeof(ArgumentNullException))]
         public void SendWithNullParameter()
         {
-            using (IChannel conn = CreateConnection())
+            using (ITransferChannel conn = CreateConnection())
             {
                 conn.Open();
                 conn.Send(null);
@@ -46,7 +25,7 @@ namespace Tftp.Net.UnitTests
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void SendOnClosedParameter()
         {
-            using (IChannel conn = CreateConnection())
+            using (ITransferChannel conn = CreateConnection())
             {
                 conn.Send(new Acknowledgement(1));
             }
@@ -55,7 +34,7 @@ namespace Tftp.Net.UnitTests
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void SendOnNotConnectedConnectionParameter()
         {
-            using (IChannel conn = CreateConnection())
+            using (ITransferChannel conn = CreateConnection())
             {
                 conn.Open();
                 conn.Send(new Acknowledgement(1));

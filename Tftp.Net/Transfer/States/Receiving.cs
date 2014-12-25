@@ -8,16 +8,8 @@ namespace Tftp.Net.Transfer.States
 {
     class Receiving : StateThatExpectsMessagesFromDefaultEndPoint
     {
-        private readonly int blockSize;
-        private ushort nextBlockNumber;
+        private ushort nextBlockNumber = 1;
         private int bytesReceived = 0;
-
-        public Receiving(TftpTransfer context)
-            : base(context)
-        {
-            this.nextBlockNumber = 1;
-            this.blockSize = context.BlockSize;
-        }
 
         public override void OnData(Data command)
         {
@@ -28,10 +20,10 @@ namespace Tftp.Net.Transfer.States
                 SendAcknowledgement(command.BlockNumber);
 
                 //Was that the last block of data?
-                if (command.Bytes.Length < blockSize)
+                if (command.Bytes.Length < Context.BlockSize)
                 {
                     Context.RaiseOnFinished();
-                    Context.SetState(new Closed(Context));
+                    Context.SetState(new Closed());
                 }
                 else
                 {
@@ -50,12 +42,12 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnCancel(TftpErrorPacket reason)
         {
-            Context.SetState(new CancelledByUser(Context, reason));
+            Context.SetState(new CancelledByUser(reason));
         }
 
         public override void OnError(Error command)
         {
-            Context.SetState(new ReceivedError(Context, command));
+            Context.SetState(new ReceivedError(command));
         }
 
         private void SendAcknowledgement(ushort blockNumber)

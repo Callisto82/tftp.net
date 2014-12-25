@@ -17,7 +17,7 @@ namespace Tftp.Net.UnitTests.Transfer.States
         public void Setup()
         {
             transfer = new TransferStub();
-            transfer.SetState(new StartOutgoingWrite(transfer));
+            transfer.SetState(new StartOutgoingWrite());
         }
 
         [Test]

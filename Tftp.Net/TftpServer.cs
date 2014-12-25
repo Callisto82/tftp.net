@@ -37,11 +37,11 @@ namespace Tftp.Net
         /// <summary>
         /// Server port that we're listening on.
         /// </summary>
-        private readonly IChannel serverSocket;
+        private readonly ITransferChannel serverSocket;
 
         public TftpServer(IPEndPoint localAddress)
         {
-            serverSocket = ChannelFactory.CreateServer(localAddress);
+            serverSocket = TransferChannelFactory.CreateServer(localAddress);
             serverSocket.OnCommandReceived += new TftpCommandHandler(serverSocket_OnCommandReceived);
             serverSocket.OnError += new TftpChannelErrorHandler(serverSocket_OnError);
         }
@@ -87,7 +87,7 @@ namespace Tftp.Net
                 return;
 
             //Open a connection to the client
-            IChannel channel = ChannelFactory.CreateConnection(endpoint);
+            ITransferChannel channel = TransferChannelFactory.CreateConnection(endpoint);
 
             //Create a wrapper for the transfer request
             ReadOrWriteRequest request = (ReadOrWriteRequest)command;

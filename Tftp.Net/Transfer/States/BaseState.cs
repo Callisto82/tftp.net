@@ -9,12 +9,7 @@ namespace Tftp.Net.Transfer.States
 {
     class BaseState : ITransferState
     {
-        protected TftpTransfer Context { get; private set; }
-
-        public BaseState(TftpTransfer context)
-        {
-            this.Context = context;
-        }
+        public TftpTransfer Context { get; set; }
 
         public virtual void OnStateEnter()
         {

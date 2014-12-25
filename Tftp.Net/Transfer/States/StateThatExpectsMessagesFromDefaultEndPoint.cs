@@ -9,9 +9,6 @@ namespace Tftp.Net.Transfer.States
 {
     class StateThatExpectsMessagesFromDefaultEndPoint : StateWithNetworkTimeout, ITftpCommandVisitor
     {
-        public StateThatExpectsMessagesFromDefaultEndPoint(TftpTransfer context)
-            : base(context) { }
-
         public override void OnCommand(ITftpCommand command, EndPoint endpoint)
         {
             if (!endpoint.Equals(Context.GetConnection().RemoteEndpoint))

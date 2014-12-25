@@ -9,12 +9,11 @@ namespace Tftp.Net.Channel
     delegate void TftpCommandHandler(ITftpCommand command, EndPoint endpoint);
     delegate void TftpChannelErrorHandler(TftpTransferError error);
 
-    interface IChannel : IDisposable
+    interface ITransferChannel : IDisposable
     {
         event TftpCommandHandler OnCommandReceived;
         event TftpChannelErrorHandler OnError;
 
-        bool IsOpen { get; }
         EndPoint RemoteEndpoint { get; set; }
 
         void Open();

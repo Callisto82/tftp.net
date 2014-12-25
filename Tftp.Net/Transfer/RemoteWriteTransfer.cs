@@ -8,12 +8,12 @@ using Tftp.Net.Transfer;
 
 namespace Tftp.Net.Transfer
 {
-    class RemoteWriteTransfer : TransferWithTimeout
+    class RemoteWriteTransfer : TftpTransfer
     {
-        public RemoteWriteTransfer(IChannel connection, String filename)
+        public RemoteWriteTransfer(ITransferChannel connection, String filename)
             : base(connection, filename)
         {
-            SetState(new StartOutgoingWrite(this));
+            SetState(new StartOutgoingWrite());
         }
     }
 }

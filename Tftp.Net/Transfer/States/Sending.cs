@@ -12,18 +12,13 @@ namespace Tftp.Net.Transfer.States
         private byte[] lastData;
         private ushort lastBlockNumber;
         private int bytesSent = 0;
-        private bool lastPacketWasSent;
-
-        public Sending(TftpTransfer context)
-            : base(context)
-        {
-            lastData = new byte[context.BlockSize];
-            lastPacketWasSent = false;
-        }
+        private bool lastPacketWasSent = false;
 
         public override void OnStateEnter()
         {
- 	         SendNextPacket(1);
+            base.OnStateEnter();
+            lastData = new byte[Context.BlockSize];
+ 	        SendNextPacket(1);
         }
 
         public override void OnAcknowledgement(Acknowledgement command)
@@ -40,7 +35,7 @@ namespace Tftp.Net.Transfer.States
             {
                 //We're done here
                 Context.RaiseOnFinished();
-                Context.SetState(new Closed(Context));
+                Context.SetState(new Closed());
             }
             else
             {
@@ -50,12 +45,12 @@ namespace Tftp.Net.Transfer.States
 
         public override void OnError(Error command)
         {
-            Context.SetState(new ReceivedError(Context, command));
+            Context.SetState(new ReceivedError(command));
         }
 
         public override void OnCancel(TftpErrorPacket reason)
         {
-            Context.SetState(new CancelledByUser(Context, reason));
+            Context.SetState(new CancelledByUser(reason));
         }
 
         #region Helper Methods
