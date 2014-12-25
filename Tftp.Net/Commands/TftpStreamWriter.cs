@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Tftp.Net
 {
-    class TftpStreamWriter : IDisposable
+    class TftpStreamWriter
     {
         private readonly Stream stream;
 
@@ -29,11 +29,6 @@ namespace Tftp.Net
         public void WriteBytes(byte[] data)
         {
             stream.Write(data, 0, data.Length);
-        }
-
-        public void Dispose()
-        {
-            stream.Dispose();
         }
     }
 }
