@@ -12,17 +12,16 @@ namespace Tftp.Net.UnitTests.Transfer
     class SimpleTimer_Test
     {
         [Test]
-        public void TimeoutDoesNotStayActive()
+        public void TimesOutWhenTimeoutIsReached()
         {
             SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
             Assert.IsFalse(timer.IsTimeout());
             Thread.Sleep(200);
             Assert.IsTrue(timer.IsTimeout());
-            Assert.IsFalse(timer.IsTimeout());
         }
 
         [Test]
-        public void Reset()
+        public void RestartingResetsTimeout()
         {
             SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
             Assert.IsFalse(timer.IsTimeout());

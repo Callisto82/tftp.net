@@ -16,13 +16,11 @@ namespace Tftp.Net.Channel
 
         private IPEndPoint endpoint;
         private UdpClient client;
+        private readonly CommandSerializer serializer = new CommandSerializer();
         private readonly CommandParser parser = new CommandParser();
 
         public UdpChannel(UdpClient client)
         {
-            if (client == null)
-                throw new ArgumentNullException("client");
-
             this.client = client;
             this.endpoint = null;
         }
@@ -93,16 +91,12 @@ namespace Tftp.Net.Channel
             if (client == null)
                 throw new ObjectDisposedException("UdpChannel");
 
-            if (command == null)
-                throw new ArgumentNullException("command");
-
             if (endpoint == null)
-                throw new InvalidOperationException("SetRemoteEndPoint() needs to be called before you can send TFTP commands.");
+                throw new InvalidOperationException("RemoteEndpoint needs to be set before you can send TFTP commands.");
 
             using (MemoryStream stream = new MemoryStream())
             {
-                TftpStreamWriter writer = new TftpStreamWriter(stream);
-                CommandSerializer.Serialize(command, writer);
+                serializer.Serialize(command, stream);
                 byte[] data = stream.GetBuffer();
                 client.Send(data, (int)stream.Length, endpoint);
             }

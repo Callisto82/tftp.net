@@ -12,12 +12,16 @@ namespace Tftp.Net.UnitTests
 {
     class TransferStub : TftpTransfer
     {
+        class Uninitialized : BaseState
+        {
+        }
+
         private ChannelStub Channel { get { return (ChannelStub)connection; } }
         public List<ITftpCommand> SentCommands { get { return Channel.SentCommands; } }
         public bool HadNetworkTimeout { get; set; }
 
         public TransferStub(MemoryStream stream)
-            : base(new ChannelStub(), "dummy.txt") 
+            : base(new ChannelStub(), "dummy.txt", new Uninitialized()) 
         {
             base.InputOutputStream = stream;
             HadNetworkTimeout = false;

@@ -11,9 +11,8 @@ namespace Tftp.Net.Transfer
     class RemoteWriteTransfer : TftpTransfer
     {
         public RemoteWriteTransfer(ITransferChannel connection, String filename)
-            : base(connection, filename)
+            : base(connection, filename, new StartOutgoingWrite())
         {
-            SetState(new StartOutgoingWrite());
         }
     }
 }

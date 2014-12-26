@@ -13,11 +13,6 @@ namespace Tftp.Net.UnitTests.TransferOptions
     {
         private TransferOptionSet options;
 
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void ReadsTransferSize()
         {

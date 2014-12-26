@@ -12,13 +12,8 @@ namespace Tftp.Net.UnitTests.TransferOptions
     {
         private TransferOptionSet options;
 
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
-        public void AcceptRegularOption()
+        public void AcceptsRegularOption()
         {
             Parse(new TransferOption("blksize", "16"));
             Assert.IsTrue(options.IncludesBlockSizeOption);
@@ -26,7 +21,7 @@ namespace Tftp.Net.UnitTests.TransferOptions
         }
 
         [Test]
-        public void IgnoreUnknownOption()
+        public void IgnoresUnknownOption()
         {
             Parse(new TransferOption("blub", "16"));
             Assert.AreEqual(512, options.BlockSize);
@@ -34,7 +29,7 @@ namespace Tftp.Net.UnitTests.TransferOptions
         }
 
         [Test]
-        public void IgnoreInvalidValue()
+        public void IgnoresInvalidValue()
         {
             Parse(new TransferOption("blksize", "not-a-number"));
             Assert.AreEqual(512, options.BlockSize);
@@ -42,7 +37,7 @@ namespace Tftp.Net.UnitTests.TransferOptions
         }
 
         [Test]
-        public void AcceptMinBlocksize()
+        public void AcceptsMinBlocksize()
         {
             Parse(new TransferOption("blksize", "8"));
             Assert.IsTrue(options.IncludesBlockSizeOption);
@@ -52,7 +47,7 @@ namespace Tftp.Net.UnitTests.TransferOptions
         }
 
         [Test]
-        public void AcceptMaxBlocksize()
+        public void AcceptsMaxBlocksize()
         {
             Parse(new TransferOption("blksize", "65464"));
             Assert.IsTrue(options.IncludesBlockSizeOption);

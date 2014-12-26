@@ -11,11 +11,20 @@ using System.Threading;
 namespace Tftp.Net.UnitTests
 {
     [TestFixture]
-    class UdpChannel_Test : ITransferChannel_Test
+    class UdpChannel_Test
     {
-        protected override Channel.ITransferChannel CreateConnection()
+        private UdpChannel tested;
+
+        [SetUp]
+        public void Setup()
         {
-            return new UdpChannel(new UdpClient(0));
+            tested = new UdpChannel(new UdpClient(0));
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            tested.Dispose();
         }
 
         [Test]
@@ -23,14 +32,24 @@ namespace Tftp.Net.UnitTests
         {
             var remote = OpenRemoteUdpClient();
 
-            using (ITransferChannel conn = new UdpChannel(new UdpClient(0)))
-            {
-                conn.Open();
-                conn.RemoteEndpoint = remote.Client.LocalEndPoint;
-                conn.Send(new Acknowledgement(1));
-            }
+            tested.Open();
+            tested.RemoteEndpoint = remote.Client.LocalEndPoint;
+            tested.Send(new Acknowledgement(1));
 
             AssertBytesReceived(remote, TimeSpan.FromMilliseconds(500));
+        }
+
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void DeniesSendingOnClosedConnections()
+        {
+            tested.Send(new Acknowledgement(1));
+        }
+
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void DeniesSendingWhenNoRemoteAddressIsSet()
+        {
+            tested.Open();
+            tested.Send(new Acknowledgement(1));
         }
 
         private void AssertBytesReceived(UdpClient remote, TimeSpan timeout)

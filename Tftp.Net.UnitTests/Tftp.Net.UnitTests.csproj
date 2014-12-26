@@ -49,7 +49,6 @@
     <Compile Include="TftpClientServer_Test.cs" />
     <Compile Include="Commands\TftpCommandParserAndSerializer_Test.cs" />
     <Compile Include="Commands\TftpCommand_Test.cs" />
-    <Compile Include="Channel\ITransferChannel_Test.cs" />
     <Compile Include="Commands\TftpStreamReader_Test.cs" />
     <Compile Include="Commands\TftpStreamWriter_Test.cs" />
     <Compile Include="Channel\UdpChannel_Test.cs" />

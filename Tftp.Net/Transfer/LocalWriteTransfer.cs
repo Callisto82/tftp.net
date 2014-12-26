@@ -11,9 +11,8 @@ namespace Tftp.Net.Transfer
     class LocalWriteTransfer : TftpTransfer
     {
         public LocalWriteTransfer(ITransferChannel connection, string filename, IEnumerable<TransferOption> options)
-            : base(connection, filename)
+            : base(connection, filename, new StartIncomingWrite(options))
         {
-            SetState(new StartIncomingWrite(options));
         }
 
         public override TftpTransferMode TransferMode
