@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -13,9 +14,9 @@ namespace Tftp.Net
         /// <summary>
         /// Call this method to serialize the given <code>command</code> using the given <code>writer</code>.
         /// </summary>
-        public static void Serialize(ITftpCommand command, TftpStreamWriter writer)
+        public void Serialize(ITftpCommand command, Stream stream)
         {
-            CommandComposerVisitor visitor = new CommandComposerVisitor(writer);
+            CommandComposerVisitor visitor = new CommandComposerVisitor(stream);
             command.Visit(visitor);
         }
 
@@ -23,12 +24,9 @@ namespace Tftp.Net
         {
             private readonly TftpStreamWriter writer;
 
-            public CommandComposerVisitor(TftpStreamWriter writer)
+            public CommandComposerVisitor(Stream stream)
             {
-                if (writer == null)
-                    throw new ArgumentNullException("writer");
-
-                this.writer = writer;
+                this.writer = new TftpStreamWriter(stream);
             }
 
             private void OnReadOrWriteRequest(ReadOrWriteRequest command)

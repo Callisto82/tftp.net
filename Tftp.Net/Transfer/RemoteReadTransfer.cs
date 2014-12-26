@@ -11,9 +11,8 @@ namespace Tftp.Net.Transfer
     class RemoteReadTransfer : TftpTransfer
     {
         public RemoteReadTransfer(ITransferChannel connection, String filename)
-            : base(connection, filename)
+            : base(connection, filename, new StartOutgoingRead())
         {
-            SetState(new StartOutgoingRead());
         }
 
         public override int ExpectedSize

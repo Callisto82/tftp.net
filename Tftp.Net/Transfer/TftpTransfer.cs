@@ -24,16 +24,13 @@ namespace Tftp.Net.Transfer
         public bool WasStarted { get; private set; }
         public Stream InputOutputStream { get; protected set; }
 
-        public TftpTransfer(ITransferChannel connection, String filename)
+        public TftpTransfer(ITransferChannel connection, String filename, ITransferState initialState)
         {
-            if (connection == null)
-                throw new ArgumentNullException("connection");
-
             this.ProposedOptions = TransferOptionSet.NewDefaultSet();
             this.Filename = filename;
-            this.state = new Uninitialized();
             this.RetryCount = 5;
             this.timer = new Timer(timer_OnTimer, null, 500, 500);
+            this.SetState(initialState);
             this.connection = connection;
             this.connection.OnCommandReceived += new TftpCommandHandler(connection_OnCommandReceived);
             this.connection.OnError += new TftpChannelErrorHandler(connection_OnError);
@@ -66,9 +63,6 @@ namespace Tftp.Net.Transfer
 
         internal virtual void SetState(ITransferState newState)
         {
-            if (newState == null)
-                throw new ArgumentNullException("newState");
-
             state = DecorateForLogging(newState);
             state.Context = this;
             state.OnStateEnter();
@@ -184,6 +178,9 @@ namespace Tftp.Net.Transfer
 
         public void Cancel(TftpErrorPacket reason)
         {
+            if (reason == null)
+                throw new ArgumentNullException("reason");
+
             lock (this)
             {
                 state.OnCancel(reason);

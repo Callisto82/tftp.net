@@ -10,12 +10,12 @@ namespace Tftp.Net.UnitTests
     [TestFixture]
     class TftpCommandParserAndSerializer_Test
     {
-        private byte[] CommandToBytes(ITftpCommand command)
+        private byte[] Serialize(ITftpCommand command)
         {
             using (MemoryStream stream = new MemoryStream())
             {
-                TftpStreamWriter writer = new TftpStreamWriter(stream);
-                CommandSerializer.Serialize(command, writer);
+                CommandSerializer serializer = new CommandSerializer();
+                serializer.Serialize(command, stream);
                 byte[] commandAsBytes = stream.GetBuffer();
                 Array.Resize(ref commandAsBytes, (int)stream.Length);
                 return commandAsBytes;
@@ -23,56 +23,56 @@ namespace Tftp.Net.UnitTests
         }
 
         [Test]
-        public void ParseAck()
+        public void ParsesAck()
         {
             Acknowledgement original = new Acknowledgement(10);
             CommandParser parser = new CommandParser();
 
-            Acknowledgement parsed = (Acknowledgement)parser.Parse(CommandToBytes(original));
+            Acknowledgement parsed = (Acknowledgement)parser.Parse(Serialize(original));
             Assert.AreEqual(original.BlockNumber, parsed.BlockNumber);
         }
 
         [Test]
-        public void ParseError()
+        public void ParsesError()
         {
             Error original = new Error(15, "Hallo Welt");
             CommandParser parser = new CommandParser();
 
-            Error parsed = (Error)parser.Parse(CommandToBytes(original));
+            Error parsed = (Error)parser.Parse(Serialize(original));
             Assert.AreEqual(original.ErrorCode, parsed.ErrorCode);
             Assert.AreEqual(original.Message, parsed.Message);
         }
 
         [Test]
-        public void ParseReadRequest()
+        public void ParsesReadRequest()
         {
             ReadRequest original = new ReadRequest("Hallo Welt.txt", TftpTransferMode.netascii, null);
             CommandParser parser = new CommandParser();
 
-            ReadRequest parsed = (ReadRequest)parser.Parse(CommandToBytes(original));
+            ReadRequest parsed = (ReadRequest)parser.Parse(Serialize(original));
             Assert.AreEqual(original.Filename, parsed.Filename);
             Assert.AreEqual(original.Mode, parsed.Mode);
         }
 
         [Test]
-        public void ParseWriteRequest()
+        public void ParsesWriteRequest()
         {
             WriteRequest original = new WriteRequest("Hallo Welt.txt", TftpTransferMode.netascii, null);
             CommandParser parser = new CommandParser();
 
-            WriteRequest parsed = (WriteRequest)parser.Parse(CommandToBytes(original));
+            WriteRequest parsed = (WriteRequest)parser.Parse(Serialize(original));
             Assert.AreEqual(original.Filename, parsed.Filename);
             Assert.AreEqual(original.Mode, parsed.Mode);
         }
 
         [Test]
-        public void ParseData()
+        public void ParsesData()
         {
             byte[] data = { 12, 15, 19, 0, 4 };
             Data original = new Data(123, data);
             CommandParser parser = new CommandParser();
 
-            Data parsed = (Data)parser.Parse(CommandToBytes(original));
+            Data parsed = (Data)parser.Parse(Serialize(original));
             Assert.AreEqual(original.BlockNumber, parsed.BlockNumber);
             Assert.AreEqual(original.Bytes.Length, parsed.Bytes.Length);
 

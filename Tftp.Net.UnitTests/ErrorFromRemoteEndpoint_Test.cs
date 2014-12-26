@@ -10,7 +10,7 @@ namespace Tftp.Net.UnitTests
     class ErrorFromRemoteEndpoint_Test
     {
         [Test]
-        public void Create()
+        public void CanBeCreatedWithValidValues()
         {
             TftpErrorPacket error = new TftpErrorPacket(123, "Test Message");
             Assert.AreEqual(123, error.ErrorCode);
@@ -19,14 +19,14 @@ namespace Tftp.Net.UnitTests
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
-        public void CreateInvalidMessage1()
+        public void RejectsNullMessage()
         {
             TftpErrorPacket error = new TftpErrorPacket(123, null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
-        public void CreateInvalidMessage2()
+        public void RejectsEmptyMessage()
         {
             TftpErrorPacket error = new TftpErrorPacket(123, "");
         }

@@ -41,6 +41,9 @@ namespace Tftp.Net
 
         public TftpServer(IPEndPoint localAddress)
         {
+            if (localAddress == null)
+                throw new ArgumentNullException("localAddress");
+
             serverSocket = TransferChannelFactory.CreateServer(localAddress);
             serverSocket.OnCommandReceived += new TftpCommandHandler(serverSocket_OnCommandReceived);
             serverSocket.OnError += new TftpChannelErrorHandler(serverSocket_OnError);

@@ -5,13 +5,13 @@ using System.Text;
 using NUnit.Framework;
 using Tftp.Net.Transfer;
 
-namespace Tftp.Net.UnitTests.Transfer
+namespace Tftp.Net.UnitTests.TransferOptions
 {
     [TestFixture]
     class TransferOption_Test
     {
         [Test]
-        public void Create()
+        public void CanBeCreatedWithValidNameAndValue()
         {
             TransferOption option = new TransferOption("Test", "Hallo Welt");
             Assert.AreEqual("Test", option.Name);
@@ -21,27 +21,27 @@ namespace Tftp.Net.UnitTests.Transfer
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
-        public void InvalidName1()
+        public void RejectsInvalidName1()
         {
             TransferOption option = new TransferOption("", "Hallo Welt");
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
-        public void InvalidName2()
+        public void RejectsInvalidName2()
         {
             TransferOption option = new TransferOption(null, "Hallo Welt");
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void InvalidValue()
+        public void RejectsInvalidValue()
         {
             TransferOption option = new TransferOption("Test", null);
         }
 
         [Test]
-        public void EmptyValue()
+        public void AcceptsEmptyValue()
         {
             //Must not throw any exceptions
             TransferOption option = new TransferOption("Test", "");

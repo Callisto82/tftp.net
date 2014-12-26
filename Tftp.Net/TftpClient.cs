@@ -65,7 +65,7 @@ namespace Tftp.Net
             IPAddress ip = Dns.GetHostAddresses(host).FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
 
             if (ip == null)
-                throw new ArgumentException("Could not convert host to an IPv4 address.", "host");
+                throw new ArgumentException("Could not convert '" + host + "' to an IPv4 address.", "host");
 
             this.remoteAddress = new IPEndPoint(ip, port);
         }
