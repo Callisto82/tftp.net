@@ -3,7 +3,7 @@ This is a .NET/C# library that allows you to easily integrate a TFTP Client or T
 If you're looking for a fully-fledged GUI client, you should probably look into other projects. However, if you're looking for code that allows you to implement your own TFTP client/server in only a few lines of C# code, you've come to the right place.
 
 ### Download and Building:
-I recommend you use NuGet to .
+Visual Studio users can simply obtain the library from NuGet.
 Alternatively, downloading the source and building it in Visual Studio 2013/2015 should work without problems. Contact me if you're having any issues.
 
 ### Features:
