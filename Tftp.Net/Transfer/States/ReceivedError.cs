@@ -11,7 +11,22 @@ namespace Tftp.Net.Transfer.States
         private readonly TftpTransferError error;
 
         public ReceivedError(Error error)
-            : this(new TftpErrorPacket(error.ErrorCode, error.Message)) { }
+        {
+            TftpErrorPacket errorReceived;
+
+            /* Create the Error Package while handling the case where the sender */
+            /* did not provide an error message. */
+            try
+            {
+                errorReceived = new TftpErrorPacket(error.ErrorCode, error.Message);
+            }
+            catch(ArgumentException)
+            {
+                errorReceived = new TftpErrorPacket(error.ErrorCode, "No Message Provided");
+            }
+
+            this.error = errorReceived;
+        }
 
         public ReceivedError(TftpTransferError error)
         {
