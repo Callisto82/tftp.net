@@ -27,7 +27,13 @@ namespace Tftp.Net.Transfer.States
                 }
                 else
                 {
-                    nextBlockNumber++;
+                    int tempBlockNumber = (int)nextBlockNumber + 1;
+                    if (tempBlockNumber > (int)UInt16.MaxValue)
+                    {
+                        // On wrap-around of block number, restart at the first valid data block number (1).
+                        tempBlockNumber = 1;
+                    }
+                    nextBlockNumber = (ushort)tempBlockNumber;
                     bytesReceived += command.Bytes.Length;
                     Context.RaiseOnProgress(bytesReceived);
                 }

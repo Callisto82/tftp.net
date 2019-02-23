@@ -39,7 +39,13 @@ namespace Tftp.Net.Transfer.States
             }
             else
             {
-                SendNextPacket((ushort)(lastBlockNumber + 1));
+                int nextBlockNumber = (int)lastBlockNumber + 1;
+                if (nextBlockNumber > (int)UInt16.MaxValue)
+                {
+                    // On wrap-around of block number, restart at the first valid data block number (1).
+                    nextBlockNumber = 1;
+                }
+                SendNextPacket((ushort)nextBlockNumber);
             }
         }
 
