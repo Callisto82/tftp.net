@@ -1,7 +1,0 @@
-C:\Sources\tftp.net\Tftp.Net.SampleServer\bin\Debug\Tftp.Net.SampleServer.exe
-C:\Sources\tftp.net\Tftp.Net.SampleServer\bin\Debug\Tftp.Net.SampleServer.pdb
-C:\Sources\tftp.net\Tftp.Net.SampleServer\bin\Debug\Tftp.Net.dll
-C:\Sources\tftp.net\Tftp.Net.SampleServer\bin\Debug\Tftp.Net.pdb
-C:\Sources\tftp.net\Tftp.Net.SampleServer\obj\x86\Debug\Tftp.Net.SampleServer.csprojResolveAssemblyReference.cache
-C:\Sources\tftp.net\Tftp.Net.SampleServer\obj\x86\Debug\Tftp.Net.SampleServer.exe
-C:\Sources\tftp.net\Tftp.Net.SampleServer\obj\x86\Debug\Tftp.Net.SampleServer.pdb
