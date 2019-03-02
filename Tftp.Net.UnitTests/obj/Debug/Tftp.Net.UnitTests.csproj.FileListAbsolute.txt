@@ -1,0 +1,9 @@
+C:\Sources\tftp.net\Tftp.Net.UnitTests\bin\Debug\Tftp.Net.UnitTests.dll
+C:\Sources\tftp.net\Tftp.Net.UnitTests\bin\Debug\Tftp.Net.UnitTests.pdb
+C:\Sources\tftp.net\Tftp.Net.UnitTests\bin\Debug\nunit.framework.dll
+C:\Sources\tftp.net\Tftp.Net.UnitTests\bin\Debug\Tftp.Net.dll
+C:\Sources\tftp.net\Tftp.Net.UnitTests\bin\Debug\Tftp.Net.pdb
+C:\Sources\tftp.net\Tftp.Net.UnitTests\bin\Debug\nunit.framework.xml
+C:\Sources\tftp.net\Tftp.Net.UnitTests\obj\Debug\Tftp.Net.UnitTests.csprojResolveAssemblyReference.cache
+C:\Sources\tftp.net\Tftp.Net.UnitTests\obj\Debug\Tftp.Net.UnitTests.dll
+C:\Sources\tftp.net\Tftp.Net.UnitTests\obj\Debug\Tftp.Net.UnitTests.pdb

@@ -1,0 +1,7 @@
+C:\Sources\tftp.net\Tftp.Net.SampleClient\bin\Debug\Tftp.Net.SampleClient.exe
+C:\Sources\tftp.net\Tftp.Net.SampleClient\bin\Debug\Tftp.Net.SampleClient.pdb
+C:\Sources\tftp.net\Tftp.Net.SampleClient\bin\Debug\Tftp.Net.dll
+C:\Sources\tftp.net\Tftp.Net.SampleClient\bin\Debug\Tftp.Net.pdb
+C:\Sources\tftp.net\Tftp.Net.SampleClient\obj\x86\Debug\Tftp.Net.SampleClient.csprojResolveAssemblyReference.cache
+C:\Sources\tftp.net\Tftp.Net.SampleClient\obj\x86\Debug\Tftp.Net.SampleClient.exe
+C:\Sources\tftp.net\Tftp.Net.SampleClient\obj\x86\Debug\Tftp.Net.SampleClient.pdb

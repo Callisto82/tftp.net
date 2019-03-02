@@ -1,0 +1,5 @@
+C:\Sources\tftp.net\Tftp.Net\bin\Debug\Tftp.Net.dll
+C:\Sources\tftp.net\Tftp.Net\bin\Debug\Tftp.Net.pdb
+C:\Sources\tftp.net\Tftp.Net\obj\Debug\Tftp.Net.dll
+C:\Sources\tftp.net\Tftp.Net\obj\Debug\Tftp.Net.pdb
+C:\Sources\tftp.net\Tftp.Net\obj\Debug\Tftp.Net.csprojResolveAssemblyReference.cache

@@ -32,11 +32,13 @@ namespace Tftp.Net.UnitTests.Trace
         public void Teardown()
         {
             System.Diagnostics.Trace.Listeners.Remove(listener);
+            TftpTrace.Enabled = false;
         }
 
         [Test]
         public void CallsTrace()
         {
+            TftpTrace.Enabled = true;
             Assert.IsFalse(listener.WriteWasCalled);
             TftpTrace.Trace("Test", new TransferStub());
             Assert.IsTrue(listener.WriteWasCalled);
@@ -48,7 +50,6 @@ namespace Tftp.Net.UnitTests.Trace
             TftpTrace.Enabled = false;
             TftpTrace.Trace("Test", new TransferStub());
             Assert.IsFalse(listener.WriteWasCalled);
-            TftpTrace.Enabled = true;
         }
     }
 }
