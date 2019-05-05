@@ -18,3 +18,4 @@ At the moment the library features:
 - *New:* Now supports TFTP transfer size option (RFC 2349).
 - *New:* Now supports TFTP option extension (RFC 2347).
 - *New:* Now supports TFTP block size option (RFC 2348).
+- *New:* Now supports configurable block counter wrap around to zero/one.
