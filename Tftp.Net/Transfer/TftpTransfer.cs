@@ -153,6 +153,13 @@ namespace Tftp.Net.Transfer
             set { ThrowExceptionIfTransferAlreadyStarted(); ProposedOptions.BlockSize = value; }
         }
 
+        private BlockCounterWrapAround wrapping = BlockCounterWrapAround.ToZero;
+        public virtual BlockCounterWrapAround BlockCounterWrapping
+        {
+            get { return wrapping; }
+            set { ThrowExceptionIfTransferAlreadyStarted(); wrapping = value; }
+        }
+
         private void ThrowExceptionIfTransferAlreadyStarted()
         {
             if (WasStarted)

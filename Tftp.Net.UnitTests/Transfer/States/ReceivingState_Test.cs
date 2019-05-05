@@ -44,6 +44,34 @@ namespace Tftp.Net.UnitTests.Transfer.States
             Assert.IsFalse(transfer.CommandWasSent(typeof(Acknowledgement)));
             Assert.AreEqual(0, ms.Length);
         }
+        
+        [Test]
+        public void BlockCounterWrapsAroundToZero()
+        {
+            TransferUntilBlockCounterWrapIsAboutToWrap();
+
+            transfer.OnCommand(new Data(0, new byte[1]));
+
+            Assert.AreEqual(0, (transfer.SentCommands.Last() as Acknowledgement).BlockNumber);
+        }
+
+        [Test]
+        public void BlockCounterWrapsAroundToOne()
+        {
+            transfer.BlockCounterWrapping = BlockCounterWrapAround.ToOne;
+            TransferUntilBlockCounterWrapIsAboutToWrap();
+
+            transfer.OnCommand(new Data(1, new byte[1]));
+
+            Assert.AreEqual(1, (transfer.SentCommands.Last() as Acknowledgement).BlockNumber);
+        }
+
+        private void TransferUntilBlockCounterWrapIsAboutToWrap()
+        {
+            transfer.BlockSize = 1;
+            for (int i = 1; i <= 65535; i++)
+                transfer.OnCommand(new Data((ushort)i, new byte[1]));
+        }
 
         [Test]
         public void RaisesFinished()

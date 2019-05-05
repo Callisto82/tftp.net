@@ -8,6 +8,7 @@ namespace Tftp.Net.Transfer.States
 {
     class Receiving : StateThatExpectsMessagesFromDefaultEndPoint
     {
+        private ushort lastBlockNumber = 0;
         private ushort nextBlockNumber = 1;
         private int bytesReceived = 0;
 
@@ -27,13 +28,14 @@ namespace Tftp.Net.Transfer.States
                 }
                 else
                 {
-                    nextBlockNumber++;
+                    lastBlockNumber = command.BlockNumber;
+                    nextBlockNumber = Context.BlockCounterWrapping.CalculateNextBlockNumber(command.BlockNumber);
                     bytesReceived += command.Bytes.Length;
                     Context.RaiseOnProgress(bytesReceived);
                 }
             }
             else
-            if (command.BlockNumber == nextBlockNumber - 1)
+            if (command.BlockNumber == lastBlockNumber)
             {
                 //We received the previous block again. Re-sent the acknowledgement
                 SendAcknowledgement(command.BlockNumber);

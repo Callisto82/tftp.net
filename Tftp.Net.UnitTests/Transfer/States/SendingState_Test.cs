@@ -65,6 +65,39 @@ namespace Tftp.Net.UnitTests.Transfer.States
         }
 
         [Test]
+        public void IncreasesBlockCountWithEachAcknowledgement()
+        {
+            Assert.AreEqual(1, (transfer.SentCommands.Last() as Data).BlockNumber);
+
+            transfer.OnCommand(new Acknowledgement(1));
+
+            Assert.AreEqual(2, (transfer.SentCommands.Last() as Data).BlockNumber);
+        }
+        
+        [Test]
+        public void BlockCountWrapsAroundTo0()
+        {
+            SetupTransferThatWillWrapAroundBlockCount();
+
+            RunTransferUntilBlockCount(65535);
+            transfer.OnCommand(new Acknowledgement(65535));
+
+            Assert.AreEqual(0, (transfer.SentCommands.Last() as Data).BlockNumber);
+        }
+
+        [Test]
+        public void BlockCountWrapsAroundTo1()
+        {
+            SetupTransferThatWillWrapAroundBlockCount();
+            transfer.BlockCounterWrapping = BlockCounterWrapAround.ToOne;
+
+            RunTransferUntilBlockCount(65535);
+            transfer.OnCommand(new Acknowledgement(65535));
+
+            Assert.AreEqual(1, (transfer.SentCommands.Last() as Data).BlockNumber);
+        }
+
+        [Test]
         public void IgnoresWrongAcknowledgment()
         {
             transfer.SentCommands.Clear();
@@ -104,6 +137,19 @@ namespace Tftp.Net.UnitTests.Transfer.States
             Assert.IsTrue(onErrorWasCalled);
 
             Assert.IsInstanceOf<Closed>(transfer.State);
+        }
+
+        private void SetupTransferThatWillWrapAroundBlockCount()
+        {
+            transfer = new TransferStub(new MemoryStream(new byte[70000]));
+            transfer.BlockSize = 1;
+            transfer.SetState(new Sending());
+        }
+
+        private void RunTransferUntilBlockCount(int targetBlockCount)
+        {
+            while ((transfer.SentCommands.Last() as Data).BlockNumber != targetBlockCount)
+                transfer.OnCommand(new Acknowledgement((transfer.SentCommands.Last() as Data).BlockNumber));
         }
     }
 }

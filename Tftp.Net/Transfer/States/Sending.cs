@@ -39,7 +39,7 @@ namespace Tftp.Net.Transfer.States
             }
             else
             {
-                SendNextPacket((ushort)(lastBlockNumber + 1));
+                SendNextPacket(Context.BlockCounterWrapping.CalculateNextBlockNumber(lastBlockNumber));
             }
         }
 
