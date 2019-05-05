@@ -11,7 +11,7 @@ namespace Tftp.Net.Transfer.States
     {
         private byte[] lastData;
         private ushort lastBlockNumber;
-        private int bytesSent = 0;
+        private long bytesSent = 0;
         private bool lastPacketWasSent = false;
 
         public override void OnStateEnter()

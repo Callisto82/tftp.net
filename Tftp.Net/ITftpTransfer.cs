@@ -67,7 +67,7 @@ namespace Tftp.Net
         /// <summary>
         /// Expected transfer size in bytes. 0 if size is unknown.
         /// </summary>
-        int ExpectedSize { get; set; }
+        long ExpectedSize { get; set; }
 
         /// <summary>
         /// Filename for the transferred file.

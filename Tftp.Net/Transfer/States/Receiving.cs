@@ -10,7 +10,7 @@ namespace Tftp.Net.Transfer.States
     {
         private ushort lastBlockNumber = 0;
         private ushort nextBlockNumber = 1;
-        private int bytesReceived = 0;
+        private long bytesReceived = 0;
 
         public override void OnData(Data command)
         {

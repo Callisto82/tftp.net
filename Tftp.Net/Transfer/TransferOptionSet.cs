@@ -18,7 +18,7 @@ namespace Tftp.Net.Transfer
         public int Timeout = DEFAULT_TIMEOUT_SECS;
 
         public bool IncludesTransferSizeOption = false;
-        public int TransferSize = 0;
+        public long TransferSize = 0;
 
         public static TransferOptionSet NewDefaultSet()
         {
@@ -79,7 +79,7 @@ namespace Tftp.Net.Transfer
 
         private bool ParseTransferSizeOption(string value)
         {
-            return int.TryParse(value, out TransferSize) && TransferSize >= 0;
+            return long.TryParse(value, out TransferSize) && TransferSize >= 0;
         }
 
         private bool ParseTimeoutOption(string value)

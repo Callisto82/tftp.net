@@ -33,7 +33,7 @@ namespace Tftp.Net.Transfer
             set { throw new NotSupportedException("For incoming transfers, the retry timeout is determined by the client."); }
         }
 
-        public override int ExpectedSize
+        public override long ExpectedSize
         {
             get { return base.ExpectedSize; }
             set { throw new NotSupportedException("You cannot set the expected size of a file that is remotely transferred to this system."); }
