@@ -11,7 +11,12 @@ namespace Tftp.Net.Transfer.States
         private readonly TftpTransferError error;
 
         public ReceivedError(Error error)
-            : this(new TftpErrorPacket(error.ErrorCode, error.Message)) { }
+            : this(new TftpErrorPacket(error.ErrorCode, GetNonEmptyErrorMessage(error))) { }
+
+        private static string GetNonEmptyErrorMessage(Error error)
+        {
+            return string.IsNullOrEmpty(error.Message) ? "(No error message provided)" : error.Message;
+        }
 
         public ReceivedError(TftpTransferError error)
         {
