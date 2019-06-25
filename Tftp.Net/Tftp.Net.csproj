@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Tftp.Net.Core</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Michael Baer</Authors>
+    <Description>Implementation of the TFTP (Trivial File Transfer) protocol (client/server) in an easy-to-use C#/.NET library.</Description>
+    <Product>Tftp.Net.Core</Product>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/pixey/tftp.net</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/pixey/tftp.net</PackageProjectUrl>
   </PropertyGroup>
 
 </Project>
