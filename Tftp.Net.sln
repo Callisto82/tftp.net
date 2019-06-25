@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net", "Tftp.Net\Tftp.Net.csproj", "{A3F0DE15-AC97-428D-830C-4F9721EE3627}"
 EndProject
@@ -13,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net.SampleServer", "Tftp.Net.SampleServer\Tftp.Net.SampleServer.csproj", "{43947662-85F3-4577-81D8-096323FE8345}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net.SampleClient", "Tftp.Net.SampleClient\Tftp.Net.SampleClient.csproj", "{6F52C113-CC69-4CF8-8461-DF7D8DE010AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tftp.Net.Core", "Tftp.Net.Core\Tftp.Net.Core.csproj", "{8956FB88-EF4D-4840-A83B-DF16EF98B65F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,8 +66,23 @@ Global
 		{6F52C113-CC69-4CF8-8461-DF7D8DE010AD}.Release|Mixed Platforms.Build.0 = Release|x86
 		{6F52C113-CC69-4CF8-8461-DF7D8DE010AD}.Release|x86.ActiveCfg = Release|x86
 		{6F52C113-CC69-4CF8-8461-DF7D8DE010AD}.Release|x86.Build.0 = Release|x86
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Debug|x86.Build.0 = Debug|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Release|x86.ActiveCfg = Release|Any CPU
+		{8956FB88-EF4D-4840-A83B-DF16EF98B65F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7E9941C1-5836-454D-BFC1-9D41FB06142F}
 	EndGlobalSection
 EndGlobal
