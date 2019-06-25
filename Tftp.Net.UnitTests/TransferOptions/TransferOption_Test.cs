@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Tftp.Net.Transfer;
 
 namespace Tftp.Net.UnitTests.TransferOptions
 {
@@ -20,24 +16,24 @@ namespace Tftp.Net.UnitTests.TransferOptions
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void RejectsInvalidName1()
         {
-            TransferOption option = new TransferOption("", "Hallo Welt");
+            Assert.Throws<ArgumentException>(
+                () => new TransferOption("", "Hallo Welt"));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void RejectsInvalidName2()
         {
-            TransferOption option = new TransferOption(null, "Hallo Welt");
+            Assert.Throws<ArgumentException>(
+                () => new TransferOption(null, "Hallo Welt"));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RejectsInvalidValue()
         {
-            TransferOption option = new TransferOption("Test", null);
+            Assert.Throws<ArgumentNullException>(
+                () => new TransferOption("Test", null));
         }
 
         [Test]
