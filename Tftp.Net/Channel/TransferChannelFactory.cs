@@ -17,10 +17,10 @@ namespace Tftp.Net.Channel
             throw new NotSupportedException("Unsupported endpoint type.");
         }
 
-        public static ITransferChannel CreateConnection(EndPoint remoteAddress)
+        public static ITransferChannel CreateConnection(EndPoint remoteAddress, IPEndPoint localAddress)
         {
             if (remoteAddress is IPEndPoint)
-                return CreateConnectionUdp((IPEndPoint)remoteAddress);
+                return CreateConnectionUdp((IPEndPoint)remoteAddress, localAddress);
 
             throw new NotSupportedException("Unsupported endpoint type.");
         }
@@ -33,9 +33,8 @@ namespace Tftp.Net.Channel
             return new UdpChannel(socket);
         }
 
-        private static ITransferChannel CreateConnectionUdp(IPEndPoint remoteAddress)
+        private static ITransferChannel CreateConnectionUdp(IPEndPoint remoteAddress, IPEndPoint localAddress)
         {
-            IPEndPoint localAddress = new IPEndPoint(IPAddress.Any, 0);
             UdpChannel channel = new UdpChannel(new UdpClient(localAddress));
             channel.RemoteEndpoint = remoteAddress;
             return channel;
