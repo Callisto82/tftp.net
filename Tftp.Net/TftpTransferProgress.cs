@@ -26,7 +26,7 @@ namespace Tftp.Net
         public override string ToString()
         {
             if (TotalBytes > 0)
-                return (TransferredBytes * 100) / TotalBytes + "% completed";
+                return (TransferredBytes * 100L) / TotalBytes + "% completed";
             else
                 return TransferredBytes + " bytes transferred";
         }
