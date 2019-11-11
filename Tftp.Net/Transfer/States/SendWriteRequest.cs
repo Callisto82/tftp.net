@@ -33,7 +33,6 @@ namespace Tftp.Net.Transfer.States
             else
             if (command is Acknowledgement && (command as Acknowledgement).BlockNumber == 0)
             {
-                Context.FinishOptionNegotiation(Context.ProposedOptions);
                 BeginSendingTo(endpoint);
             }
             else
