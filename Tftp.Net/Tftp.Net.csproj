@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockCounterWrapping.cs" />
     <Compile Include="Channel\ITransferChannel.cs" />
     <Compile Include="Channel\TransferChannelFactory.cs" />
     <Compile Include="Commands\CommandSerializer.cs" />

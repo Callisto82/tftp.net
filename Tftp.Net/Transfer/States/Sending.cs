@@ -11,7 +11,7 @@ namespace Tftp.Net.Transfer.States
     {
         private byte[] lastData;
         private ushort lastBlockNumber;
-        private int bytesSent = 0;
+        private long bytesSent = 0;
         private bool lastPacketWasSent = false;
 
         public override void OnStateEnter()
@@ -39,13 +39,7 @@ namespace Tftp.Net.Transfer.States
             }
             else
             {
-                int nextBlockNumber = (int)lastBlockNumber + 1;
-                if (nextBlockNumber > (int)UInt16.MaxValue)
-                {
-                    // On wrap-around of block number, restart at the first valid data block number (1).
-                    nextBlockNumber = 1;
-                }
-                SendNextPacket((ushort)nextBlockNumber);
+                SendNextPacket(Context.BlockCounterWrapping.CalculateNextBlockNumber(lastBlockNumber));
             }
         }
 

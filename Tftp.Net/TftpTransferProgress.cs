@@ -10,14 +10,14 @@ namespace Tftp.Net
         /// <summary>
         /// Number of bytes that have already been transferred.
         /// </summary>
-        public int TransferredBytes { get; private set; }
+        public long TransferredBytes { get; private set; }
 
         /// <summary>
         /// Total number of bytes being transferred. May be 0 if unknown.
         /// </summary>
-        public int TotalBytes { get; private set; }
+        public long TotalBytes { get; private set; }
 
-        public TftpTransferProgress(int transferred, int total)
+        public TftpTransferProgress(long transferred, long total)
         {
             TransferredBytes = transferred;
             TotalBytes = total;
@@ -26,7 +26,7 @@ namespace Tftp.Net
         public override string ToString()
         {
             if (TotalBytes > 0)
-                return (TransferredBytes * 100) / TotalBytes + "% completed";
+                return (TransferredBytes * 100L) / TotalBytes + "% completed";
             else
                 return TransferredBytes + " bytes transferred";
         }

@@ -78,7 +78,7 @@ namespace Tftp.Net.Transfer
             return connection;
         }
 
-        internal void RaiseOnProgress(int bytesTransferred)
+        internal void RaiseOnProgress(long bytesTransferred)
         {
             if (OnProgress != null)
                 OnProgress(this, new TftpTransferProgress(bytesTransferred, ExpectedSize));
@@ -141,7 +141,7 @@ namespace Tftp.Net.Transfer
             set { ThrowExceptionIfTransferAlreadyStarted(); ProposedOptions.Timeout = value.Seconds; }
         }
 
-        public virtual int ExpectedSize 
+        public virtual long ExpectedSize 
         {
             get { return NegotiatedOptions != null ? NegotiatedOptions.TransferSize : ProposedOptions.TransferSize; }
             set { ThrowExceptionIfTransferAlreadyStarted(); ProposedOptions.TransferSize = value; }
@@ -151,6 +151,13 @@ namespace Tftp.Net.Transfer
         {
             get { return NegotiatedOptions != null ? NegotiatedOptions.BlockSize : ProposedOptions.BlockSize; }
             set { ThrowExceptionIfTransferAlreadyStarted(); ProposedOptions.BlockSize = value; }
+        }
+
+        private BlockCounterWrapAround wrapping = BlockCounterWrapAround.ToZero;
+        public virtual BlockCounterWrapAround BlockCounterWrapping
+        {
+            get { return wrapping; }
+            set { ThrowExceptionIfTransferAlreadyStarted(); wrapping = value; }
         }
 
         private void ThrowExceptionIfTransferAlreadyStarted()

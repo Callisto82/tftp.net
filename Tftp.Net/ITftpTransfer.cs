@@ -60,9 +60,14 @@ namespace Tftp.Net
         int RetryCount { get; set; }
 
         /// <summary>
+        /// Tftp can transfer up to 65535 blocks. After that, the block counter wraps to either zero or one, depending on the expectations of the client.
+        /// </summary>
+        BlockCounterWrapAround BlockCounterWrapping { get; set; }
+
+        /// <summary>
         /// Expected transfer size in bytes. 0 if size is unknown.
         /// </summary>
-        int ExpectedSize { get; set; }
+        long ExpectedSize { get; set; }
 
         /// <summary>
         /// Filename for the transferred file.

@@ -8,8 +8,9 @@ namespace Tftp.Net.Transfer.States
 {
     class Receiving : StateThatExpectsMessagesFromDefaultEndPoint
     {
+        private ushort lastBlockNumber = 0;
         private ushort nextBlockNumber = 1;
-        private int bytesReceived = 0;
+        private long bytesReceived = 0;
 
         public override void OnData(Data command)
         {
@@ -27,19 +28,14 @@ namespace Tftp.Net.Transfer.States
                 }
                 else
                 {
-                    int tempBlockNumber = (int)nextBlockNumber + 1;
-                    if (tempBlockNumber > (int)UInt16.MaxValue)
-                    {
-                        // On wrap-around of block number, restart at the first valid data block number (1).
-                        tempBlockNumber = 1;
-                    }
-                    nextBlockNumber = (ushort)tempBlockNumber;
+                    lastBlockNumber = command.BlockNumber;
+                    nextBlockNumber = Context.BlockCounterWrapping.CalculateNextBlockNumber(command.BlockNumber);
                     bytesReceived += command.Bytes.Length;
                     Context.RaiseOnProgress(bytesReceived);
                 }
             }
             else
-            if (command.BlockNumber == nextBlockNumber - 1)
+            if (command.BlockNumber == lastBlockNumber)
             {
                 //We received the previous block again. Re-sent the acknowledgement
                 SendAcknowledgement(command.BlockNumber);

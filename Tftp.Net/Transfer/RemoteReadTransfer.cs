@@ -15,7 +15,7 @@ namespace Tftp.Net.Transfer
         {
         }
 
-        public override int ExpectedSize
+        public override long ExpectedSize
         {
             get { return base.ExpectedSize; }
             set { throw new NotSupportedException("You cannot set the expected size of a file that is remotely transferred to this system."); }
