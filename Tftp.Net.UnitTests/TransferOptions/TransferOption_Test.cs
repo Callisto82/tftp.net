@@ -20,24 +20,21 @@ namespace Tftp.Net.UnitTests.TransferOptions
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void RejectsInvalidName1()
         {
-            TransferOption option = new TransferOption("", "Hallo Welt");
+            Assert.That(() => new TransferOption("", "Hallo Welt"), Throws.ArgumentException);
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void RejectsInvalidName2()
         {
-            TransferOption option = new TransferOption(null, "Hallo Welt");
+            Assert.That(() => new TransferOption(null, "Hallo Welt"), Throws.ArgumentException);
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RejectsInvalidValue()
         {
-            TransferOption option = new TransferOption("Test", null);
+            Assert.That(() => new TransferOption("Test", null), Throws.ArgumentNullException);
         }
 
         [Test]

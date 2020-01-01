@@ -39,17 +39,17 @@ namespace Tftp.Net.UnitTests
             AssertBytesReceived(remote, TimeSpan.FromMilliseconds(500));
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void DeniesSendingOnClosedConnections()
         {
-            tested.Send(new Acknowledgement(1));
+            Assert.That(() => tested.Send(new Acknowledgement(1)), Throws.InvalidOperationException);
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void DeniesSendingWhenNoRemoteAddressIsSet()
         {
             tested.Open();
-            tested.Send(new Acknowledgement(1));
+            Assert.That(() => tested.Send(new Acknowledgement(1)), Throws.InvalidOperationException);
         }
 
         private void AssertBytesReceived(UdpClient remote, TimeSpan timeout)
