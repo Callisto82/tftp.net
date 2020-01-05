@@ -88,7 +88,7 @@ namespace Tftp.Net
 
         public override string ToString()
         {
-            return "Timeout error. RetryTimeout (" + RetryCount + ") violated more than " + RetryCount + " times in a row";
+            return "Timeout error. RetryTimeout (" + RetryTimeout + ") violated more than " + RetryCount + " times in a row";
         }
     }
 }
