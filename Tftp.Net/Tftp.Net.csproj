@@ -46,6 +46,7 @@
     <Compile Include="Commands\CommandSerializer.cs" />
     <Compile Include="Commands\TftpStreamReader.cs" />
     <Compile Include="Commands\TftpStreamWriter.cs" />
+    <Compile Include="ITransferChannelFactory.cs" />
     <Compile Include="TftpClient.cs" />
     <Compile Include="TftpTransferError.cs" />
     <Compile Include="TftpTransferProgress.cs" />

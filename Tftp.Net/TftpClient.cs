@@ -76,7 +76,7 @@ namespace Tftp.Net
         /// </summary>
         public ITftpTransfer Download(String filename)
         {
-            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress);
+            ITransferChannel channel = TransferChannelFactory.GetUdpFactory().CreateConnection(remoteAddress);
             return new RemoteReadTransfer(channel, filename);
         }
 
@@ -86,7 +86,7 @@ namespace Tftp.Net
         /// </summary>
         public ITftpTransfer Upload(String filename)
         {
-            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress);
+            ITransferChannel channel = TransferChannelFactory.GetUdpFactory().CreateConnection(remoteAddress);
             return new RemoteWriteTransfer(channel, filename);
         }
     }
