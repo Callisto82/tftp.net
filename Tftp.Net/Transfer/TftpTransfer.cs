@@ -28,20 +28,27 @@ namespace Tftp.Net.Transfer
         {
             this.ProposedOptions = TransferOptionSet.NewDefaultSet();
             this.Filename = filename;
-            this.RetryCount = 5;
-            this.timer = new Timer(timer_OnTimer, null, 500, 500);
+            this.RetryCount = 5;           
             this.SetState(initialState);
             this.connection = connection;
             this.connection.OnCommandReceived += new TftpCommandHandler(connection_OnCommandReceived);
             this.connection.OnError += new TftpChannelErrorHandler(connection_OnError);
             this.connection.Open();
+            this.timer = new Timer(timer_OnTimer, null, 500, 500);
         }
 
         private void timer_OnTimer(object context)
         {
-            lock (this)
+            try
             {
-                state.OnTimer();
+                lock (this)
+                {
+                    state.OnTimer();
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
