@@ -18,17 +18,15 @@ namespace Tftp.Net.UnitTests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void RejectsNullMessage()
         {
-            TftpErrorPacket error = new TftpErrorPacket(123, null);
+            Assert.Throws<ArgumentException>(() => new TftpErrorPacket(123, null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void RejectsEmptyMessage()
         {
-            TftpErrorPacket error = new TftpErrorPacket(123, "");
+            Assert.Throws<ArgumentException>(() => new TftpErrorPacket(123, ""));
         }
     }
 }
