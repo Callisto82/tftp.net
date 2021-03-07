@@ -1,96 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A3F0DE15-AC97-428D-830C-4F9721EE3627}</ProjectGuid>
+    <TargetFrameworks>netstandard2.0;net35</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tftp.Net</RootNamespace>
-    <AssemblyName>Tftp.Net</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Callisto82/tftp.net</PackageProjectUrl>
+    <PackageTags>TFTP library</PackageTags>
+    <Authors>Michael Baer</Authors>
+    <PackageReleaseNotes>Various bugfixes</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Compile Remove="Transfer\InitialStateFactory.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="BlockCounterWrapping.cs" />
-    <Compile Include="Channel\ITransferChannel.cs" />
-    <Compile Include="Channel\TransferChannelFactory.cs" />
-    <Compile Include="Commands\CommandSerializer.cs" />
-    <Compile Include="Commands\TftpStreamReader.cs" />
-    <Compile Include="Commands\TftpStreamWriter.cs" />
-    <Compile Include="TftpClient.cs" />
-    <Compile Include="TftpTransferError.cs" />
-    <Compile Include="TftpTransferProgress.cs" />
-    <Compile Include="Trace\TftpTrace.cs" />
-    <Compile Include="Commands\TransferOption.cs" />
-    <Compile Include="Transfer\TransferOptionSet.cs" />
-    <Compile Include="Transfer\LocalReadTransfer.cs" />
-    <Compile Include="Transfer\LocalWriteTransfer.cs" />
-    <Compile Include="Transfer\RemoteReadTransfer.cs" />
-    <Compile Include="Transfer\RemoteWriteTransfer.cs" />
-    <Compile Include="Transfer\States\AcknowledgeWriteRequest.cs" />
-    <Compile Include="Transfer\States\SendOptionAcknowledgementBase.cs" />
-    <Compile Include="Transfer\States\SendOptionAcknowledgementForReadRequest.cs" />
-    <Compile Include="Transfer\States\BaseState.cs" />
-    <Compile Include="Transfer\States\ITransferState.cs" />
-    <Compile Include="ITftpTransfer.cs" />
-    <Compile Include="Trace\LoggingStateDecorator.cs" />
-    <Compile Include="Transfer\States\SendOptionAcknowledgementForWriteRequest.cs" />
-    <Compile Include="Transfer\States\SendReadRequest.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transfer\States\StartIncomingRead.cs" />
-    <Compile Include="Transfer\States\StartIncomingWrite.cs" />
-    <Compile Include="Transfer\States\Receiving.cs" />
-    <Compile Include="Transfer\States\Sending.cs" />
-    <Compile Include="Transfer\States\CancelledByUser.cs" />
-    <Compile Include="Transfer\States\ReceivedError.cs" />
-    <Compile Include="Transfer\States\Closed.cs" />
-    <Compile Include="Commands\Commands.cs" />
-    <Compile Include="Channel\UdpChannel.cs" />
-    <Compile Include="Commands\CommandParser.cs" />
-    <Compile Include="Transfer\States\SendWriteRequest.cs" />
-    <Compile Include="Transfer\States\StartOutgoingRead.cs" />
-    <Compile Include="Transfer\States\StartOutgoingWrite.cs" />
-    <Compile Include="Transfer\States\StateThatExpectsMessagesFromDefaultEndPoint.cs" />
-    <Compile Include="Transfer\SimpleTimer.cs" />
-    <Compile Include="Transfer\States\StateWithNetworkTimeout.cs" />
-    <Compile Include="Transfer\TftpTransfer.cs" />
-    <Compile Include="TftpServer.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -1,104 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\NUnit.3.13.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.13.0\build\NUnit.props')" />
-  <Import Project="..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DA4D3CE2-0495-431B-AEEF-E469DC127D5F}</ProjectGuid>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tftp.Net.UnitTests</RootNamespace>
-    <AssemblyName>Tftp.Net.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=3.13.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.13.0\lib\net35\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
+    <PackageReference Include="NUnit" Version="3.13.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ErrorFromRemoteEndpoint_Test.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TftpClientServer_Test.cs" />
-    <Compile Include="Commands\TftpCommandParserAndSerializer_Test.cs" />
-    <Compile Include="Commands\TftpCommand_Test.cs" />
-    <Compile Include="Commands\TftpStreamReader_Test.cs" />
-    <Compile Include="Commands\TftpStreamWriter_Test.cs" />
-    <Compile Include="Channel\UdpChannel_Test.cs" />
-    <Compile Include="Trace\TftpTrace_Test.cs" />
-    <Compile Include="TransferOptions\BlockSizeOption_Test.cs" />
-    <Compile Include="TransferOptions\TimeoutIntervalOption_Test.cs" />
-    <Compile Include="TransferOptions\TransferSizeOption_Test.cs" />
-    <Compile Include="Transfer\SimpleTimer_Test.cs" />
-    <Compile Include="Transfer\States\CancelledByUserState_Test.cs" />
-    <Compile Include="Transfer\States\ClosedState_Test.cs" />
-    <Compile Include="Transfer\States\ReceivedErrorState_Test.cs" />
-    <Compile Include="Transfer\States\ReceivingState_Test.cs" />
-    <Compile Include="Transfer\States\SendingState_Test.cs" />
-    <Compile Include="Transfer\States\SendReadRequestState_Test.cs" />
-    <Compile Include="Transfer\States\StartIncomingReadState_Test.cs" />
-    <Compile Include="Transfer\States\StartIncomingWriteState_Test.cs" />
-    <Compile Include="Transfer\States\SendWriteRequest_Test.cs" />
-    <Compile Include="Transfer\States\StartOutgoingRead_Test.cs" />
-    <Compile Include="Transfer\States\StartOutgoingWrite_Test.cs" />
-    <Compile Include="Transfer\States\TransferStub.cs" />
-    <Compile Include="TransferOptions\TransferOption_Test.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Tftp.Net\Tftp.Net.csproj">
-      <Project>{A3F0DE15-AC97-428D-830C-4F9721EE3627}</Project>
-      <Name>Tftp.Net</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Tftp.Net\Tftp.Net.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>Dieses Projekt verweist auf mindestens ein NuGet-Paket, das auf diesem Computer fehlt. Verwenden Sie die Wiederherstellung von NuGet-Paketen, um die fehlenden Dateien herunterzuladen. Weitere Informationen finden Sie unter "http://go.microsoft.com/fwlink/?LinkID=322105". Die fehlende Datei ist "{0}".</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props'))" />
-    <Error Condition="!Exists('..\packages\NUnit.3.13.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.13.0\build\NUnit.props'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Tftp.Net.Transfer;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Tftp.Net.UnitTests.Transfer
 {
@@ -16,7 +17,7 @@ namespace Tftp.Net.UnitTests.Transfer
         {
             SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
             Assert.IsFalse(timer.IsTimeout());
-            Thread.Sleep(200);
+            Task.Delay(200).Wait();
             Assert.IsTrue(timer.IsTimeout());
         }
 
@@ -25,7 +26,7 @@ namespace Tftp.Net.UnitTests.Transfer
         {
             SimpleTimer timer = new SimpleTimer(new TimeSpan(100));
             Assert.IsFalse(timer.IsTimeout());
-            Thread.Sleep(200);
+            Task.Delay(200).Wait();
             Assert.IsTrue(timer.IsTimeout());
             timer.Restart();
             Assert.IsFalse(timer.IsTimeout());
