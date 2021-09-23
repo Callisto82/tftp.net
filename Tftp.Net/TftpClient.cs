@@ -71,13 +71,33 @@ namespace Tftp.Net
         }
 
         /// <summary>
+        /// GET a file from the server via the specific local interface.
+        /// You have to call Start() on the returned ITftpTransfer to start the transfer.
+        /// </summary>
+        public ITftpTransfer Download(String filename, IPAddress localInterface)
+        {
+            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress, new IPEndPoint(localInterface, 0));
+            return new RemoteReadTransfer(channel, filename);
+        }
+
+        /// <summary>
         /// GET a file from the server.
         /// You have to call Start() on the returned ITftpTransfer to start the transfer.
         /// </summary>
         public ITftpTransfer Download(String filename)
         {
-            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress);
+            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress, new IPEndPoint(IPAddress.Any, 0));
             return new RemoteReadTransfer(channel, filename);
+        }
+
+        /// <summary>
+        /// PUT a file from the server via the specific local interface.
+        /// You have to call Start() on the returned ITftpTransfer to start the transfer.
+        /// </summary>
+        public ITftpTransfer Upload(String filename, IPAddress localInterface)
+        {
+            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress, new IPEndPoint(localInterface, 0));
+            return new RemoteWriteTransfer(channel, filename);
         }
 
         /// <summary>
@@ -86,7 +106,7 @@ namespace Tftp.Net
         /// </summary>
         public ITftpTransfer Upload(String filename)
         {
-            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress);
+            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress, new IPEndPoint(IPAddress.Any, 0));
             return new RemoteWriteTransfer(channel, filename);
         }
     }

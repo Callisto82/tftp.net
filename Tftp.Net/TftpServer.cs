@@ -39,6 +39,11 @@ namespace Tftp.Net
         /// </summary>
         private readonly ITransferChannel serverSocket;
 
+        /// <summary>
+        /// Keep the address of the local interface so that UDP packets do not get lost into wrong one
+        /// </summary>
+        private readonly IPAddress localInterface;
+
         public TftpServer(IPEndPoint localAddress)
         {
             if (localAddress == null)
@@ -47,6 +52,7 @@ namespace Tftp.Net
             serverSocket = TransferChannelFactory.CreateServer(localAddress);
             serverSocket.OnCommandReceived += new TftpCommandHandler(serverSocket_OnCommandReceived);
             serverSocket.OnError += new TftpChannelErrorHandler(serverSocket_OnError);
+            localInterface = localAddress.Address;
         }
 
         public TftpServer(IPAddress localAddress)
@@ -90,7 +96,7 @@ namespace Tftp.Net
                 return;
 
             //Open a connection to the client
-            ITransferChannel channel = TransferChannelFactory.CreateConnection(endpoint);
+            ITransferChannel channel = TransferChannelFactory.CreateConnection(endpoint, new IPEndPoint(localInterface, 0));
 
             //Create a wrapper for the transfer request
             ReadOrWriteRequest request = (ReadOrWriteRequest)command;
