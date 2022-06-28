@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
 namespace Tftp.Net.Channel
 {
-    static class TransferChannelFactory
+    class TransferChannelFactory : ITransferChannelFactory
     {
-        public static ITransferChannel CreateServer(EndPoint localAddress)
+        public static ITransferChannelFactory GetUdpFactory()
+        {
+            return new TransferChannelFactory();
+        }
+
+        public ITransferChannel CreateServer(EndPoint localAddress)
         {
             if (localAddress is IPEndPoint)
                 return CreateServerUdp((IPEndPoint)localAddress);
@@ -17,7 +19,7 @@ namespace Tftp.Net.Channel
             throw new NotSupportedException("Unsupported endpoint type.");
         }
 
-        public static ITransferChannel CreateConnection(EndPoint remoteAddress)
+        public ITransferChannel CreateConnection(EndPoint remoteAddress)
         {
             if (remoteAddress is IPEndPoint)
                 return CreateConnectionUdp((IPEndPoint)remoteAddress);
@@ -27,13 +29,13 @@ namespace Tftp.Net.Channel
 
         #region UDP connections
 
-        private static ITransferChannel CreateServerUdp(IPEndPoint localAddress)
+        private ITransferChannel CreateServerUdp(IPEndPoint localAddress)
         {
             UdpClient socket = new UdpClient(localAddress);
             return new UdpChannel(socket);
         }
 
-        private static ITransferChannel CreateConnectionUdp(IPEndPoint remoteAddress)
+        private ITransferChannel CreateConnectionUdp(IPEndPoint remoteAddress)
         {
             IPEndPoint localAddress = new IPEndPoint(IPAddress.Any, 0);
             UdpChannel channel = new UdpChannel(new UdpClient(localAddress));

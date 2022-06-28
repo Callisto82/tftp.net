@@ -7,12 +7,12 @@ using Tftp.Net.Transfer;
 
 namespace Tftp.Net
 {
-    interface ITftpCommand
+    public interface ITftpCommand
     {
         void Visit(ITftpCommandVisitor visitor);
     }
 
-    interface ITftpCommandVisitor
+    public interface ITftpCommandVisitor
     {
         void OnReadRequest(ReadRequest command);
         void OnWriteRequest(WriteRequest command);
@@ -22,7 +22,7 @@ namespace Tftp.Net
         void OnOptionAcknowledgement(OptionAcknowledgement command);
     }
 
-    abstract class ReadOrWriteRequest
+    public abstract class ReadOrWriteRequest
     {
         private readonly ushort opCode;
 
@@ -39,7 +39,7 @@ namespace Tftp.Net
         }
     }
 
-    class ReadRequest : ReadOrWriteRequest, ITftpCommand
+    public class ReadRequest : ReadOrWriteRequest, ITftpCommand
     {
         public const ushort OpCode = 1;
 
@@ -52,7 +52,7 @@ namespace Tftp.Net
         }
     }
 
-    class WriteRequest : ReadOrWriteRequest, ITftpCommand
+    public class WriteRequest : ReadOrWriteRequest, ITftpCommand
     {
         public const ushort OpCode = 2;
 
@@ -65,7 +65,7 @@ namespace Tftp.Net
         }
     }
 
-    class Data : ITftpCommand
+    public class Data : ITftpCommand
     {
         public const ushort OpCode = 3;
 
@@ -84,7 +84,7 @@ namespace Tftp.Net
         }
     }
 
-    class Acknowledgement : ITftpCommand
+    public class Acknowledgement : ITftpCommand
     {
         public const ushort OpCode = 4;
 
@@ -101,7 +101,7 @@ namespace Tftp.Net
         }
     }
 
-    class Error : ITftpCommand
+    public class Error : ITftpCommand
     {
         public const ushort OpCode = 5;
 
@@ -120,7 +120,7 @@ namespace Tftp.Net
         }
     }
 
-    class OptionAcknowledgement : ITftpCommand
+    public class OptionAcknowledgement : ITftpCommand
     {
         public const ushort OpCode = 6;
         public IEnumerable<TransferOption> Options { get; private set; }
