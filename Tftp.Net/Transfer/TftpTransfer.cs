@@ -46,9 +46,9 @@ namespace Tftp.Net.Transfer
                     state.OnTimer();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                TftpTrace.Trace("Ignoring unhandled exception: " + e, this);
             }
         }
 

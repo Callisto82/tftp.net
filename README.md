@@ -4,7 +4,7 @@ If you're looking for a fully-fledged GUI client, you should probably look into 
 
 ### Download and Building:
 Visual Studio users can simply obtain the library from NuGet.
-Alternatively, downloading the source and building it in Visual Studio 2013/2015 should work without problems. Contact me if you're having any issues.
+Alternatively, downloading the source and building it in Visual Studio 2019 should work without problems. Remember to restore your nuget packages, before building. Otherwise you will complaints that NUnit and its dependencies are missing. Contact me if you're having any issues.
 
 ### Features:
 At the moment the library features:

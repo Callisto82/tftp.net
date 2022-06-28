@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("Tftp.Net")]
-[assembly: AssemblyDescription("TFTP Library for .NET.")]
+[assembly: AssemblyDescription("A .NET# library that allows you to easily integrate a TFTP Client or TFTP Server in your application")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Michael Baer")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Tftp.Net")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
@@ -32,6 +32,6 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.0.0")]
-[assembly: AssemblyFileVersion("1.2.0.0")]
+[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]
 [assembly: InternalsVisibleTo("Tftp.Net.UnitTests")]
