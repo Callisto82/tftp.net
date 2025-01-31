@@ -9,7 +9,7 @@ namespace Tftp.Net
     /// <summary>
     /// Serializes an ITftpCommand into a stream of bytes.
     /// </summary>
-    class CommandSerializer
+    public class CommandSerializer
     {
         /// <summary>
         /// Call this method to serialize the given <code>command</code> using the given <code>writer</code>.
