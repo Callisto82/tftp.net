@@ -17,14 +17,17 @@ namespace Tftp.Net
     {
         private const int DEFAULT_SERVER_PORT = 69;
         private readonly IPEndPoint remoteAddress;
+        private readonly IPAddress _listenAddress;
 
         /// <summary>
         /// Default constructor.
         /// </summary>
         /// <param name="remoteAddress">Address of the server that you would like to connect to.</param>
-        public TftpClient(IPEndPoint remoteAddress)
+        /// <param name="listenAddress">Local IP address to be used when socket binding.</param>
+        public TftpClient(IPEndPoint remoteAddress, IPAddress listenAddress)
         {
             this.remoteAddress = remoteAddress;
+            _listenAddress = listenAddress;
         }
 
         /// <summary>
@@ -33,8 +36,8 @@ namespace Tftp.Net
         /// <param name="ip">Address of the server that you want connect to.</param>
         /// <param name="port">Port on the server that you want connect to (default: 69)</param>
         public TftpClient(IPAddress ip, int port)
-            : this(new IPEndPoint(ip, port)) 
-        { 
+            : this(new IPEndPoint(ip, port), IPAddress.Any)
+        {
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Tftp.Net
         /// </summary>
         /// <param name="ip">Address of the server that you want connect to.</param>
         public TftpClient(IPAddress ip)
-            : this(new IPEndPoint(ip, DEFAULT_SERVER_PORT))
+            : this(new IPEndPoint(ip, DEFAULT_SERVER_PORT), IPAddress.Any)
         {
         }
 
@@ -68,6 +71,7 @@ namespace Tftp.Net
                 throw new ArgumentException("Could not convert '" + host + "' to an IPv4 address.", "host");
 
             this.remoteAddress = new IPEndPoint(ip, port);
+            this._listenAddress = IPAddress.Any;
         }
 
         /// <summary>
@@ -76,7 +80,7 @@ namespace Tftp.Net
         /// </summary>
         public ITftpTransfer Download(String filename)
         {
-            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress);
+            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress, localAddress: _listenAddress);
             return new RemoteReadTransfer(channel, filename);
         }
 
@@ -86,7 +90,7 @@ namespace Tftp.Net
         /// </summary>
         public ITftpTransfer Upload(String filename)
         {
-            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress);
+            ITransferChannel channel = TransferChannelFactory.CreateConnection(remoteAddress, localAddress: _listenAddress);
             return new RemoteWriteTransfer(channel, filename);
         }
     }
