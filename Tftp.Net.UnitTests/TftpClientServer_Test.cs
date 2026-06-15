@@ -23,7 +23,7 @@ namespace Tftp.Net.UnitTests
                 server.OnReadRequest += new TftpServerEventHandler(server_OnReadRequest);
                 server.Start();
 
-                TftpClient client = new TftpClient(new IPEndPoint(IPAddress.Loopback, 69));
+                TftpClient client = new TftpClient(new IPEndPoint(IPAddress.Loopback, 69), IPAddress.Any);
                 using (ITftpTransfer transfer = client.Download("Demo File"))
                 {
                     MemoryStream ms = new MemoryStream();
